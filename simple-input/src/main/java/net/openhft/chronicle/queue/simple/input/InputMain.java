@@ -22,7 +22,6 @@ public class InputMain {
                 break;
             appender.writeText(line);
         }
-        System.out.println(queue.dump());
-
+        System.out.println("... bye.");
     }
 }
