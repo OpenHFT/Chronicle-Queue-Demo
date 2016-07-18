@@ -1,8 +1,10 @@
 = Chronicle-Queue-Sample
 
-First open the module***** `Chronicle-Queue-Sample`. Go to the sub-module `simple-input`, then `src`, `main`, `java` and `net.openhft.chronicle.queue.simple.input`.
+First open the module `Chronicle-Queue-Sample`.
+Go to the sub-module `simple-input`, then `src`, `main`, `java` and `net.openhft.chronicle.queue.simple.input`.
 
-This will that you to `InputMain.java` and `OutputMain.java` java classes.***** This is one of the simple demonstrations of how Chronicle Queue can be used.
+This will that you to `InputMain.java` and `OutputMain.java` java classes.
+This is one of the simple demonstrations of how Chronicle Queue can be used.
 
 Select `InputMain` from the side bar and run `InputMain.java` by right-clicking on the code and selecting `Run 'InputMain.main()'`.
 After the code has been run the first time using this method, the green arrow in the top right of the screen can be used to run that code again the next time.
@@ -22,3 +24,6 @@ The excitement doesn't end here, however.
 You must then open `OutputMain.java` and run that by right-clicking on the code, the same way you ran `InputMain.java`.
 
 A new window will appear next to the `InputMain` one, simple listing the content you previously entered.
+
+This demonstrates a program that can store and recall data that is submitted in another place.
+
