@@ -12,6 +12,26 @@ Select `Create New Project`,
 
 image::CNP.png[]
 
+Now we take a step away from this and turn to Cygwin.
+
+If you're running Windows, you will need to install the `git` client Cygwin, https://cygwin.com/install.html[here],
+with a guide showing installation and packages http://www.mcclean-cooper.com/valentino/cygwin_install/[here].
+This allows you to install Linux packages that aren't already on Windows.
+
+When this asks you which packages you want to install, search for and add `git`.
+
+image::Packages.png[]
+
+Next, clone this repository in the Cygwin terminal
+
+[source]
+----
+git clone https://github.com/OpenHFT/Chronicle-Queue-Sample.git
+----
+
+Ensure you have the JDK for Java 8, you could use http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[this].
+
+
 then `Empty Project`
 
 image::EmptyProject.png[]
@@ -22,22 +42,11 @@ image::Projectname.png[]
 
 On Intelij, go to `File` in the top left of the screen, then select `New`, `Project` and `Maven`, which is a https://maven.apache.org/what-is-maven.html[build tool].
 
-image::FileNewProjectbetter.png[]
+image::FNP.png[]
+
+You will then again need to select an Empty Project and Project name.
 
 Enable Autoimport in the top right of the screen.
 
-If you're running Windows, you will need to install the `git` client Cygwin, https://cygwin.com/install.html[here].
-This allows you to install Linux packages that aren't already on Windows.
-
-When this asks you which packages you want to install, search for and add `git`.
-
-Next, clone this repository in the Cygwin terminal
-
-[source]
-----
-git clone https://github.com/OpenHFT/Chronicle-Queue-Sample.git
-----
-
-Ensure you have the JDK for Java 8, you could use http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[this].
 
 Then you can run the first example https://github.com/OpenHFT/Chronicle-Queue-Sample/tree/master/simple-input[Simple Input]
