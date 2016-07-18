@@ -5,15 +5,6 @@ Sample programs for Chronicle Queue
 
 == Downloading and running sample programs
 
-Open Intelij or your https://en.wikipedia.org/wiki/Integrated_development_environment[IDE], or https://www.jetbrains.com/idea/download/#section=windows[install Intelij] first if you haven't already.
-Intelij is used for this tutorial.
-
-Select `Create New Project`,
-
-image::CNP.png[]
-
-Now we take a step away from this and turn to Cygwin.
-
 If you're running Windows, you will need to install the `git` client Cygwin, https://cygwin.com/install.html[here],
 with a guide showing installation and packages http://www.mcclean-cooper.com/valentino/cygwin_install/[here].
 This allows you to install Linux packages that aren't already on Windows.
@@ -31,7 +22,17 @@ git clone https://github.com/OpenHFT/Chronicle-Queue-Sample.git
 
 Ensure you have the JDK for Java 8, you could use http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[this].
 
+Open Intelij or your https://en.wikipedia.org/wiki/Integrated_development_environment[IDE], or https://www.jetbrains.com/idea/download/#section=windows[install Intelij] first if you haven't already.
+Intelij is used for this tutorial.
+
 image::homegit.png[]
+
+
+************************************
+
+Select `Create New Project`,
+
+image::CNP.png[]
 
 then `Empty Project`
 
