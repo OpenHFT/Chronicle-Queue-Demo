@@ -3,13 +3,18 @@
 
 Sample programs for Chronicle Queue
 
-image::java.png[]
-
 == Downloading and running sample programs
 
-Open Intelij or https://en.wikipedia.org/wiki/Integrated_development_environment[IDE], or https://www.jetbrains.com/idea/download/#section=windows[install Intelij] first if you haven't already.
-Intelij is used fro this tutorial.
-Go to `File` in the top left of the screen, then select `New`, `Project` and `Maven`, which is a https://maven.apache.org/what-is-maven.html[build tool].
+Open Intelij or your https://en.wikipedia.org/wiki/Integrated_development_environment[IDE], or https://www.jetbrains.com/idea/download/#section=windows[install Intelij] first if you haven't already.
+Intelij is used for this tutorial.
+
+Select `Create New Project`,
+
+image::Create New Project.png[]
+
+then `Empty Project` and set a `Project name`.
+
+On Intelij, go to `File` in the top left of the screen, then select `New`, `Project` and `Maven`, which is a https://maven.apache.org/what-is-maven.html[build tool].
 Enable Autoimport in the top right of the screen.
 
 If you're running Windows, you will need to install the `git` client Cygwin, https://cygwin.com/install.html[here].
