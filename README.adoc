@@ -12,9 +12,18 @@ Select `Create New Project`,
 
 image::CNP.png[]
 
-then `Empty Project` and set a `Project name`.
+then `Empty Project`
+
+image::Empty Project.png[]
+
+and set a `Project name`.
+
+image::Project name.png[]
 
 On Intelij, go to `File` in the top left of the screen, then select `New`, `Project` and `Maven`, which is a https://maven.apache.org/what-is-maven.html[build tool].
+
+image::FileNewProject.png[]
+
 Enable Autoimport in the top right of the screen.
 
 If you're running Windows, you will need to install the `git` client Cygwin, https://cygwin.com/install.html[here].
