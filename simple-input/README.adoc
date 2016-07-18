@@ -3,7 +3,7 @@
 First open the project `Chronicle-Queue-Sample`.
 Go to the module `simple-input`, then `src`, `main`, `java` and `net.openhft.chronicle.queue.simple.input`.
 
-This will take you to `InputMain.java` and `OutputMain.java` java classes.
+This will take you to `InputMain.java`, `OutputMain.java` and `PrintQueueMain.java` java classes.
 This is one of the simple demonstrations of how Chronicle Queue can be used.
 
 Select `InputMain` from the side bar and run `InputMain.java` by right-clicking on the code and selecting `Run 'InputMain.main()'`.
@@ -24,6 +24,12 @@ The excitement doesn't end here, however.
 You must then open `OutputMain.java` and run that by right-clicking on the code, the same way you ran `InputMain.java`.
 
 A new window will appear next to the `InputMain` one, simple listing the content you previously entered.
+
+Back to the side bar, under `Chronicle-Queue-Sample`, there is `queue`.
+This is where the content you have entered is kept, and the file is named by the date that is was made.
+If this this deleted, then so is the content you entered into `InputMain.java`.
+
+In addition, when `PrintQueueMain.java` is run, it will open a window displaying the raw process of the program being run.
 
 This demonstrates a program that can store and recall data that is submitted in another place in real time.
 As result, this shows https://en.wikipedia.org/wiki/Inter-process_communication[inter-process communication], which is one of the main processes in Chronicle Queue.
