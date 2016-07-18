@@ -1,6 +1,9 @@
 = Chronicle-Queue-Sample
+:imagesdir: images
 
 Sample programs for Chronicle Queue
+
+image::java.png[]
 
 == Downloading and running sample programs
 
