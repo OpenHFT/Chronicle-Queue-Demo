@@ -1,3 +1,24 @@
 = Chronicle-Queue-Sample
 
-sdfgh
+First open the module***** `Chronicle-Queue-Sample`. Go to the sub-module `simple-input`, then `src`, `main`, `java` and `net.openhft.chronicle.queue.simple.input`.
+
+This will that you to `InputMain.java` and `OutputMain.java` java classes.***** This is one of the simple demonstrations of how Chronicle Queue can be used.
+
+Select `InputMain` from the side bar and run `InputMain.java` by right-clicking on the code and selecting `Run 'InputMain.main()'`.
+After the code has been run the first time using this method, the green arrow in the top right of the screen can be used to run that code again the next time.
+
+A window at the bottom of the screen will appear with the words `type something`, as the code has instructed it to do.
+
+You may write anything you wish in this window and your `Enter` button to submit it.
+
+The program will then again ask you to `type something`, and again you should type another word.
+
+This program is set on a loop and will continue to pose this same instruction until it is broken.
+This is done by not writing anything and leaving the next line blank before pressing `Enter`.
+
+It is recommended that you type at least three words for the sake of this example.
+
+The excitement doesn't end here, however.
+You must then open `OutputMain.java` and run that by right-clicking on the code, the same way you ran `InputMain.java`.
+
+A new window will appear next to the `InputMain` one, simple listing the content you previously entered.
