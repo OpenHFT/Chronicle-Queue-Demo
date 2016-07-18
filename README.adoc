@@ -20,7 +20,7 @@ This allows you to install Linux packages that aren't already on Windows.
 
 When this asks you which packages you want to install, search for and add `git`.
 
-image::Packages.png[]
+image::Packages.gif[]
 
 Next, clone this repository in the Cygwin terminal
 
