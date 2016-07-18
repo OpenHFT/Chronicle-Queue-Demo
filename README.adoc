@@ -14,11 +14,11 @@ image::CNP.png[]
 
 then `Empty Project`
 
-image::Empty Project.png[]
+image::EmptyProject.png[]
 
 and set a `Project name`.
 
-image::Project name.png[]
+image::Projectname.png[]
 
 On Intelij, go to `File` in the top left of the screen, then select `New`, `Project` and `Maven`, which is a https://maven.apache.org/what-is-maven.html[build tool].
 
