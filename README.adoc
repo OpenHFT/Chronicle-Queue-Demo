@@ -31,6 +31,7 @@ git clone https://github.com/OpenHFT/Chronicle-Queue-Sample.git
 
 Ensure you have the JDK for Java 8, you could use http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[this].
 
+image::homegit.png[]
 
 then `Empty Project`
 
