@@ -10,7 +10,7 @@ Intelij is used for this tutorial.
 
 Select `Create New Project`,
 
-image::Create New Project.png[]
+image::CNP.png[]
 
 then `Empty Project` and set a `Project name`.
 
