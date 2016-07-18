@@ -1,0 +1,24 @@
+= Chronicle-Queue-Sample
+:imagesdir: images
+
+Sample programs for Chronicle Queue
+
+image::java.png[]
+
+== Downloading and running sample programs
+
+If you're running Windows, you will need to install the `git` client Cygwin, https://cygwin.com/install.html[here].
+This allows you to install Linux packages that aren't already on Windows.
+
+When this asks you which packages you want to install, search for and add `git`.
+
+Next, clone this repository in the Cygwin terminal
+
+[source]
+----
+git clone https://github.com/OpenHFT/Chronicle-Queue-Sample.git
+----
+
+Ensure you have the JDK for Java 8, you could use http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[this].
+
+To run the first example https://github.com/OpenHFT/Chronicle-Queue-Sample/tree/master/simple-input[Simple Input]
