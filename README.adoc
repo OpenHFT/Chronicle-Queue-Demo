@@ -11,7 +11,7 @@ This allows you to install Linux packages that aren't already on Windows.
 
 When this asks you which packages you want to install, search for and add `git`. This is under `Development` and you need to click `skip` so it says to `install`.
 
-image::gitpack[]
+image::gitpack.png[]
 
 Ensure you have the JDK for Java 8, you could use http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[this].
 
