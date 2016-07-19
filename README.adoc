@@ -30,7 +30,7 @@ and remember to take note of the `Parent Directory`. Press `Clone`.
 
 [source]
 ----
-git clone https://github.com/OpenHFT/Chronicle-Queue-Sample.git
+https://github.com/OpenHFT/Chronicle-Queue-Sample.git
 ----
 
 image::GitRep.png[]
