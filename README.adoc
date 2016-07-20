@@ -33,7 +33,7 @@ and remember to take note of the `Parent Directory`. Press `Clone`.
 https://github.com/OpenHFT/Chronicle-Queue-Sample.git
 ----
 
-image::GitRep.png[]
+image::Clone.png[]
 
 Should you choose you close the Project under `File`, you an open it again by going to `Open`.
 
