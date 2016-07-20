@@ -35,6 +35,9 @@ https://github.com/OpenHFT/Chronicle-Queue-Sample.git
 
 image::Clone.png[]
 
+Should you choose you close the Project under `File`, you an open it again by going to `Open`.
+
+image::Ope.png[]
 
 
 Then you can run the first example https://github.com/OpenHFT/Chronicle-Queue-Sample/tree/master/simple-input[Simple Input]
