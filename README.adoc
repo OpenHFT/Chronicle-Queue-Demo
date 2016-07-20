@@ -1,7 +1,7 @@
 = Chronicle-Queue-Sample
 :imagesdir: images
 
-Sample programs for Chronicle Queue
+Tutorial of Sample programs for Chronicle Queue
 
 == Downloading and running sample programs
 
