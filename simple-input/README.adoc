@@ -1,5 +1,5 @@
 = Chronicle-Queue-Sample
-:imagesdir: images
+:imagesdir: ../images
 
 == Simple Input
 
