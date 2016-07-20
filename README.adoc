@@ -33,7 +33,7 @@ and remember to take note of the `Parent Directory`. Press `Clone`.
 https://github.com/OpenHFT/Chronicle-Queue-Sample.git
 ----
 
-image::GitRep.png[]
+image::Clone.png[]
 
 
 Then you can run the first example https://github.com/OpenHFT/Chronicle-Queue-Sample/tree/master/simple-input[Simple Input]
