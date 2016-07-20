@@ -16,6 +16,7 @@ Select `InputMain` from the side bar.
 You may come across an issue with the SDK (which is really the JDK in this case, because JDK is an SDK specific to Java).
 You need to go to `Configure...`, add JDK and save it in a directory with JDK.
 
+[frame="none"]
 |====
 | image:setJDK.png[] | image:AddJDK.png[] | image:JDKhome.png[]
 |====
