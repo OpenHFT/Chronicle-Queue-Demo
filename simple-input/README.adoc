@@ -16,7 +16,9 @@ Select `InputMain` from the side bar.
 You may come across an issue with the SDK (which is really the JDK in this case, because JDK is an SDK specific to Java).
 You need to go to `Configure...`, add JDK and save it in a directory with JDK.
 
-image::setJDK.png[] image::AddJDK.png[] image::JDKhome.png[]
+image::setJDK.png[]
+image::AddJDK.png[]
+image::JDKhome.png[]
 
 Now you can run `InputMain.java` by right-clicking on the code and selecting `Run 'InputMain.main()'`.
 After the code has been run the first time using this method, the green arrow in the top right of the screen can be used to run that code again the next time.
