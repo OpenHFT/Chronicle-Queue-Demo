@@ -24,6 +24,8 @@ You need to go to `Configure...`, add JDK and save it in a directory with JDK.
 Now you can run `InputMain.java` by right-clicking on the code and selecting `Run 'InputMain.main()'`.
 After the code has been run the first time using this method, the green arrow in the top right of the screen can be used to run that code again the next time.
 
+image::runin.png[]
+
 A window at the bottom of the screen will appear with the words `type something`, as the code has instructed it to do.
 
 You may write anything you wish in this window, then press your `Enter` button to submit it.
