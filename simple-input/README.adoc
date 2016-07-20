@@ -1,8 +1,7 @@
 = Chronicle-Queue-Sample
+:imagesdir: images
 
 == Simple Input
-
-:imagesdir: images
 
 Simple Input is one of the simplifies demonstrations of how Chronicle Queue can be used.
 
