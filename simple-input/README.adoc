@@ -1,12 +1,25 @@
 = Chronicle-Queue-Sample
 
+== Simple Input
+
+:imagesdir: images
+
+Simple Input is one of the simplifies demonstrations of how Chronicle Queue can be used.
+
 First open the project `Chronicle-Queue-Sample`.
 Go to the module `simple-input`, then `src`, `main`, `java` and `net.openhft.chronicle.queue.simple.input`.
 
 This will take you to `InputMain.java`, `OutputMain.java` and `PrintQueueMain.java` java classes.
-This is one of the simple demonstrations of how Chronicle Queue can be used.
 
-Select `InputMain` from the side bar and run `InputMain.java` by right-clicking on the code and selecting `Run 'InputMain.main()'`.
+image::lotsafiles.png[]
+
+Select `InputMain` from the side bar.
+You may come across an issue with the SDK (which is really the JDK in this case, because JDK is an SDK specific to Java).
+You need to go to `Configure...`, add JDK and save it in a directory with JDK.
+
+image::setJDK.png[] image::AddJDK.png[] image::JDKhome.png[]
+
+Now you can run `InputMain.java` by right-clicking on the code and selecting `Run 'InputMain.main()'`.
 After the code has been run the first time using this method, the green arrow in the top right of the screen can be used to run that code again the next time.
 
 A window at the bottom of the screen will appear with the words `type something`, as the code has instructed it to do.
