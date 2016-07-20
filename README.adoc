@@ -36,8 +36,11 @@ https://github.com/OpenHFT/Chronicle-Queue-Sample.git
 image::Clone.png[]
 
 Should you choose you close the Project under `File`, you an open it again by going to `Open`.
+Then you can find the repository in the directory that you saved it in earlier.
 
-image::Ope.png[]
+image::Open.png[]
+
+image::directory.png[]
 
 
 Then you can run the first example https://github.com/OpenHFT/Chronicle-Queue-Sample/tree/master/simple-input[Simple Input]
