@@ -30,6 +30,8 @@ A window at the bottom of the screen will appear with the words `type something`
 
 You may write anything you wish in this window, then press your `Enter` button to submit it.
 
+image::sayhello.png[]
+
 The program will then again ask you to `type something`, and again you should type another word.
 
 This program is set on a loop and will continue to pose this same instruction until it is broken.
@@ -37,16 +39,23 @@ This is done by not writing anything and leaving the next line blank before pres
 
 It is recommended that you type at least three words for the sake of this example.
 
-The excitement doesn't end here, however.
 You must then open `OutputMain.java` and run that by right-clicking on the code, the same way you ran `InputMain.java`.
 
-A new window will appear next to the `InputMain` one, simple listing the content you previously entered.
+image::OutputMain.png[]
 
-Back to the side bar, under `Chronicle-Queue-Sample`, there is `queue`.
+A new window will appear next to the `InputMain` one, simply listing the content as you enter it into the Input Main.
+
+image::runout.png[]
+
+*Side Note:* On the side bar, under `Chronicle-Queue-Sample`, there is `queue`.
 This is where the content you have entered is kept, and the file is named by the date that is was made.
-If this this deleted, then so is the content you entered into `InputMain.java`.
+If this is deleted, then so is the content you entered into `InputMain.java`.
+
+image::queue.png[]
 
 In addition, when `PrintQueueMain.java` is run, it will open a window displaying the raw process of the program being run.
+
+
 
 This demonstrates a program that can store and recall data that is submitted in another place in real time.
 As result, this shows https://en.wikipedia.org/wiki/Inter-process_communication[inter-process communication], which is one of the main processes in Chronicle Queue.
