@@ -5,7 +5,7 @@ Sample programs for Chronicle Queue
 
 == Downloading and running sample programs
 
-I you're running Windows, you will need to install the `git` client Cygwin, https://cygwin.com/install.html[here],
+If you're running Windows, you will need to install the `git` client Cygwin, https://cygwin.com/install.html[here],
 with a guide showing installation and packages http://www.mcclean-cooper.com/valentino/cygwin_install/[here].
 This allows you to install Linux packages that aren't already on Windows.
 
