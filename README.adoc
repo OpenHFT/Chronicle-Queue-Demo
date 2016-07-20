@@ -5,7 +5,7 @@ Sample programs for Chronicle Queue
 
 == Downloading and running sample programs
 
-If you're running Windows, you will need to install the `git` client Cygwin, https://cygwin.com/install.html[here],
+I you're running Windows, you will need to install the `git` client Cygwin, https://cygwin.com/install.html[here],
 with a guide showing installation and packages http://www.mcclean-cooper.com/valentino/cygwin_install/[here].
 This allows you to install Linux packages that aren't already on Windows.
 
@@ -41,6 +41,5 @@ Then you can find the repository in the directory that you saved it in earlier.
 image::Open.png[]
 
 image::directory.png[]
-
 
 Then you can run the first example https://github.com/OpenHFT/Chronicle-Queue-Sample/tree/master/simple-input[Simple Input]
