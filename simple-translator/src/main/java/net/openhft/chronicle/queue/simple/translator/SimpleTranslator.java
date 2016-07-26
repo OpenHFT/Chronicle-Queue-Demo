@@ -14,7 +14,9 @@ public class SimpleTranslator implements MessageConsumer {
     public void onMessage(String text) {
         System.out.println("translating " + text);
         text = text.replaceAll("hello", "salut");
+        text = text.replaceAll("bye", "salut");
         text = text.replaceAll("apple", "pomme");
+        text = text.replaceAll("banana", "banane");
         text = text.replaceAll("nice", "sympa");
         text = text.replaceAll("goodnight", "bonne nuit");
         text = text.replaceAll("happy", "heureux");
