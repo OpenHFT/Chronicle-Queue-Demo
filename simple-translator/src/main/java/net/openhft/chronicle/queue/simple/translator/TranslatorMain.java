@@ -14,7 +14,7 @@ public class TranslatorMain {
         MessageConsumer messageConsumer = queuefr.acquireAppender().methodWriter(MessageConsumer.class);
 
         MessageConsumer simpleTranslator = new SimpleTranslator(messageConsumer);
-        ;
+
         String path_en = "queue-en";
         SingleChronicleQueue queue_en = SingleChronicleQueueBuilder.binary(path_en).build();
         MethodReader methodReader = queue_en.createTailer().methodReader(simpleTranslator);
@@ -23,7 +23,5 @@ public class TranslatorMain {
             if (!methodReader.readOne())
                 Thread.sleep(10);
         }
-
     }
-
 }
