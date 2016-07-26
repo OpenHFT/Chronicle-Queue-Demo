@@ -1,17 +1,36 @@
 = Chronicle-Queue-Sample
+:imagesdir: ../images
+
+== Simple Input
+
+Simple Input is one of the simplifies demonstrations of how Chronicle Queue can be used.
 
 First open the project `Chronicle-Queue-Sample`.
 Go to the module `simple-input`, then `src`, `main`, `java` and `net.openhft.chronicle.queue.simple.input`.
 
 This will take you to `InputMain.java`, `OutputMain.java` and `PrintQueueMain.java` java classes.
-This is one of the simple demonstrations of how Chronicle Queue can be used.
 
-Select `InputMain` from the side bar and run `InputMain.java` by right-clicking on the code and selecting `Run 'InputMain.main()'`.
+image::lotsafiles.png[]
+
+Select `InputMain` from the side bar.
+You may come across an issue with the SDK (which is really the JDK in this case, because JDK is an SDK specific to Java).
+You need to go to `Configure...`, add JDK and save it in a directory with JDK.
+
+[frame="none"]
+|====
+| image:setJDK.png[] | image:AddJDK.png[] | image:JDKhome.png[]
+|====
+
+Now you can run `InputMain.java` by right-clicking on the code and selecting `Run 'InputMain.main()'`.
 After the code has been run the first time using this method, the green arrow in the top right of the screen can be used to run that code again the next time.
+
+image::runin.png[]
 
 A window at the bottom of the screen will appear with the words `type something`, as the code has instructed it to do.
 
 You may write anything you wish in this window, then press your `Enter` button to submit it.
+
+image::sayhello.png[]
 
 The program will then again ask you to `type something`, and again you should type another word.
 
@@ -20,16 +39,23 @@ This is done by not writing anything and leaving the next line blank before pres
 
 It is recommended that you type at least three words for the sake of this example.
 
-The excitement doesn't end here, however.
 You must then open `OutputMain.java` and run that by right-clicking on the code, the same way you ran `InputMain.java`.
 
-A new window will appear next to the `InputMain` one, simple listing the content you previously entered.
+image::OutputMain.png[]
 
-Back to the side bar, under `Chronicle-Queue-Sample`, there is `queue`.
+A new window will appear next to the `InputMain` one, simply listing the content as you enter it into the Input Main.
+
+image::runout.png[]
+
+*Side Note:* On the side bar, under `Chronicle-Queue-Sample`, there is `queue`.
 This is where the content you have entered is kept, and the file is named by the date that is was made.
-If this this deleted, then so is the content you entered into `InputMain.java`.
+If this is deleted, then so is the content you entered into `InputMain.java`.
+
+image::queue.png[]
 
 In addition, when `PrintQueueMain.java` is run, it will open a window displaying the raw process of the program being run.
+
+
 
 This demonstrates a program that can store and recall data that is submitted in another place in real time.
 As result, this shows https://en.wikipedia.org/wiki/Inter-process_communication[inter-process communication], which is one of the main processes in Chronicle Queue.
