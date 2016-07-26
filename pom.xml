@@ -11,6 +11,7 @@
 
     <modules>
         <module>simple-input</module>
+        <module>simple-translator</module>
     </modules>
 
     <dependencies>
