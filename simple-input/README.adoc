@@ -58,5 +58,5 @@ In addition, when `PrintQueueMain.java` is run, it will open a window displaying
 
 
 This demonstrates a program that can store and recall data that is submitted in another place in real time.
-As result, this shows https://en.wikipedia.org/wiki/Inter-process_communication[inter-process communication], which is one of the main processes in Chronicle Queue.
+As result, this shows https://en.wikipedia.org/wiki/Inter-process_communication[inter-process communication], which is one of the main features of Chronicle Queue.
 
