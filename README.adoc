@@ -43,3 +43,5 @@ image::Open.png[]
 image::directory.png[]
 
 Then you can run the first example https://github.com/OpenHFT/Chronicle-Queue-Sample/tree/master/simple-input[Simple Input]
+
+The second example is https://github.com/OpenHFT/Chronicle-Queue-Sample/tree/master/simple-translator[Simple Translator]
