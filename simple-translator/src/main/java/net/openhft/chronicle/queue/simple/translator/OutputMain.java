@@ -2,7 +2,7 @@ package net.openhft.chronicle.queue.simple.translator;
 
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueue;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
-import net.openhft.chronicle.wire.MethodReader;
+import net.openhft.chronicle.bytes.MethodReader;
 
 /**
  * Created by catherine on 17/07/2016.
