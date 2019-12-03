@@ -158,7 +158,7 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
 
     @Override
     public void writeMarshallable(WireOut out) {
-        super.writeMarshallable0(out);
+        super.writeMarshallable(out);
         out.write("symbol").writeLong(symbol);
         out.write("transactTime").writeLong(transactTime);
         out.write("orderQty").writeDouble(orderQty);
@@ -176,7 +176,7 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
 
     @Override
     public void readMarshallable(WireIn in) {
-        super.readMarshallable0(in);
+        super.readMarshallable(in);
         symbol = in.read("symbol").readLong();
         transactTime = in.read("transactTime").readLong();
         orderQty = in.read("orderQty").readDouble();
