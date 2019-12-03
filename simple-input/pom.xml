@@ -11,9 +11,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>net.openhft</groupId>
     <artifactId>simple-input</artifactId>
-    <version>1.0-SNAPSHOT</version>
-
+    <name>OpenHFT/${project.parent.artifactId}/${project.artifactId}</name>
 
 </project>
