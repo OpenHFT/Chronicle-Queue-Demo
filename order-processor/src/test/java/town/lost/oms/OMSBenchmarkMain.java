@@ -25,7 +25,7 @@ import town.lost.oms.dto.OrderType;
 import java.io.File;
 
 // -Xmx64m -XX:+UnlockCommercialFeatures -XX:+FlightRecorder -XX:StartFlightRecording=name=test,filename=test.jfr,dumponexit=true,settings=profile -XX:-UseTLAB
-/* extends AbstractMarshallable
+/* extends AbstractMarshallable - default
 -------------------------------- SUMMARY (end to end) -----------------------------------------------------------
 Percentile   run1         run2         run3         run4         run5      % Variation
 50:             1.06         1.11         1.09         1.09         1.06         3.05
@@ -33,6 +33,15 @@ Percentile   run1         run2         run3         run4         run5      % Var
 99:             2.79         2.80         2.58         2.58         2.56         6.03
 99.7:           3.46         3.34         2.93         2.83         2.82        10.82
 99.9:           8.94         4.28         4.60        11.39        11.35        52.56
+
+// extends AbstractMarshallable - with code generation
+-------------------------------- SUMMARY (end to end) -----------------------------------------------------------
+Percentile   run1         run2         run3         run4         run5      % Variation
+50:             0.80         0.85         0.88         0.88         0.90         3.85
+90:             1.12         1.09         1.14         1.18         1.22         7.81
+99:             2.25         2.26         2.27         2.29         2.32         1.80
+99.7:           2.58         2.48         2.47         2.48         2.57         2.63
+99.9:           4.04         3.62         3.47         3.51         4.03         9.75
 
 // extends AbstractBytesMarshallable
 -------------------------------- SUMMARY (end to end) -----------------------------------------------------------

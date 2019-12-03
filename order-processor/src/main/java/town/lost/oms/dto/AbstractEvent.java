@@ -4,12 +4,9 @@
 
 package town.lost.oms.dto;
 
-import net.openhft.chronicle.wire.AbstractBytesMarshallable;
-import net.openhft.chronicle.wire.Base85LongConverter;
-import net.openhft.chronicle.wire.LongConversion;
-import net.openhft.chronicle.wire.MicroTimestampLongConverter;
+import net.openhft.chronicle.wire.*;
 
-public class AbstractEvent<E extends AbstractEvent<E>> extends AbstractBytesMarshallable {
+public class AbstractEvent<E extends AbstractEvent<E>> extends AbstractMarshallable {
     @LongConversion(Base85LongConverter.class)
     private long sender;
 
@@ -45,5 +42,17 @@ public class AbstractEvent<E extends AbstractEvent<E>> extends AbstractBytesMars
     public E sendingTime(long sendingTime) {
         this.sendingTime = sendingTime;
         return (E) this;
+    }
+
+    public void writeMarshallable0(WireOut out) {
+        out.write("sender").writeLong(sender);
+        out.write("target").writeLong(target);
+        out.write("sendingTime").writeLong(sendingTime);
+    }
+
+    public void readMarshallable0(WireIn in) {
+        sender = in.read("sender").readLong();
+        target = in.read("target").readLong();
+        sendingTime = in.read("sendingTime").readLong();
     }
 }

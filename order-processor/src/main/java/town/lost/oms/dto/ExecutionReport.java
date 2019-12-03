@@ -4,18 +4,13 @@
 
 package town.lost.oms.dto;
 
-import net.openhft.chronicle.wire.Base32LongConverter;
-import net.openhft.chronicle.wire.Base85LongConverter;
-import net.openhft.chronicle.wire.LongConversion;
-import net.openhft.chronicle.wire.MicroTimestampLongConverter;
+import net.openhft.chronicle.wire.*;
 
 public class ExecutionReport extends AbstractEvent<ExecutionReport> {
-    private String clOrdID = "";
 
     @LongConversion(Base85LongConverter.class)
     private long symbol;
 
-    private BuySell side;
 
     @LongConversion(MicroTimestampLongConverter.class)
     private long transactTime;
@@ -27,7 +22,6 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     @LongConversion(Base32LongConverter.class)
     private long orderID;
 
-    private OrderType ordType;
 
     private double lastPx;
 
@@ -36,6 +30,12 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     private double cumQty;
 
     private double avgPx;
+
+    private BuySell side;
+
+    private OrderType ordType;
+
+    private String clOrdID = "";
 
     private String text = null;
 
@@ -154,5 +154,41 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     public ExecutionReport text(String text) {
         this.text = text;
         return this;
+    }
+
+    @Override
+    public void writeMarshallable(WireOut out) {
+        super.writeMarshallable0(out);
+        out.write("symbol").writeLong(symbol);
+        out.write("transactTime").writeLong(transactTime);
+        out.write("orderQty").writeDouble(orderQty);
+        out.write("price").writeDouble(price);
+        out.write("orderID").writeLong(orderID);
+        out.write("lastPx").writeDouble(lastPx);
+        out.write("leavesQty").writeDouble(leavesQty);
+        out.write("cumQty").writeDouble(cumQty);
+        out.write("avgPx").writeDouble(avgPx);
+        out.write("side").object(BuySell.class, side);
+        out.write("ordType").object(OrderType.class, ordType);
+        out.write("clOrdID").object(String.class, clOrdID);
+        out.write("text").object(String.class, text);
+    }
+
+    @Override
+    public void readMarshallable(WireIn in) {
+        super.readMarshallable0(in);
+        symbol = in.read("symbol").readLong();
+        transactTime = in.read("transactTime").readLong();
+        orderQty = in.read("orderQty").readDouble();
+        price = in.read("price").readDouble();
+        orderID = in.read("orderID").readLong();
+        lastPx = in.read("lastPx").readDouble();
+        leavesQty = in.read("leavesQty").readDouble();
+        cumQty = in.read("cumQty").readDouble();
+        avgPx = in.read("avgPx").readDouble();
+        side = in.read("side").object(side, BuySell.class);
+        ordType = in.read("ordType").object(ordType, OrderType.class);
+        clOrdID = in.read("clOrdID").object(clOrdID, String.class);
+        text = in.read("text").object(text, String.class);
     }
 }

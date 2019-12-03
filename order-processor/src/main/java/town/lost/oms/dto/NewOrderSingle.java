@@ -4,18 +4,12 @@
 
 package town.lost.oms.dto;
 
-import net.openhft.chronicle.wire.Base85LongConverter;
-import net.openhft.chronicle.wire.LongConversion;
-import net.openhft.chronicle.wire.MicroTimestampLongConverter;
+import net.openhft.chronicle.wire.*;
 
 public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
 
-    private String clOrdID = "";
-
     @LongConversion(Base85LongConverter.class)
     private long symbol;
-
-    private BuySell side;
 
     @LongConversion(MicroTimestampLongConverter.class)
     private long transactTime;
@@ -24,7 +18,11 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
 
     private double price;
 
+    private BuySell side;
+
     private OrderType ordType;
+
+    private String clOrdID = "";
 
     public String clOrdID() {
         return clOrdID;
@@ -87,5 +85,29 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
     public NewOrderSingle ordType(OrderType ordType) {
         this.ordType = ordType;
         return this;
+    }
+
+    @Override
+    public void writeMarshallable(WireOut out) {
+        super.writeMarshallable0(out);
+        out.write("symbol").writeLong(symbol);
+        out.write("transactTime").writeLong(transactTime);
+        out.write("orderQty").writeDouble(orderQty);
+        out.write("price").writeDouble(price);
+        out.write("clOrdID").object(String.class, clOrdID);
+        out.write("side").object(BuySell.class, side);
+        out.write("ordType").object(OrderType.class, ordType);
+    }
+
+    @Override
+    public void readMarshallable(WireIn in) {
+        super.readMarshallable0(in);
+        symbol = in.read("symbol").readLong();
+        transactTime = in.read("transactTime").readLong();
+        orderQty = in.read("orderQty").readDouble();
+        price = in.read("price").readDouble();
+        clOrdID = in.read("clOrdID").object(clOrdID, String.class);
+        side = in.read("side").object(side, BuySell.class);
+        ordType = in.read("ordType").object(ordType, OrderType.class);
     }
 }
