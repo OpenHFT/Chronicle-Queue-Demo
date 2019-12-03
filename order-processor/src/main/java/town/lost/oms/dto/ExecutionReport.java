@@ -5,13 +5,15 @@
 package town.lost.oms.dto;
 
 import net.openhft.chronicle.wire.Base32LongConverter;
+import net.openhft.chronicle.wire.Base85LongConverter;
 import net.openhft.chronicle.wire.LongConversion;
 import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 
 public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     private String clOrdID = "";
 
-    private String symbol = "";
+    @LongConversion(Base85LongConverter.class)
+    private long symbol;
 
     private BuySell side;
 
@@ -46,11 +48,11 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
         return this;
     }
 
-    public String symbol() {
+    public long symbol() {
         return symbol;
     }
 
-    public ExecutionReport symbol(String symbol) {
+    public ExecutionReport symbol(long symbol) {
         this.symbol = symbol;
         return this;
     }

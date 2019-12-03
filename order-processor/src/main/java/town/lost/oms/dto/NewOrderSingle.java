@@ -4,6 +4,7 @@
 
 package town.lost.oms.dto;
 
+import net.openhft.chronicle.wire.Base85LongConverter;
 import net.openhft.chronicle.wire.LongConversion;
 import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 
@@ -11,7 +12,8 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
 
     private String clOrdID = "";
 
-    private String symbol = "";
+    @LongConversion(Base85LongConverter.class)
+    private long symbol;
 
     private BuySell side;
 
@@ -33,11 +35,11 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
         return this;
     }
 
-    public String symbol() {
+    public long symbol() {
         return symbol;
     }
 
-    public NewOrderSingle symbol(String symbol) {
+    public NewOrderSingle symbol(long symbol) {
         this.symbol = symbol;
         return this;
     }

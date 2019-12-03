@@ -4,10 +4,14 @@
 
 package town.lost.oms.dto;
 
+import net.openhft.chronicle.wire.Base85LongConverter;
+import net.openhft.chronicle.wire.LongConversion;
+
 public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
     private String clOrdID = "";
 
-    private String symbol = "";
+    @LongConversion(Base85LongConverter.class)
+    private long symbol;
 
     private String reason = "";
 
@@ -20,11 +24,11 @@ public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
         return this;
     }
 
-    public String symbol() {
+    public long symbol() {
         return symbol;
     }
 
-    public OrderCancelReject symbol(String symbol) {
+    public OrderCancelReject symbol(long symbol) {
         this.symbol = symbol;
         return this;
     }
