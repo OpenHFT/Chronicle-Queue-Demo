@@ -4,7 +4,10 @@
 
 package town.lost.oms.dto;
 
-import net.openhft.chronicle.wire.*;
+import net.openhft.chronicle.wire.AbstractMarshallable;
+import net.openhft.chronicle.wire.Base85LongConverter;
+import net.openhft.chronicle.wire.LongConversion;
+import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 
 public class AbstractEvent<E extends AbstractEvent<E>> extends AbstractMarshallable {
     @LongConversion(Base85LongConverter.class)
@@ -44,17 +47,17 @@ public class AbstractEvent<E extends AbstractEvent<E>> extends AbstractMarshalla
         return (E) this;
     }
 
-    @Override
-    public void writeMarshallable(WireOut out) {
-        out.write("sender").writeLong(sender);
-        out.write("target").writeLong(target);
-        out.write("sendingTime").writeLong(sendingTime);
-    }
-
-    @Override
-    public void readMarshallable(WireIn in) {
-        sender = in.read("sender").readLong();
-        target = in.read("target").readLong();
-        sendingTime = in.read("sendingTime").readLong();
-    }
+//    @Override
+//    public void writeMarshallable(WireOut out) {
+//        out.write("sender").writeLong(sender);
+//        out.write("target").writeLong(target);
+//        out.write("sendingTime").writeLong(sendingTime);
+//    }
+//
+//    @Override
+//    public void readMarshallable(WireIn in) {
+//        sender = in.read("sender").readLong();
+//        target = in.read("target").readLong();
+//        sendingTime = in.read("sendingTime").readLong();
+//    }
 }
