@@ -14,6 +14,7 @@
         <module>simple-input</module>
         <module>simple-translator</module>
         <module>simple-avro-example</module>
+        <module>order-processor</module>
     </modules>
 
     <dependencyManagement>
