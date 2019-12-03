@@ -24,9 +24,29 @@ import town.lost.oms.dto.OrderType;
 
 import java.io.File;
 
+// -Xmx64m -XX:+UnlockCommercialFeatures -XX:+FlightRecorder -XX:StartFlightRecording=name=test,filename=test.jfr,dumponexit=true,settings=profile -XX:-UseTLAB
+/* extends AbstractMarshallable
+-------------------------------- SUMMARY (end to end) -----------------------------------------------------------
+Percentile   run1         run2         run3         run4         run5      % Variation
+50:             1.06         1.11         1.09         1.09         1.06         3.05
+90:             1.38         1.41         1.37         1.46         1.46         4.10
+99:             2.79         2.80         2.58         2.58         2.56         6.03
+99.7:           3.46         3.34         2.93         2.83         2.82        10.82
+99.9:           8.94         4.28         4.60        11.39        11.35        52.56
+
+// extends AbstractBytesMarshallable
+-------------------------------- SUMMARY (end to end) -----------------------------------------------------------
+Percentile   run1         run2         run3         run4         run5      % Variation
+50:             0.56         0.62         0.62         0.56         0.57         6.35
+90:             0.69         0.83         0.84         0.69         0.70        12.67
+99:             1.93         1.89         1.89         1.91         1.90         0.87
+99.7:           2.15         2.04         2.03         2.07         2.05         1.15
+99.9:           2.71         2.42         2.39         2.33         2.31         2.86
+
+ */
 public class OMSBenchmarkMain {
 
-    public static final int THROUGHPUT = Integer.getInteger("throughput", 20_000);
+    public static final int THROUGHPUT = Integer.getInteger("throughput", 100_000);
     public static final Base85LongConverter BASE85 = Base85LongConverter.INSTANCE;
 
     public static void main(String[] args) {
@@ -57,58 +77,66 @@ public class OMSBenchmarkMain {
                     .runs(5)
                     .recordOSJitter(false)
                     .accountForCoordinatedOmmission(false)
-                    .jlbhTask(new JLBHTask() {
-                        private JLBH jlbh;
-                        private NewOrderSingle nos = new NewOrderSingle()
-                                .sender(BASE85.parse("client"))
-                                .target(BASE85.parse("OMS"))
-                                .clOrdID("clOrdId")
-                                .orderQty(1e6)
-                                .price(1.6)
-                                .symbol(BASE85.parse("AUDUSD"))
-                                .ordType(OrderType.limit)
-                                .side(BuySell.buy);
-                        private ExcerptTailer tailer = input.createTailer();
-
-                        @Override
-                        public void init(JLBH jlbh) {
-                            this.jlbh = jlbh;
-                        }
-
-                        @Override
-                        public void run(long startTimeNS) {
-                            try {
-                                OMSIn in = input.acquireAppender().methodWriter(OMSIn.class);
-                                in.newOrderSingle(nos.sendingTime(startTimeNS));
-                                long start = System.currentTimeMillis();
-                                while (true) {
-                                    try (DocumentContext dc = tailer.readingDocument()) {
-                                        if (dc.isPresent())
-                                            break;
-                                    }
-                                    if (start + 1e3 > System.currentTimeMillis()) {
-                                        System.err.println("Failed to get message");
-                                        break;
-                                    }
-                                }
-
-                                jlbh.sampleNanos(System.nanoTime() - startTimeNS);
-/*
-                                try (DocumentContext dc = tailer.readingDocument()) {
-                                    if (dc.isPresent())
-                                        throw new AssertionError();
-                                }
-*/
-
-                            } catch (Throwable t) {
-                                t.printStackTrace();
-                            }
-                        }
-                    }));
+                    .jlbhTask(new MyJLBHTask(input)));
             jlbh.start();
             processor.interrupt();
         }
         Jvm.pause(1000);
         IOTools.deleteDirWithFiles(tmpDir);
+    }
+
+    private static class MyJLBHTask implements JLBHTask {
+        private JLBH jlbh;
+        private NewOrderSingle nos;
+        private ExcerptTailer tailer;
+        private OMSIn in;
+
+        public MyJLBHTask(ChronicleQueue input) {
+            nos = new NewOrderSingle()
+                    .sender(BASE85.parse("client"))
+                    .target(BASE85.parse("OMS"))
+                    .clOrdID("clOrdId")
+                    .orderQty(1e6)
+                    .price(1.6)
+                    .symbol(BASE85.parse("AUDUSD"))
+                    .ordType(OrderType.limit)
+                    .side(BuySell.buy);
+            tailer = input.createTailer();
+            in = input.acquireAppender().methodWriter(OMSIn.class);
+        }
+
+        @Override
+        public void init(JLBH jlbh) {
+            this.jlbh = jlbh;
+        }
+
+        @Override
+        public void run(long startTimeNS) {
+            try {
+                in.newOrderSingle(nos.sendingTime(startTimeNS));
+                long start = System.currentTimeMillis();
+                while (true) {
+                    try (DocumentContext dc = tailer.readingDocument()) {
+                        if (dc.isPresent())
+                            break;
+                    }
+                    if (start + 1e3 > System.currentTimeMillis()) {
+                        System.err.println("Failed to get message");
+                        break;
+                    }
+                }
+
+                jlbh.sampleNanos(System.nanoTime() - startTimeNS);
+/*
+                try (DocumentContext dc = tailer.readingDocument()) {
+                    if (dc.isPresent())
+                        throw new AssertionError();
+                }
+*/
+
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        }
     }
 }
