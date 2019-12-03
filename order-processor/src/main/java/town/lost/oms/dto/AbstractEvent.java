@@ -44,13 +44,15 @@ public class AbstractEvent<E extends AbstractEvent<E>> extends AbstractMarshalla
         return (E) this;
     }
 
-    public void writeMarshallable0(WireOut out) {
+    @Override
+    public void writeMarshallable(WireOut out) {
         out.write("sender").writeLong(sender);
         out.write("target").writeLong(target);
         out.write("sendingTime").writeLong(sendingTime);
     }
 
-    public void readMarshallable0(WireIn in) {
+    @Override
+    public void readMarshallable(WireIn in) {
         sender = in.read("sender").readLong();
         target = in.read("target").readLong();
         sendingTime = in.read("sendingTime").readLong();

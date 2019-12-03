@@ -89,25 +89,25 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
 
     @Override
     public void writeMarshallable(WireOut out) {
-        super.writeMarshallable0(out);
+        super.writeMarshallable(out);
         out.write("symbol").writeLong(symbol);
         out.write("transactTime").writeLong(transactTime);
         out.write("orderQty").writeDouble(orderQty);
         out.write("price").writeDouble(price);
-        out.write("clOrdID").object(String.class, clOrdID);
         out.write("side").object(BuySell.class, side);
         out.write("ordType").object(OrderType.class, ordType);
+        out.write("clOrdID").object(String.class, clOrdID);
     }
 
     @Override
     public void readMarshallable(WireIn in) {
-        super.readMarshallable0(in);
+        super.readMarshallable(in);
         symbol = in.read("symbol").readLong();
         transactTime = in.read("transactTime").readLong();
         orderQty = in.read("orderQty").readDouble();
         price = in.read("price").readDouble();
-        clOrdID = in.read("clOrdID").object(clOrdID, String.class);
         side = in.read("side").object(side, BuySell.class);
         ordType = in.read("ordType").object(ordType, OrderType.class);
+        clOrdID = in.read("clOrdID").object(clOrdID, String.class);
     }
 }
