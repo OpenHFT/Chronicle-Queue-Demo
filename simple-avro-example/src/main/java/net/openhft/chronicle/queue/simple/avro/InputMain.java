@@ -22,7 +22,6 @@ public class InputMain {
             user.put("name", "Alyssa");
             user.put("favorite_number", 256);
             avro.writeToOS(user, dc.wire().bytes().outputStream());
-
         }
 
         try (DocumentContext dc = appender.writingDocument()) {
@@ -31,8 +30,8 @@ public class InputMain {
             user.put("favorite_number", 7);
             user.put("favorite_color", "red");
             avro.writeToOS(user, dc.wire().bytes().outputStream());
-
         }
+
         System.out.println("2 records written.");
     }
 }
