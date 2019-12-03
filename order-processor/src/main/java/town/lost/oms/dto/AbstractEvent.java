@@ -5,15 +5,15 @@
 package town.lost.oms.dto;
 
 import net.openhft.chronicle.wire.AbstractMarshallable;
-import net.openhft.chronicle.wire.Base40LongConverter;
+import net.openhft.chronicle.wire.Base85LongConverter;
 import net.openhft.chronicle.wire.LongConversion;
 import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 
 public class AbstractEvent<E extends AbstractEvent<E>> extends AbstractMarshallable {
-    @LongConversion(Base40LongConverter.class)
+    @LongConversion(Base85LongConverter.class)
     private long sender;
 
-    @LongConversion(Base40LongConverter.class)
+    @LongConversion(Base85LongConverter.class)
     private long target;
 
     // client sending time
