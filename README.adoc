@@ -5,7 +5,7 @@ Tutorial of Demo programs for Chronicle Queue
 
 == Order Processor
 
-image::Two-hop-latency.png[]
+image::Two-hop-latency.PNG[]
 
 == Downloading and running sample programs
 
