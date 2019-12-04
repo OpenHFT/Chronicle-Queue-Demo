@@ -25,33 +25,41 @@ import town.lost.oms.dto.OrderType;
 import java.io.File;
 
 // -Xmx64m -XX:+UnlockCommercialFeatures -XX:+FlightRecorder -XX:StartFlightRecording=name=test,filename=test.jfr,dumponexit=true,settings=profile -XX:-UseTLAB
-/* extends AbstractMarshallable - default
+/* extends SelfDescribingMarshallable - default
 -------------------------------- SUMMARY (end to end) -----------------------------------------------------------
 Percentile   run1         run2         run3         run4         run5      % Variation
-50:             1.06         1.11         1.09         1.09         1.06         3.05
-90:             1.38         1.41         1.37         1.46         1.46         4.10
-99:             2.79         2.80         2.58         2.58         2.56         6.03
-99.7:           3.46         3.34         2.93         2.83         2.82        10.82
-99.9:           8.94         4.28         4.60        11.39        11.35        52.56
+50:             1.01         1.03         1.06         1.12         1.15         7.32
+90:             1.76         1.26         1.32         1.39         1.45         9.18
+99:             2.75         2.47         2.50         2.55         2.59         3.19
+99.7:           3.37         2.71         2.73         2.82         2.86         3.56
+99.9:          11.36        11.31        11.31        11.42        11.49         1.07
 
-// extends AbstractMarshallable - with code generation
+// extends SelfDescribingMarshallable - with code generation
 -------------------------------- SUMMARY (end to end) -----------------------------------------------------------
 Percentile   run1         run2         run3         run4         run5      % Variation
-50:             0.80         0.85         0.88         0.88         0.90         3.85
-90:             1.12         1.09         1.14         1.18         1.22         7.81
-99:             2.25         2.26         2.27         2.29         2.32         1.80
-99.7:           2.58         2.48         2.47         2.48         2.57         2.63
-99.9:           4.04         3.62         3.47         3.51         4.03         9.75
+50:             0.92         0.81         0.85         0.87         0.88         5.83
+90:             1.09         1.07         1.07         1.22         1.23         8.85
+99:             2.35         2.24         2.24         2.31         2.33         2.61
+99.7:           2.64         2.46         2.41         2.51         2.52         2.85
+99.9:           6.30         3.76         3.09         3.75         3.59        12.67
 
-// extends AbstractBytesMarshallable
+// extends BytesInBinaryMarshallable
 -------------------------------- SUMMARY (end to end) -----------------------------------------------------------
 Percentile   run1         run2         run3         run4         run5      % Variation
-50:             0.56         0.62         0.62         0.56         0.57         6.35
-90:             0.69         0.83         0.84         0.69         0.70        12.67
-99:             1.93         1.89         1.89         1.91         1.90         0.87
-99.7:           2.15         2.04         2.03         2.07         2.05         1.15
-99.9:           2.71         2.42         2.39         2.33         2.31         2.86
+50:             0.65         0.71         0.71         0.66         0.66         5.02
+90:             0.79         0.90         0.90         0.78         0.78         9.09
+99:             2.05         2.01         2.01         2.03         1.98         1.59
+99.7:           2.31         2.17         2.16         2.18         2.14         1.48
+99.9:           3.00         2.74         2.66         2.65         2.45         7.51
 
+// extends BytesInBinaryMarshallable - with code generation
+-------------------------------- SUMMARY (end to end) -----------------------------------------------------------
+Percentile   run1         run2         run3         run4         run5      % Variation
+50:             0.58         0.62         0.61         0.60         0.60         3.04
+90:             0.68         0.73         0.72         0.70         0.71         3.15
+99:             2.01         1.96         1.94         1.97         1.96         0.82
+99.7:           2.24         2.15         2.10         2.12         2.11         1.69
+99.9:           3.19         2.62         2.49         2.42         2.42         5.33
  */
 public class OMSBenchmarkMain {
 
@@ -81,6 +89,7 @@ public class OMSBenchmarkMain {
 
             JLBH jlbh = new JLBH(new JLBHOptions()
                     .warmUpIterations(50000)
+                    .pauseAfterWarmupMS(500)
                     .throughput(THROUGHPUT)
                     .iterations(THROUGHPUT * 5)
                     .runs(5)

@@ -106,9 +106,9 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
 
     @Override
     public void readMarshallable(BytesIn in) {
+        super.readMarshallable(in);
         int version = (int) in.readStopBit();
         if (version == MASHALLABLE_VERSION) {
-            super.readMarshallable(in);
             symbol = in.readLong();
             transactTime = in.readLong();
             orderQty = in.readDouble();
