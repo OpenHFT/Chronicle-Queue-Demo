@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>net.openhft</groupId>
-        <artifactId>chronicle-queue-sample</artifactId>
+        <artifactId>chronicle-queue-demo</artifactId>
         <version>1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
