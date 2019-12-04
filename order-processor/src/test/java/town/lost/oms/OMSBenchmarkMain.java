@@ -52,14 +52,14 @@ Percentile   run1         run2         run3         run4         run5      % Var
 99.7:           2.31         2.17         2.16         2.18         2.14         1.48
 99.9:           3.00         2.74         2.66         2.65         2.45         7.51
 
-// extends BytesInBinaryMarshallable - with code generation
+// extends BytesInBinaryMarshallable - with code generation + MethodIds
 -------------------------------- SUMMARY (end to end) -----------------------------------------------------------
 Percentile   run1         run2         run3         run4         run5      % Variation
-50:             0.58         0.62         0.61         0.60         0.60         3.04
-90:             0.68         0.73         0.72         0.70         0.71         3.15
-99:             2.01         1.96         1.94         1.97         1.96         0.82
-99.7:           2.24         2.15         2.10         2.12         2.11         1.69
-99.9:           3.19         2.62         2.49         2.42         2.42         5.33
+50:             0.54         0.55         0.54         0.56         0.55         2.40
+90:             0.61         0.65         0.62         0.67         0.63         5.14
+99:             1.95         1.88         1.91         1.90         1.89         1.09
+99.7:           2.15         2.08         2.06         2.08         2.07         0.64
+99.9:           2.74         2.46         2.36         2.34         2.36         3.25
  */
 public class OMSBenchmarkMain {
 
