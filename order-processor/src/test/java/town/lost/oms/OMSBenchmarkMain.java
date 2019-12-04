@@ -4,6 +4,7 @@
 
 package town.lost.oms;
 
+import net.openhft.affinity.AffinityLock;
 import net.openhft.chronicle.bytes.MethodReader;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.OS;
@@ -21,11 +22,13 @@ import town.lost.oms.api.OMSOut;
 import town.lost.oms.dto.BuySell;
 import town.lost.oms.dto.NewOrderSingle;
 import town.lost.oms.dto.OrderType;
-
-import java.io.File;
+// isolcpus=5,6,7 set in grub.cfg
+// sudo cpupower frequency-set -g performance -d 4.5g
 
 // -Xmx64m -XX:+UnlockCommercialFeatures -XX:+FlightRecorder -XX:StartFlightRecording=name=test,filename=test.jfr,dumponexit=true,settings=profile -XX:-UseTLAB
-/* extends SelfDescribingMarshallable - default
+/*
+All run with -Dthroughput=100000
+extends SelfDescribingMarshallable - default
 -------------------------------- SUMMARY (end to end) -----------------------------------------------------------
 Percentile   run1         run2         run3         run4         run5      % Variation
 50:             1.01         1.03         1.06         1.12         1.15         7.32
@@ -60,29 +63,38 @@ Percentile   run1         run2         run3         run4         run5      % Var
 99:             1.95         1.88         1.91         1.90         1.89         1.09
 99.7:           2.15         2.08         2.06         2.08         2.07         0.64
 99.9:           2.74         2.46         2.36         2.34         2.36         3.25
+
  */
 public class OMSBenchmarkMain {
-
     public static final int THROUGHPUT = Integer.getInteger("throughput", 100_000);
     public static final Base85LongConverter BASE85 = Base85LongConverter.INSTANCE;
+    public static final String PATH = System.getProperty("path", OS.TMP);
+    public static final boolean ACCOUNT_FOR_COORDINATED_OMMISSION = Boolean.getBoolean("accountForCoordinatedOmmission");
+
+    static {
+        System.setProperty("pauser.minProcessors", "2");
+    }
 
     public static void main(String[] args) {
-        String tmp = new File("/dev/shm").exists() ? "/dev/shm" : OS.TMP;
-        String tmpDir = tmp + "/bench-" + System.nanoTime();
+        printProperties();
+
+        String tmpDir = PATH + "/bench-" + System.nanoTime();
         try (ChronicleQueue input = ChronicleQueue.single(tmpDir + "/input");
              ChronicleQueue output = ChronicleQueue.single(tmpDir + "/output")) {
 
             // processing thread
             Thread processor = new Thread(() -> {
-                OMSOut out = output.acquireAppender().methodWriter(OMSOut.class);
-                OMSImpl oms = new OMSImpl(out);
-                MethodReader in = input.createTailer("test").methodReader(oms);
-                Pauser pauser = Pauser.busy();
-                while (!Thread.currentThread().isInterrupted()) {
-                    if (in.readOne())
-                        pauser.reset();
-                    else
-                        pauser.pause();
+                try (AffinityLock lock = AffinityLock.acquireCore()) {
+                    OMSOut out = output.acquireAppender().methodWriter(OMSOut.class);
+                    OMSImpl oms = new OMSImpl(out);
+                    MethodReader in = input.createTailer("test").methodReader(oms);
+                    Pauser pauser = Pauser.busy();
+                    while (!Thread.currentThread().isInterrupted()) {
+                        if (in.readOne())
+                            pauser.reset();
+                        else
+                            pauser.pause();
+                    }
                 }
             }, "processor");
             processor.start();
@@ -91,16 +103,25 @@ public class OMSBenchmarkMain {
                     .warmUpIterations(50000)
                     .pauseAfterWarmupMS(500)
                     .throughput(THROUGHPUT)
-                    .iterations(THROUGHPUT * 5)
+                    .iterations(Math.min(2_000_000, THROUGHPUT * 10))
                     .runs(5)
                     .recordOSJitter(false)
-                    .accountForCoordinatedOmmission(false)
+                    .accountForCoordinatedOmmission(ACCOUNT_FOR_COORDINATED_OMMISSION)
                     .jlbhTask(new MyJLBHTask(input)));
             jlbh.start();
             processor.interrupt();
         }
+        printProperties();
         Jvm.pause(1000);
         IOTools.deleteDirWithFiles(tmpDir);
+    }
+
+    private static void printProperties() {
+        long estimatedMemory = Math.round(Runtime.getRuntime().totalMemory() / 0.93e6);
+        System.out.println("-Xmx" + estimatedMemory + "g " +
+                "-Dthroughput=" + THROUGHPUT + " " +
+                "-Dpath=" + PATH + " " +
+                "-DaccountForCoordinatedOmmission=" + ACCOUNT_FOR_COORDINATED_OMMISSION);
     }
 
     private static class MyJLBHTask implements JLBHTask {
