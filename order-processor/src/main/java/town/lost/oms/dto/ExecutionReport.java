@@ -4,6 +4,8 @@
 
 package town.lost.oms.dto;
 
+import net.openhft.chronicle.bytes.BytesIn;
+import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.wire.*;
 
 public class ExecutionReport extends AbstractEvent<ExecutionReport> {
@@ -156,14 +158,58 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
         return this;
     }
 
+    private static final int MASHALLABLE_VERSION = 1;
+
+    @Override
+    public void writeMarshallable(BytesOut out) {
+        super.writeMarshallable(out);
+        out.writeStopBit(MASHALLABLE_VERSION);
+        out.writeLong(symbol);
+        out.writeLong(transactTime);
+        out.writeDouble(orderQty);
+        out.writeDouble(price);
+        out.writeLong(orderID);
+        out.writeDouble(lastPx);
+        out.writeDouble(leavesQty);
+        out.writeDouble(cumQty);
+        out.writeDouble(avgPx);
+        out.writeObject(BuySell.class, side);
+        out.writeObject(OrderType.class, ordType);
+        out.writeObject(String.class, clOrdID);
+        out.writeObject(String.class, text);
+    }
+
+    @Override
+    public void readMarshallable(BytesIn in) {
+        super.readMarshallable(in);
+        int version = (int) in.readStopBit();
+        if (version == MASHALLABLE_VERSION) {
+            symbol = in.readLong();
+            transactTime = in.readLong();
+            orderQty = in.readDouble();
+            price = in.readDouble();
+            orderID = in.readLong();
+            lastPx = in.readDouble();
+            leavesQty = in.readDouble();
+            cumQty = in.readDouble();
+            avgPx = in.readDouble();
+            side = (BuySell) in.readObject(BuySell.class);
+            ordType = (OrderType) in.readObject(OrderType.class);
+            clOrdID = (String) in.readObject(String.class);
+            text = (String) in.readObject(String.class);
+        } else {
+            throw new IllegalStateException("Unknown version " + version);
+        }
+    }
+
     @Override
     public void writeMarshallable(WireOut out) {
-        super.writeMarshallable0(out);
-        out.write("symbol").writeLong(symbol);
-        out.write("transactTime").writeLong(transactTime);
+        super.writeMarshallable(out);
+        out.write("symbol").writeLong(Base85LongConverter.INSTANCE, symbol);
+        out.write("transactTime").writeLong(MicroTimestampLongConverter.INSTANCE, transactTime);
         out.write("orderQty").writeDouble(orderQty);
         out.write("price").writeDouble(price);
-        out.write("orderID").writeLong(orderID);
+        out.write("orderID").writeLong(Base32LongConverter.INSTANCE, orderID);
         out.write("lastPx").writeDouble(lastPx);
         out.write("leavesQty").writeDouble(leavesQty);
         out.write("cumQty").writeDouble(cumQty);
@@ -176,12 +222,12 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
 
     @Override
     public void readMarshallable(WireIn in) {
-        super.readMarshallable0(in);
-        symbol = in.read("symbol").readLong();
-        transactTime = in.read("transactTime").readLong();
+        super.readMarshallable(in);
+        symbol = in.read("symbol").readLong(Base85LongConverter.INSTANCE);
+        transactTime = in.read("transactTime").readLong(MicroTimestampLongConverter.INSTANCE);
         orderQty = in.read("orderQty").readDouble();
         price = in.read("price").readDouble();
-        orderID = in.read("orderID").readLong();
+        orderID = in.read("orderID").readLong(Base32LongConverter.INSTANCE);
         lastPx = in.read("lastPx").readDouble();
         leavesQty = in.read("leavesQty").readDouble();
         cumQty = in.read("cumQty").readDouble();

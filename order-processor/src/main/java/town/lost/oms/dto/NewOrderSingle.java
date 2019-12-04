@@ -4,6 +4,8 @@
 
 package town.lost.oms.dto;
 
+import net.openhft.chronicle.bytes.BytesIn;
+import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.wire.*;
 
 public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
@@ -87,11 +89,41 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
         return this;
     }
 
+    private static final int MASHALLABLE_VERSION = 1;
+
+    @Override
+    public void writeMarshallable(BytesOut out) {
+        super.writeMarshallable(out);
+        out.writeStopBit(MASHALLABLE_VERSION);
+        out.writeLong(symbol);
+        out.writeLong(transactTime);
+        out.writeDouble(orderQty);
+        out.writeDouble(price);
+        out.writeObject(BuySell.class, side);
+        out.writeObject(OrderType.class, ordType);
+        out.writeObject(String.class, clOrdID);
+    }
+
+    @Override
+    public void readMarshallable(BytesIn in) {
+        int version = (int) in.readStopBit();
+        if (version == MASHALLABLE_VERSION) {
+            super.readMarshallable(in);
+            symbol = in.readLong();
+            transactTime = in.readLong();
+            orderQty = in.readDouble();
+            price = in.readDouble();
+            side = (BuySell) in.readObject(BuySell.class);
+            ordType = (OrderType) in.readObject(OrderType.class);
+            clOrdID = (String) in.readObject(String.class);
+        }
+    }
+
     @Override
     public void writeMarshallable(WireOut out) {
         super.writeMarshallable(out);
-        out.write("symbol").writeLong(symbol);
-        out.write("transactTime").writeLong(transactTime);
+        out.write("symbol").writeLong(Base85LongConverter.INSTANCE, symbol);
+        out.write("transactTime").writeLong(MicroTimestampLongConverter.INSTANCE, transactTime);
         out.write("orderQty").writeDouble(orderQty);
         out.write("price").writeDouble(price);
         out.write("side").object(BuySell.class, side);
@@ -102,8 +134,8 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
     @Override
     public void readMarshallable(WireIn in) {
         super.readMarshallable(in);
-        symbol = in.read("symbol").readLong();
-        transactTime = in.read("transactTime").readLong();
+        symbol = in.read("symbol").readLong(Base85LongConverter.INSTANCE);
+        transactTime = in.read("transactTime").readLong(MicroTimestampLongConverter.INSTANCE);
         orderQty = in.read("orderQty").readDouble();
         price = in.read("price").readDouble();
         side = in.read("side").object(side, BuySell.class);

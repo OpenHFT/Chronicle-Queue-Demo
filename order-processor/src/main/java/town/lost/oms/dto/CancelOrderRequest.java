@@ -4,8 +4,12 @@
 
 package town.lost.oms.dto;
 
+import net.openhft.chronicle.bytes.BytesIn;
+import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.wire.Base85LongConverter;
 import net.openhft.chronicle.wire.LongConversion;
+import net.openhft.chronicle.wire.WireIn;
+import net.openhft.chronicle.wire.WireOut;
 
 public class CancelOrderRequest extends AbstractEvent<CancelOrderRequest> {
     private String clOrdID = "";
@@ -29,5 +33,41 @@ public class CancelOrderRequest extends AbstractEvent<CancelOrderRequest> {
     public CancelOrderRequest symbol(long symbol) {
         this.symbol = symbol;
         return this;
+    }
+
+    private static final int MASHALLABLE_VERSION = 1;
+
+    @Override
+    public void writeMarshallable(WireOut out) {
+        super.writeMarshallable(out);
+        out.write("clOrdID").object(String.class, clOrdID);
+        out.write("symbol").writeLong(Base85LongConverter.INSTANCE, symbol);
+    }
+
+    @Override
+    public void readMarshallable(WireIn in) {
+        super.readMarshallable(in);
+        clOrdID = in.read("clOrdID").object(clOrdID, String.class);
+        symbol = in.read("symbol").readLong(Base85LongConverter.INSTANCE);
+    }
+
+    @Override
+    public void writeMarshallable(BytesOut out) {
+        super.writeMarshallable(out);
+        out.writeStopBit(MASHALLABLE_VERSION);
+        out.writeObject(String.class, clOrdID);
+        out.writeLong(symbol);
+    }
+
+    @Override
+    public void readMarshallable(BytesIn in) {
+        super.readMarshallable(in);
+        int version = (int) in.readStopBit();
+        if (version == MASHALLABLE_VERSION) {
+            clOrdID = (String) in.readObject(String.class);
+            symbol = in.readLong();
+        } else {
+            throw new IllegalStateException("Unknown version " + version);
+        }
     }
 }
