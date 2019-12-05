@@ -27,9 +27,8 @@ import town.lost.oms.dto.OrderType;
 
 // -Xmx64m -XX:+UnlockCommercialFeatures -XX:+FlightRecorder -XX:StartFlightRecording=name=test,filename=test.jfr,dumponexit=true,settings=profile -XX:-UseTLAB
 /*
-All run with -Dthroughput=100000
+All run with -Dthroughput=100000 on a 4.5 Ghz Centos 7.5 system.
 extends SelfDescribingMarshallable - default
--------------------------------- SUMMARY (end to end) -----------------------------------------------------------
 Percentile   run1         run2         run3         run4         run5      % Variation
 50:             1.01         1.03         1.06         1.12         1.15         7.32
 90:             1.76         1.26         1.32         1.39         1.45         9.18
@@ -38,7 +37,6 @@ Percentile   run1         run2         run3         run4         run5      % Var
 99.9:          11.36        11.31        11.31        11.42        11.49         1.07
 
 // extends SelfDescribingMarshallable - with code generation
--------------------------------- SUMMARY (end to end) -----------------------------------------------------------
 Percentile   run1         run2         run3         run4         run5      % Variation
 50:             0.92         0.81         0.85         0.87         0.88         5.83
 90:             1.09         1.07         1.07         1.22         1.23         8.85
@@ -47,7 +45,6 @@ Percentile   run1         run2         run3         run4         run5      % Var
 99.9:           6.30         3.76         3.09         3.75         3.59        12.67
 
 // extends BytesInBinaryMarshallable
--------------------------------- SUMMARY (end to end) -----------------------------------------------------------
 Percentile   run1         run2         run3         run4         run5      % Variation
 50:             0.65         0.71         0.71         0.66         0.66         5.02
 90:             0.79         0.90         0.90         0.78         0.78         9.09
@@ -56,7 +53,6 @@ Percentile   run1         run2         run3         run4         run5      % Var
 99.9:           3.00         2.74         2.66         2.65         2.45         7.51
 
 // extends BytesInBinaryMarshallable - with code generation + MethodIds
--------------------------------- SUMMARY (end to end) -----------------------------------------------------------
 Percentile   run1         run2         run3         run4         run5      % Variation
 50:             0.54         0.55         0.54         0.56         0.55         2.40
 90:             0.61         0.65         0.62         0.67         0.63         5.14
@@ -64,6 +60,14 @@ Percentile   run1         run2         run3         run4         run5      % Var
 99.7:           2.15         2.08         2.06         2.08         2.07         0.64
 99.9:           2.74         2.46         2.36         2.34         2.36         3.25
 
+// -Dthroughput=100000 on a i4770 windows laptop
+Percentile   run1         run2         run3         run4         run5      % Variation
+50:             0.80         0.80         0.80         0.80         0.80         0.00
+90:             0.90         1.00         0.90         0.80         0.80        14.28
+99:             2.90         3.10         2.70         2.70         2.70         8.99
+99.7:           4.80         4.80         3.90         3.40         3.40        21.55
+99.9:          19.40        14.70        14.60        14.30        14.40         1.83
+worst:       1678.85     28090.37     12480.51      1005.31      6952.96        94.73
  */
 public class OMSBenchmarkMain {
     public static final int THROUGHPUT = Integer.getInteger("throughput", 100_000);
