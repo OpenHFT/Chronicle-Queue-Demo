@@ -15,6 +15,7 @@
         <module>simple-translator</module>
         <module>simple-avro-example</module>
         <module>order-processor</module>
+        <module>message-history-demo</module>
     </modules>
 
     <dependencyManagement>
