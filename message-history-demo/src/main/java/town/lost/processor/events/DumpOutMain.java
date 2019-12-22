@@ -1,24 +1,28 @@
 package town.lost.processor.events;
 
+import net.openhft.chronicle.bytes.HexDumpBytes;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptTailer;
-import net.openhft.chronicle.wire.DocumentContext;
-import net.openhft.chronicle.wire.MicroTimestampLongConverter;
-import net.openhft.chronicle.wire.VanillaMessageHistory;
-import net.openhft.chronicle.wire.Wire;
+import net.openhft.chronicle.wire.*;
 
 import java.io.FileNotFoundException;
+
+interface EventWithHistory extends Events {
+    EventWithHistory history(VanillaMessageHistory mh);
+}
 
 public class DumpOutMain {
     public static void main(String[] args) throws FileNotFoundException {
 //        DumpQueueMain.dump("out");
-        try (ChronicleQueue queue2 = ChronicleQueue.single("out")) {
+        try (ChronicleQueue queue2 = ChronicleQueue.singleBuilder("out").sourceId(2).build()) {
             // raw read so you don't need to know the message types.
             ExcerptTailer tailer = queue2.createTailer();
             StringBuilder key = new StringBuilder();
             StringBuilder key2 = new StringBuilder();
             VanillaMessageHistory mh = new VanillaMessageHistory();
+            mh.addSourceDetails(true);
             DummyAbstractEvent dae = new DummyAbstractEvent();
+            boolean first = true;
             while (true) {
                 try (DocumentContext dc = tailer.readingDocument()) {
                     if (!dc.isPresent())
@@ -30,10 +34,21 @@ public class DumpOutMain {
                     wire.read(key2).object(dae, DummyAbstractEvent.class);
 
                     System.out.println(mh + " - " + key2 + ", source: " + dae.eventSource() + ", ts: " + MicroTimestampLongConverter.INSTANCE.asString(dae.eventTimeStamp()));
+                    if (first) {
+                        first = false;
+                        Wire wire2 = new BinaryWire(new HexDumpBytes());
+                        EventWithHistory ewh = wire2.methodWriter(EventWithHistory.class);
+                        ewh.history(mh)
+                                .eventOne(new EventOne()
+                                        .eventSource(dae.eventSource())
+                                        .eventTimeStamp(dae.eventTimeStamp()));
+                        System.out.println(wire2.bytes().toHexString());
+                    }
                 }
             }
         }
     }
+
 }
 
 class DummyAbstractEvent extends AbstractEvent {

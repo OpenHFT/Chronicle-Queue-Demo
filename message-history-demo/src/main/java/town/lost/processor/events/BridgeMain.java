@@ -6,7 +6,7 @@ import net.openhft.chronicle.queue.ChronicleQueue;
 public class BridgeMain {
     public static void main(String[] args) {
         long events = 0, lastPrint = 0;
-        try (ChronicleQueue queue = ChronicleQueue.single("in")) {
+        try (ChronicleQueue queue = ChronicleQueue.singleBuilder("in").sourceId(1).build()) {
             try (ChronicleQueue queue2 = ChronicleQueue.singleBuilder("out").sourceId(2).build()) {
 
                 Events out = queue2.methodWriterBuilder(Events.class).recordHistory(true).build();

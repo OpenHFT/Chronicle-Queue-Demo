@@ -10,3 +10,4 @@ newOrderSingle: {
   price: 1.2123,
   ordType: limit
 }
+

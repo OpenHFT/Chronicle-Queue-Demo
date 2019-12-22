@@ -4,7 +4,7 @@ import net.openhft.chronicle.wire.BytesInBinaryMarshallable;
 import net.openhft.chronicle.wire.LongConversion;
 import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 
-public class AbstractEvent extends BytesInBinaryMarshallable {
+public class AbstractEvent<E extends AbstractEvent<E>> extends BytesInBinaryMarshallable {
     private String eventSource;
 
     @LongConversion(MicroTimestampLongConverter.class)
@@ -14,17 +14,17 @@ public class AbstractEvent extends BytesInBinaryMarshallable {
         return eventSource;
     }
 
-    public AbstractEvent eventSource(String eventSource) {
+    public E eventSource(String eventSource) {
         this.eventSource = eventSource;
-        return this;
+        return (E) this;
     }
 
     public long eventTimeStamp() {
         return eventTimeStamp;
     }
 
-    public AbstractEvent eventTimeStamp(long eventTimeStamp) {
+    public E eventTimeStamp(long eventTimeStamp) {
         this.eventTimeStamp = eventTimeStamp;
-        return this;
+        return (E) this;
     }
 }

@@ -1,6 +1,6 @@
 package town.lost.processor.events;
 
-public class EventTwo extends AbstractEvent {
+public class EventTwo extends AbstractEvent<EventTwo> {
     String symbol;
     double price;
     double quantiity;

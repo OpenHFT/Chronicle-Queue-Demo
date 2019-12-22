@@ -1,6 +1,6 @@
 package town.lost.processor.events;
 
-public class EventOne extends AbstractEvent {
+public class EventOne extends AbstractEvent<EventOne> {
     String text;
 
     public String text() {
