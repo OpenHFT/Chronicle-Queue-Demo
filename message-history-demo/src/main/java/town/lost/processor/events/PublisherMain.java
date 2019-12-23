@@ -5,17 +5,24 @@ import net.openhft.chronicle.queue.ChronicleQueue;
 
 public class PublisherMain {
 
-    private static final int EVENTS = Integer.getInteger("events", 10);
+    private static final int EVENTS = Integer.getInteger("events", 100);
 
     public static void main(String[] args) {
         try (ChronicleQueue queue = ChronicleQueue.singleBuilder("in").sourceId(1).build()) {
             Events build = queue.methodWriterBuilder(Events.class).recordHistory(true).build();
             for (int i = 0; i < EVENTS; i++) {
-                EventOne one = new EventOne();
-                one.eventSource("publisher");
-                one.eventTimeStamp(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros());
-                build.eventOne(one);
+                publish(build, "Hello World");
+                Thread.yield();
             }
+            publish(build, "Bye");
         }
+    }
+
+    private static void publish(Events build, String text) {
+        EventOne one = new EventOne();
+        one.eventSource("publisher");
+        one.eventTimeStamp(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros());
+        one.text(text);
+        build.eventOne(one);
     }
 }

@@ -14,4 +14,58 @@
     <artifactId>message-history-demo</artifactId>
     <name>OpenHFT/${project.parent.artifactId}/${project.artifactId}</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>chronicle-core</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>BridgeEvents</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>town.lost.processor.events.BridgeEvents</mainClass>
+                            <classpathScope>compile</classpathScope>
+                            <daemonThreadJoinTimeout>300000</daemonThreadJoinTimeout>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>BridgeMain</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>town.lost.processor.events.BridgeMain</mainClass>
+                            <classpathScope>compile</classpathScope>
+                            <daemonThreadJoinTimeout>300000</daemonThreadJoinTimeout>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>DumpOutMain</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>town.lost.processor.events.DumpOutMain</mainClass>
+                            <classpathScope>compile</classpathScope>
+                            <daemonThreadJoinTimeout>300000</daemonThreadJoinTimeout>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
