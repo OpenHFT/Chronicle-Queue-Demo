@@ -1,12 +1,16 @@
 package town.lost.processor.events;
 
 import net.openhft.chronicle.bytes.MethodReader;
+import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
 public class BridgeMain {
     static boolean running = true;
 
     public static void main(String[] args) {
+        IOTools.deleteDirWithFiles("in", 2);
+        IOTools.deleteDirWithFiles("out", 2);
+
         long events = 0, lastPrint = 0;
         try (ChronicleQueue queue = ChronicleQueue.singleBuilder("in").sourceId(1).build()) {
             try (ChronicleQueue queue2 = ChronicleQueue.singleBuilder("out").sourceId(2).build()) {

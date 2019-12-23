@@ -7,13 +7,10 @@ import net.openhft.chronicle.wire.*;
 
 import java.io.FileNotFoundException;
 
-interface EventWithHistory extends Events {
-    EventWithHistory history(VanillaMessageHistory mh);
-}
-
 public class DumpOutMain {
     public static void main(String[] args) throws FileNotFoundException {
 //        DumpQueueMain.dump("out");
+        System.out.println("Started");
         try (ChronicleQueue queue2 = ChronicleQueue.singleBuilder("out").sourceId(2).build()) {
             // raw read so you don't need to know the message types.
             ExcerptTailer tailer = queue2.createTailer();
@@ -47,6 +44,8 @@ public class DumpOutMain {
                 }
             }
         }
+        System.out.println(".. Finished");
+        System.exit(0);
     }
 
 }
