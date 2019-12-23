@@ -14,6 +14,7 @@ public class BridgeMain {
                 Events out = queue2.methodWriterBuilder(Events.class).recordHistory(true).build();
                 Events bridge = new BridgeEvents(out);
                 MethodReader methodReader = queue.createTailer().methodReader(bridge);
+                System.out.println("Started");
                 while (running) {
                     if (methodReader.readOne()) {
                         events++;
@@ -28,6 +29,7 @@ public class BridgeMain {
                 }
             }
         }
+        System.out.println("... finished");
     }
 }
 
