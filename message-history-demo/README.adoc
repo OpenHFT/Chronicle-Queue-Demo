@@ -19,7 +19,7 @@ The following steps are needed
 - Run `PublisherMain`
 - Run `DumpOutMain`
 
-You can run the `PublisherMain` with `-Devents=10000` for more events
+NOTE: You can run the `PublisherMain` with `-Devents=1000000` for more events, and `-Drate=5000` to adjust the rate per second of messages.
 
 == Running the demo from Maven
 
