@@ -5,10 +5,8 @@ import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.*;
 
-import java.io.FileNotFoundException;
-
 public class DumpOutMain {
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
 //        DumpQueueMain.dump("out");
         System.out.println("Started");
         try (ChronicleQueue queue2 = ChronicleQueue.singleBuilder("out").sourceId(2).build()) {
@@ -20,10 +18,15 @@ public class DumpOutMain {
             mh.addSourceDetails(true);
             DummyAbstractEvent dae = new DummyAbstractEvent();
             boolean first = true;
+            long last = Long.MAX_VALUE / 2;
             while (true) {
                 try (DocumentContext dc = tailer.readingDocument()) {
-                    if (!dc.isPresent())
+                    if (!dc.isPresent()) {
+                        if (System.currentTimeMillis() < last + 2500)
+                            continue;
                         break;
+                    }
+                    last = System.currentTimeMillis();
                     Wire wire = dc.wire();
                     wire.read(key).object(mh, VanillaMessageHistory.class);
 

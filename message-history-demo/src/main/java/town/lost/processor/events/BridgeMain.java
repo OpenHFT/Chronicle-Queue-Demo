@@ -17,15 +17,19 @@ public class BridgeMain {
 
                 Events out = queue2.methodWriterBuilder(Events.class).recordHistory(true).build();
                 Events bridge = new BridgeEvents(out);
-                MethodReader methodReader = queue.createTailer().methodReader(bridge);
+                MethodReader methodReader = queue.createTailer("bridge")
+                        .methodReader(bridge);
                 System.out.println("Started");
+                long last = 0;
                 while (running) {
                     if (methodReader.readOne()) {
                         events++;
                     } else {
-                        if (lastPrint != events) {
+                        long now = System.currentTimeMillis();
+                        if (lastPrint != events && now > last + 250) {
                             System.out.println("events: " + events);
                             lastPrint = events;
+                            last = now;
                         } else {
                             Thread.yield();
                         }
