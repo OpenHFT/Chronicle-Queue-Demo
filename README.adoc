@@ -1,4 +1,5 @@
-= Chronicle-Queue-Sample
+= Chronicle-Queue-Demo
+Peter Lawrey
 :imagesdir: images
 
 Tutorial of Demo programs for Chronicle Queue
