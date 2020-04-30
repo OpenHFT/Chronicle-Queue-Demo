@@ -8,7 +8,6 @@ import net.openhft.chronicle.wire.Base85LongConverter;
 import net.openhft.chronicle.wire.LongConversion;
 
 public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
-    private static final int MASHALLABLE_VERSION = 1;
     private String clOrdID = "";
     @LongConversion(Base85LongConverter.class)
     private long symbol;
@@ -41,6 +40,7 @@ public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
         return this;
     }
 /*
+    private static final int MASHALLABLE_VERSION = 1;
     @Override
     public void writeMarshallable(WireOut out) {
         super.writeMarshallable(out);

@@ -4,9 +4,10 @@
 
 package town.lost.oms.dto;
 
-import net.openhft.chronicle.bytes.BytesIn;
-import net.openhft.chronicle.bytes.BytesOut;
-import net.openhft.chronicle.wire.*;
+import net.openhft.chronicle.wire.Base85LongConverter;
+import net.openhft.chronicle.wire.BytesInBinaryMarshallable;
+import net.openhft.chronicle.wire.LongConversion;
+import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 
 public class AbstractEvent<E extends AbstractEvent<E>> extends BytesInBinaryMarshallable {
     private static final int MASHALLABLE_VERSION = 1;
@@ -45,6 +46,7 @@ public class AbstractEvent<E extends AbstractEvent<E>> extends BytesInBinaryMars
         return (E) this;
     }
 
+    /*
     @Override
     public void writeMarshallable(BytesOut out) {
         out.writeStopBit(MASHALLABLE_VERSION);
@@ -78,4 +80,5 @@ public class AbstractEvent<E extends AbstractEvent<E>> extends BytesInBinaryMars
         target = in.read("target").readLong(Base85LongConverter.INSTANCE);
         sendingTime = in.read("sendingTime").readLong(MicroTimestampLongConverter.INSTANCE);
     }
+*/
 }

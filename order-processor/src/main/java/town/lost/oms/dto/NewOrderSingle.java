@@ -18,7 +18,6 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
     private BuySell side;
     private OrderType ordType;
     private String clOrdID = "";
-    private String account;
 
     public String clOrdID() {
         return clOrdID;
