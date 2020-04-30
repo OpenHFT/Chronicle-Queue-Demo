@@ -9,12 +9,11 @@ import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.wire.*;
 
 public class AbstractEvent<E extends AbstractEvent<E>> extends BytesInBinaryMarshallable {
+    private static final int MASHALLABLE_VERSION = 1;
     @LongConversion(Base85LongConverter.class)
     private long sender;
-
     @LongConversion(Base85LongConverter.class)
     private long target;
-
     // client sending time
     @LongConversion(MicroTimestampLongConverter.class)
     private long sendingTime;
@@ -45,8 +44,6 @@ public class AbstractEvent<E extends AbstractEvent<E>> extends BytesInBinaryMars
         this.sendingTime = sendingTime;
         return (E) this;
     }
-
-    private static final int MASHALLABLE_VERSION = 1;
 
     @Override
     public void writeMarshallable(BytesOut out) {

@@ -20,7 +20,6 @@ When this asks you which packages you want to install, search for and add `git`.
 
 image::gitpack.png[]
 
-
 Ensure you have the JDK for Java 8, you could use http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[this].
 
 Open Intelij or your https://en.wikipedia.org/wiki/Integrated_development_environment[IDE], or https://www.jetbrains.com/idea/download/#section=windows[install Intelij] first if you haven't already.
@@ -30,7 +29,6 @@ Go to `Check out from Version Control` and select `Git`, opening the `Clone Repo
 This is where you will get a copy of the Chronicle Queue Sample code.
 
 image::homegit.png[]
-
 
 Next, copy the URL below into the `Git Repository URL`,
 and remember to take note of the `Parent Directory`. Press `Clone`.

@@ -12,11 +12,10 @@ import net.openhft.chronicle.wire.WireIn;
 import net.openhft.chronicle.wire.WireOut;
 
 public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
+    private static final int MASHALLABLE_VERSION = 1;
     private String clOrdID = "";
-
     @LongConversion(Base85LongConverter.class)
     private long symbol;
-
     private String reason = "";
 
     public String clOrdID() {
@@ -45,8 +44,6 @@ public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
         this.reason = reason;
         return this;
     }
-
-    private static final int MASHALLABLE_VERSION = 1;
 
     @Override
     public void writeMarshallable(WireOut out) {

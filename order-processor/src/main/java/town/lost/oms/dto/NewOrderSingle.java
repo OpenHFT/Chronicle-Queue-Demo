@@ -9,21 +9,14 @@ import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.wire.*;
 
 public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
-
     @LongConversion(Base85LongConverter.class)
     private long symbol;
-
     @LongConversion(MicroTimestampLongConverter.class)
     private long transactTime;
-
     private double orderQty;
-
     private double price;
-
     private BuySell side;
-
     private OrderType ordType;
-
     private String clOrdID = "";
 
     public String clOrdID() {

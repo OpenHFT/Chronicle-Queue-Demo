@@ -35,16 +35,15 @@ class AvroHelper {
     private DatumWriter<GenericRecord> datumWriter;
     private DatumReader<GenericRecord> datumReader;
 
-
-    AvroHelper() {
-        try {
-            schema = new Schema.Parser().parse(getClass().getClassLoader().getResourceAsStream("user.avsc"));
-            datumWriter = new GenericDatumWriter<>(schema);
-            datumReader = new GenericDatumReader<>(schema);
-        } catch (IOException ex) {
-            Jvm.rethrow(ex);
-        }
+AvroHelper() {
+    try {
+        schema = new Schema.Parser().parse(getClass().getClassLoader().getResourceAsStream("user.avsc"));
+        datumWriter = new GenericDatumWriter<>(schema);
+        datumReader = new GenericDatumReader<>(schema);
+    } catch (IOException ex) {
+        Jvm.rethrow(ex);
     }
+}
 
     GenericRecord getGenericRecord() {
         return new GenericData.Record(schema);

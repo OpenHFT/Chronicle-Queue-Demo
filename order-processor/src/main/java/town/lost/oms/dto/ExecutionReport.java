@@ -9,36 +9,21 @@ import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.wire.*;
 
 public class ExecutionReport extends AbstractEvent<ExecutionReport> {
-
     @LongConversion(Base85LongConverter.class)
     private long symbol;
-
-
     @LongConversion(MicroTimestampLongConverter.class)
     private long transactTime;
-
     private double orderQty;
-
     private double price;
-
     @LongConversion(Base32LongConverter.class)
     private long orderID;
-
-
     private double lastPx;
-
     private double leavesQty;
-
     private double cumQty;
-
     private double avgPx;
-
     private BuySell side;
-
     private OrderType ordType;
-
     private String clOrdID = "";
-
     private String text = null;
 
     public String clOrdID() {
