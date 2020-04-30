@@ -4,9 +4,9 @@
 
 package town.lost.oms.dto;
 
-import net.openhft.chronicle.bytes.BytesIn;
-import net.openhft.chronicle.bytes.BytesOut;
-import net.openhft.chronicle.wire.*;
+import net.openhft.chronicle.wire.Base85LongConverter;
+import net.openhft.chronicle.wire.LongConversion;
+import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 
 public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
     @LongConversion(Base85LongConverter.class)
@@ -18,6 +18,7 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
     private BuySell side;
     private OrderType ordType;
     private String clOrdID = "";
+    private String account;
 
     public String clOrdID() {
         return clOrdID;
@@ -81,7 +82,7 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
         this.ordType = ordType;
         return this;
     }
-
+    /*
     private static final int MASHALLABLE_VERSION = 1;
 
     @Override
@@ -135,4 +136,5 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
         ordType = in.read("ordType").object(ordType, OrderType.class);
         clOrdID = in.read("clOrdID").object(clOrdID, String.class);
     }
+    */
 }

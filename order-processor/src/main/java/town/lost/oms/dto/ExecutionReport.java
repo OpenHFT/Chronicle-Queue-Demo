@@ -4,9 +4,10 @@
 
 package town.lost.oms.dto;
 
-import net.openhft.chronicle.bytes.BytesIn;
-import net.openhft.chronicle.bytes.BytesOut;
-import net.openhft.chronicle.wire.*;
+import net.openhft.chronicle.wire.Base32LongConverter;
+import net.openhft.chronicle.wire.Base85LongConverter;
+import net.openhft.chronicle.wire.LongConversion;
+import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 
 public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     @LongConversion(Base85LongConverter.class)
@@ -143,6 +144,7 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
         return this;
     }
 
+    /*
     private static final int MASHALLABLE_VERSION = 1;
 
     @Override
@@ -222,4 +224,5 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
         clOrdID = in.read("clOrdID").object(clOrdID, String.class);
         text = in.read("text").object(text, String.class);
     }
+    */
 }

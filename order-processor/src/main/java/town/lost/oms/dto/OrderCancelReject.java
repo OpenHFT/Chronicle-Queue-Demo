@@ -4,12 +4,8 @@
 
 package town.lost.oms.dto;
 
-import net.openhft.chronicle.bytes.BytesIn;
-import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.wire.Base85LongConverter;
 import net.openhft.chronicle.wire.LongConversion;
-import net.openhft.chronicle.wire.WireIn;
-import net.openhft.chronicle.wire.WireOut;
 
 public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
     private static final int MASHALLABLE_VERSION = 1;
@@ -44,7 +40,7 @@ public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
         this.reason = reason;
         return this;
     }
-
+/*
     @Override
     public void writeMarshallable(WireOut out) {
         super.writeMarshallable(out);
@@ -82,4 +78,5 @@ public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
             throw new IllegalStateException("Unknown version " + version);
         }
     }
+ */
 }
