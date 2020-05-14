@@ -4,12 +4,16 @@
 
 package town.lost.oms.dto;
 
-import net.openhft.chronicle.wire.Base85LongConverter;
-import net.openhft.chronicle.wire.BytesInBinaryMarshallable;
-import net.openhft.chronicle.wire.LongConversion;
-import net.openhft.chronicle.wire.MicroTimestampLongConverter;
+import net.openhft.chronicle.bytes.BytesIn;
+import net.openhft.chronicle.bytes.BytesOut;
+import net.openhft.chronicle.wire.*;
 
-public class AbstractEvent<E extends AbstractEvent<E>> extends BytesInBinaryMarshallable {
+public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMarshallable {
+    // used to control the benchmark
+    public static final boolean BYTES_IN_BINARY = Boolean.getBoolean("byteInBinary");
+
+    // used to control the benchmark
+    public static final boolean PREGENERATED_MARSHALLABLE = Boolean.getBoolean("pregeneratedMarshallable");
     private static final int MASHALLABLE_VERSION = 1;
     @LongConversion(Base85LongConverter.class)
     private long sender;
@@ -18,6 +22,11 @@ public class AbstractEvent<E extends AbstractEvent<E>> extends BytesInBinaryMars
     // client sending time
     @LongConversion(MicroTimestampLongConverter.class)
     private long sendingTime;
+
+    @Override
+    public boolean usesSelfDescribingMessage() {
+        return !BYTES_IN_BINARY;
+    }
 
     public long sender() {
         return sender;
@@ -46,39 +55,53 @@ public class AbstractEvent<E extends AbstractEvent<E>> extends BytesInBinaryMars
         return (E) this;
     }
 
-    /*
     @Override
     public void writeMarshallable(BytesOut out) {
-        out.writeStopBit(MASHALLABLE_VERSION);
-        out.writeLong(sender);
-        out.writeLong(target);
-        out.writeLong(sendingTime);
+        if (PREGENERATED_MARSHALLABLE) {
+            out.writeStopBit(MASHALLABLE_VERSION);
+            out.writeLong(sender);
+            out.writeLong(target);
+            out.writeLong(sendingTime);
+        } else {
+            super.writeMarshallable(out);
+        }
     }
 
     @Override
     public void readMarshallable(BytesIn in) {
-        int version = (int) in.readStopBit();
-        if (version == MASHALLABLE_VERSION) {
-            sender = in.readLong();
-            target = in.readLong();
-            sendingTime = in.readLong();
+        if (PREGENERATED_MARSHALLABLE) {
+            int version = (int) in.readStopBit();
+            if (version == MASHALLABLE_VERSION) {
+                sender = in.readLong();
+                target = in.readLong();
+                sendingTime = in.readLong();
+            } else {
+                throw new IllegalStateException("Unknown version " + version);
+            }
         } else {
-            throw new IllegalStateException("Unknown version " + version);
+            super.readMarshallable(in);
         }
     }
 
     @Override
     public void writeMarshallable(WireOut out) {
-        out.write("sender").writeLong(Base85LongConverter.INSTANCE, sender);
-        out.write("target").writeLong(Base85LongConverter.INSTANCE, target);
-        out.write("sendingTime").writeLong(MicroTimestampLongConverter.INSTANCE, sendingTime);
+        if (PREGENERATED_MARSHALLABLE) {
+            out.write("sender").writeLong(Base85LongConverter.INSTANCE, sender);
+            out.write("target").writeLong(Base85LongConverter.INSTANCE, target);
+            out.write("sendingTime").writeLong(MicroTimestampLongConverter.INSTANCE, sendingTime);
+        } else {
+            super.writeMarshallable(out);
+        }
     }
 
     @Override
     public void readMarshallable(WireIn in) {
-        sender = in.read("sender").readLong(Base85LongConverter.INSTANCE);
-        target = in.read("target").readLong(Base85LongConverter.INSTANCE);
-        sendingTime = in.read("sendingTime").readLong(MicroTimestampLongConverter.INSTANCE);
+        if (PREGENERATED_MARSHALLABLE) {
+            sender = in.read("sender").readLong(Base85LongConverter.INSTANCE);
+            target = in.read("target").readLong(Base85LongConverter.INSTANCE);
+            sendingTime = in.read("sendingTime").readLong(MicroTimestampLongConverter.INSTANCE);
+        } else {
+            super.readMarshallable(in);
+        }
     }
-*/
 }
