@@ -20,4 +20,61 @@
             <artifactId>jlbh</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>adder</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>town.lost.oms.OrderAdderMain</mainClass>
+                            <classpathScope>compile</classpathScope>
+                            <systemProperties>
+                                <systemProperty>
+                                    <key>disableProxyCodegen</key>
+                                    <value>true</value>
+                                </systemProperty>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>viewer</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>town.lost.oms.OrderViewerMain</mainClass>
+                            <classpathScope>compile</classpathScope>
+                            <systemProperties>
+                                <systemProperty>
+                                    <key>disableProxyCodegen</key>
+                                    <value>true</value>
+                                </systemProperty>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>dump</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>net.openhft.chronicle.queue.DumpQueueMain</mainClass>
+                            <classpathScope>compile</classpathScope>
+                            <arguments>
+                                <argument>in</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

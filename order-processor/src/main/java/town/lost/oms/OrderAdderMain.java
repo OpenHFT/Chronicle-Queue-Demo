@@ -37,7 +37,7 @@ public class OrderAdderMain {
                     .side(BuySell.buy)
                     .symbol(toLong("EURUSD"));
 
-            System.out.println("Hit blank line to add an order, anything else to exit");
+            System.out.println("\nHit blank line to add an order, anything else to exit");
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             int counter = 0;
             while ("".equals(br.readLine())) {
@@ -47,6 +47,7 @@ public class OrderAdderMain {
             }
         }
         System.out.println("Finished");
+        System.exit(0);
     }
 
     static long now() {
