@@ -19,6 +19,7 @@ import net.openhft.chronicle.wire.Base85LongConverter;
 import net.openhft.chronicle.wire.DocumentContext;
 import town.lost.oms.api.OMSIn;
 import town.lost.oms.api.OMSOut;
+import town.lost.oms.dto.AbstractEvent;
 import town.lost.oms.dto.BuySell;
 import town.lost.oms.dto.NewOrderSingle;
 import town.lost.oms.dto.OrderType;
@@ -121,11 +122,13 @@ public class OMSBenchmarkMain {
     }
 
     private static void printProperties() {
-        long estimatedMemory = Math.round(Runtime.getRuntime().totalMemory() / 0.93e6);
-        System.out.println("-Xmx" + estimatedMemory + "g " +
+        long estimatedMemory = Math.round(Runtime.getRuntime().totalMemory() / 1e6);
+        System.out.println("-Xmx" + estimatedMemory + "m " +
+                "-DbyteInBinary=" + AbstractEvent.BYTES_IN_BINARY + " " +
+                "-DpregeneratedMarshallable=" + AbstractEvent.PREGENERATED_MARSHALLABLE + " " +
                 "-Dthroughput=" + THROUGHPUT + " " +
                 "-Dpath=" + PATH + " " +
-                "-DaccountForCoordinatedOmmission=" + ACCOUNT_FOR_COORDINATED_OMMISSION);
+                "-DaccountForCoordinatedOmission=" + ACCOUNT_FOR_COORDINATED_OMMISSION);
     }
 
     private static class MyJLBHTask implements JLBHTask {

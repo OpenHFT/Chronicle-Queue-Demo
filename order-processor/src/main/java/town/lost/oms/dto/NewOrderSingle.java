@@ -4,9 +4,9 @@
 
 package town.lost.oms.dto;
 
-import net.openhft.chronicle.wire.Base85LongConverter;
-import net.openhft.chronicle.wire.LongConversion;
-import net.openhft.chronicle.wire.MicroTimestampLongConverter;
+import net.openhft.chronicle.bytes.BytesIn;
+import net.openhft.chronicle.bytes.BytesOut;
+import net.openhft.chronicle.wire.*;
 
 public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
     @LongConversion(Base85LongConverter.class)
@@ -81,59 +81,66 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
         this.ordType = ordType;
         return this;
     }
-    /*
+
     private static final int MASHALLABLE_VERSION = 1;
 
     @Override
     public void writeMarshallable(BytesOut out) {
         super.writeMarshallable(out);
-        out.writeStopBit(MASHALLABLE_VERSION);
-        out.writeLong(symbol);
-        out.writeLong(transactTime);
-        out.writeDouble(orderQty);
-        out.writeDouble(price);
-        out.writeObject(BuySell.class, side);
-        out.writeObject(OrderType.class, ordType);
-        out.writeObject(String.class, clOrdID);
+        if (PREGENERATED_MARSHALLABLE) {
+            out.writeStopBit(MASHALLABLE_VERSION);
+            out.writeLong(symbol);
+            out.writeLong(transactTime);
+            out.writeDouble(orderQty);
+            out.writeDouble(price);
+            out.writeObject(BuySell.class, side);
+            out.writeObject(OrderType.class, ordType);
+            out.writeObject(String.class, clOrdID);
+        }
     }
 
     @Override
     public void readMarshallable(BytesIn in) {
         super.readMarshallable(in);
-        int version = (int) in.readStopBit();
-        if (version == MASHALLABLE_VERSION) {
-            symbol = in.readLong();
-            transactTime = in.readLong();
-            orderQty = in.readDouble();
-            price = in.readDouble();
-            side = (BuySell) in.readObject(BuySell.class);
-            ordType = (OrderType) in.readObject(OrderType.class);
-            clOrdID = (String) in.readObject(String.class);
+        if (PREGENERATED_MARSHALLABLE) {
+            int version = (int) in.readStopBit();
+            if (version == MASHALLABLE_VERSION) {
+                symbol = in.readLong();
+                transactTime = in.readLong();
+                orderQty = in.readDouble();
+                price = in.readDouble();
+                side = (BuySell) in.readObject(BuySell.class);
+                ordType = (OrderType) in.readObject(OrderType.class);
+                clOrdID = (String) in.readObject(String.class);
+            }
         }
     }
 
     @Override
     public void writeMarshallable(WireOut out) {
         super.writeMarshallable(out);
-        out.write("symbol").writeLong(Base85LongConverter.INSTANCE, symbol);
-        out.write("transactTime").writeLong(MicroTimestampLongConverter.INSTANCE, transactTime);
-        out.write("orderQty").writeDouble(orderQty);
-        out.write("price").writeDouble(price);
-        out.write("side").object(BuySell.class, side);
-        out.write("ordType").object(OrderType.class, ordType);
-        out.write("clOrdID").object(String.class, clOrdID);
+        if (PREGENERATED_MARSHALLABLE) {
+            out.write("symbol").writeLong(Base85LongConverter.INSTANCE, symbol);
+            out.write("transactTime").writeLong(MicroTimestampLongConverter.INSTANCE, transactTime);
+            out.write("orderQty").writeDouble(orderQty);
+            out.write("price").writeDouble(price);
+            out.write("side").object(BuySell.class, side);
+            out.write("ordType").object(OrderType.class, ordType);
+            out.write("clOrdID").object(String.class, clOrdID);
+        }
     }
 
     @Override
     public void readMarshallable(WireIn in) {
         super.readMarshallable(in);
-        symbol = in.read("symbol").readLong(Base85LongConverter.INSTANCE);
-        transactTime = in.read("transactTime").readLong(MicroTimestampLongConverter.INSTANCE);
-        orderQty = in.read("orderQty").readDouble();
-        price = in.read("price").readDouble();
-        side = in.read("side").object(side, BuySell.class);
-        ordType = in.read("ordType").object(ordType, OrderType.class);
-        clOrdID = in.read("clOrdID").object(clOrdID, String.class);
+        if (PREGENERATED_MARSHALLABLE) {
+            symbol = in.read("symbol").readLong(Base85LongConverter.INSTANCE);
+            transactTime = in.read("transactTime").readLong(MicroTimestampLongConverter.INSTANCE);
+            orderQty = in.read("orderQty").readDouble();
+            price = in.read("price").readDouble();
+            side = in.read("side").object(side, BuySell.class);
+            ordType = in.read("ordType").object(ordType, OrderType.class);
+            clOrdID = in.read("clOrdID").object(clOrdID, String.class);
+        }
     }
-    */
 }
