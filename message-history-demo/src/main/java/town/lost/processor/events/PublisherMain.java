@@ -14,22 +14,25 @@ public class PublisherMain {
             Events build = queue.methodWriterBuilder(Events.class).recordHistory(true).build();
             long start = System.nanoTime();
             double interval = 1e9 / RATE;
+            EventTwo two = new EventTwo();
+
             for (int i = 0; i < EVENTS; i++) {
                 while (System.nanoTime() < start) ;
-                publish(build, "Hello World");
+                publish(build, two, "Hello World");
                 start += interval;
             }
-            publish(build, "Bye");
+            publish(build, two, "Bye");
         }
         System.out.println("... Finished");
         System.exit(0);
     }
 
-    private static void publish(Events build, String text) {
-        EventOne one = new EventOne();
-        one.eventSource("publisher");
-        one.eventTimeStamp(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros());
-        one.text(text);
-        build.eventOne(one);
+    private static void publish(Events build, EventTwo two, String text) {
+        two.eventSource("publisher");
+        two.eventTimeStamp(UniqueMicroTimeProvider.INSTANCE.currentTimeMicros());
+        two.symbol(text);
+        two.price(two.price + 1);
+        two.quantiity(two.quantiity + 1);
+        build.eventTwo(two);
     }
 }
