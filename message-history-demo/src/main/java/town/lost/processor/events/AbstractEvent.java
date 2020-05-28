@@ -1,10 +1,10 @@
 package town.lost.processor.events;
 
-import net.openhft.chronicle.wire.BytesInBinaryMarshallable;
 import net.openhft.chronicle.wire.LongConversion;
 import net.openhft.chronicle.wire.MicroTimestampLongConverter;
+import net.openhft.chronicle.wire.SelfDescribingMarshallable;
 
-public class AbstractEvent<E extends AbstractEvent<E>> extends BytesInBinaryMarshallable {
+public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMarshallable {
     private String eventSource;
 
     @LongConversion(MicroTimestampLongConverter.class)
