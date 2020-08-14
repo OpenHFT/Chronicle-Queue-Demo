@@ -24,7 +24,6 @@ public class OutputMain {
                 GenericRecord user = avro.readFromIS(dc.wire().bytes().inputStream());
                 System.out.println("Read: " + user);
             }
-
         }
 
         System.out.println("All done");

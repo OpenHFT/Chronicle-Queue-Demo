@@ -16,12 +16,12 @@ public class InputMain {
         SingleChronicleQueue queue = SingleChronicleQueueBuilder.binary(path).build();
         ExcerptAppender appender = queue.acquireAppender();
 
-try (DocumentContext dc = appender.writingDocument()) {
-    GenericRecord user = avro.getGenericRecord();
-    user.put("name", "Alyssa");
-    user.put("favorite_number", 256);
-    avro.writeToOS(user, dc.wire().bytes().outputStream());
-}
+        try (DocumentContext dc = appender.writingDocument()) {
+            GenericRecord user = avro.getGenericRecord();
+            user.put("name", "Alyssa");
+            user.put("favorite_number", 256);
+            avro.writeToOS(user, dc.wire().bytes().outputStream());
+        }
 
         try (DocumentContext dc = appender.writingDocument()) {
             GenericRecord user = avro.getGenericRecord();
