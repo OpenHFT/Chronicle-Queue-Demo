@@ -63,6 +63,31 @@
                             <daemonThreadJoinTimeout>300000</daemonThreadJoinTimeout>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>DumpDecodedMain</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>town.lost.processor.events.DumpDecodedMain</mainClass>
+                            <classpathScope>test</classpathScope>
+                            <daemonThreadJoinTimeout>300000</daemonThreadJoinTimeout>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>CHRM</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>net.openhft.chronicle.queue.ChronicleHistoryReaderMain</mainClass>
+                            <commandlineArgs>-d ../out -t MICROSECONDS</commandlineArgs>
+                            <classpathScope>test</classpathScope>
+                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
