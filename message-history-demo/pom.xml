@@ -83,7 +83,7 @@
                         </goals>
                         <configuration>
                             <mainClass>net.openhft.chronicle.queue.ChronicleHistoryReaderMain</mainClass>
-                            <commandlineArgs>-d ../out -t MICROSECONDS</commandlineArgs>
+                            <commandlineArgs>-d out -t MICROSECONDS</commandlineArgs>
                             <classpathScope>test</classpathScope>
                             <cleanupDaemonThreads>false</cleanupDaemonThreads>
                         </configuration>
