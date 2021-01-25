@@ -1,0 +1,12 @@
+= Messages With Text Demo
+Peter Lawrey
+
+This demo shows a writing and reading messages containing text without creating garbage
+
+== What you need to get started.
+
+- Maven 3.6.x
+- Java 8 update 180+
+- Intellij CE or another IDE
+- Access to the internet for maven to download the JARs needed
+
