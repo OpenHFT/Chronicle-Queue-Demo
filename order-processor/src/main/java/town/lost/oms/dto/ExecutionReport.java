@@ -9,6 +9,7 @@ import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.wire.*;
 
 public class ExecutionReport extends AbstractEvent<ExecutionReport> {
+    private static final int MASHALLABLE_VERSION = 1;
     @LongConversion(Base85LongConverter.class)
     private long symbol;
     @LongConversion(MicroTimestampLongConverter.class)
@@ -142,8 +143,6 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
         this.text = text;
         return this;
     }
-
-    private static final int MASHALLABLE_VERSION = 1;
 
     @Override
     public void writeMarshallable(BytesOut out) {

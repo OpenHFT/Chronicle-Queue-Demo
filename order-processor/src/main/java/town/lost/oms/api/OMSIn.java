@@ -8,7 +8,7 @@ import town.lost.oms.dto.CancelOrderRequest;
 import town.lost.oms.dto.NewOrderSingle;
 
 public interface OMSIn {
-//    @MethodId(1)
+    //    @MethodId(1)
     void newOrderSingle(NewOrderSingle nos);
 
     //    @MethodId(2)

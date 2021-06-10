@@ -9,6 +9,7 @@ import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.wire.*;
 
 public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
+    private static final int MASHALLABLE_VERSION = 1;
     @LongConversion(Base85LongConverter.class)
     private long symbol;
     @LongConversion(MicroTimestampLongConverter.class)
@@ -81,8 +82,6 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
         this.ordType = ordType;
         return this;
     }
-
-    private static final int MASHALLABLE_VERSION = 1;
 
     @Override
     public void writeMarshallable(BytesOut out) {
