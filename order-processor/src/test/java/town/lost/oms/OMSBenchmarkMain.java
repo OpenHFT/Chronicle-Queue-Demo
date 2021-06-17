@@ -80,6 +80,7 @@ public class OMSBenchmarkMain {
         System.setProperty("pauser.minProcessors", "2");
     }
 
+    @SuppressWarnings("try")
     public static void main(String[] args) {
         printProperties();
 
@@ -89,7 +90,7 @@ public class OMSBenchmarkMain {
 
             // processing thread
             Thread processor = new Thread(() -> {
-                try (AffinityLock lock = AffinityLock.acquireCore()) {
+                try (AffinityLock ignored = AffinityLock.acquireCore()) {
                     OMSOut out = output.acquireAppender().methodWriter(OMSOut.class);
                     OMSImpl oms = new OMSImpl(out);
                     MethodReader in = input.createTailer("test").methodReader(oms);

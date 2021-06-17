@@ -15,7 +15,7 @@ public class BridgeMain {
         try (ChronicleQueue queue = ChronicleQueue.singleBuilder("in").sourceId(1).build()) {
             try (ChronicleQueue queue2 = ChronicleQueue.singleBuilder("out").sourceId(2).build()) {
 
-                Events out = queue2.methodWriterBuilder(Events.class).recordHistory(true).build();
+                Events out = queue2.methodWriterBuilder(Events.class).build();
                 Events bridge = new BridgeEvents(out);
                 MethodReader methodReader = queue.createTailer("bridge")
                         .methodReader(bridge);
