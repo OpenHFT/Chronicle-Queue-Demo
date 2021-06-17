@@ -1,3 +1,4 @@
+---
 orderCancelReject: {
   sender: OMS,
   target: CLIENT,
@@ -6,4 +7,4 @@ orderCancelReject: {
   symbol: EURUSD,
   reason: No such order
 }
----
+...

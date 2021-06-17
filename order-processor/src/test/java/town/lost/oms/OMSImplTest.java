@@ -34,6 +34,5 @@ public class OMSImplTest {
     @Test
     public void cancelOrderRequest() {
         runTest("cancelOrderRequest");
-//        System.out.println(new CancelOrderRequest().sendingTime(SystemTimeProvider.INSTANCE.currentTimeMicros()));
     }
 }
