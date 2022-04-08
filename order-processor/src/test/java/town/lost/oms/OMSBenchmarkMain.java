@@ -9,9 +9,9 @@ import net.openhft.chronicle.bytes.MethodReader;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.OS;
 import net.openhft.chronicle.core.io.IOTools;
-import net.openhft.chronicle.core.jlbh.JLBH;
-import net.openhft.chronicle.core.jlbh.JLBHOptions;
-import net.openhft.chronicle.core.jlbh.JLBHTask;
+import net.openhft.chronicle.jlbh.JLBH;
+import net.openhft.chronicle.jlbh.JLBHOptions;
+import net.openhft.chronicle.jlbh.JLBHTask;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.threads.Pauser;
@@ -112,7 +112,7 @@ public class OMSBenchmarkMain {
                     .iterations(Math.min(2_000_000, THROUGHPUT * 10))
                     .runs(5)
                     .recordOSJitter(false)
-                    .accountForCoordinatedOmmission(ACCOUNT_FOR_COORDINATED_OMMISSION)
+                    .accountForCoordinatedOmission(ACCOUNT_FOR_COORDINATED_OMMISSION)
                     .jlbhTask(new MyJLBHTask(input)));
             jlbh.start();
             processor.interrupt();
