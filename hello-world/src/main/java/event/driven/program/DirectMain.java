@@ -4,6 +4,6 @@ import java.io.IOException;
 
 public class DirectMain {
     public static void main(String[] args) throws IOException {
-    SaysInput.input(new SaysOutput());
-}
+        SaysInput.input(new SaysOutput());
+    }
 }
