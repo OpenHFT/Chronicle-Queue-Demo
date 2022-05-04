@@ -17,6 +17,7 @@
         <module>order-processor</module>
         <module>message-history-demo</module>
         <module>messages-with-text</module>
+        <module>hello-world</module>
     </modules>
 
     <dependencyManagement>
