@@ -36,12 +36,6 @@
                         <configuration>
                             <mainClass>town.lost.oms.OrderAdderMain</mainClass>
                             <classpathScope>compile</classpathScope>
-                            <systemProperties>
-                                <systemProperty>
-                                    <key>disableProxyCodegen</key>
-                                    <value>true</value>
-                                </systemProperty>
-                            </systemProperties>
                         </configuration>
                     </execution>
                     <execution>
@@ -52,12 +46,6 @@
                         <configuration>
                             <mainClass>town.lost.oms.OrderViewerMain</mainClass>
                             <classpathScope>compile</classpathScope>
-                            <systemProperties>
-                                <systemProperty>
-                                    <key>disableProxyCodegen</key>
-                                    <value>true</value>
-                                </systemProperty>
-                            </systemProperties>
                         </configuration>
                     </execution>
                     <execution>
