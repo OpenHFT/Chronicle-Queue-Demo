@@ -23,13 +23,11 @@ image::gitpack.png[]
 Open Intelij or your https://en.wikipedia.org/wiki/Integrated_development_environment[IDE], or https://www.jetbrains.com/idea/download/#section=windows[install Intelij] first if you haven't already.
 Intelij is used for this tutorial.
 
-Go to `Check out from Version Control` and select `Git`, opening the `Clone Repository`.
+Go to `Get from VCS`
 This is where you will get a copy of the Chronicle Queue Sample code.
 
-image::homegit.png[]
-
-Next, copy the URL below into the `Git Repository URL`,
-and remember to take note of the `Parent Directory`. Press `Clone`.
+Next, copy the URL below into the `URL` box,
+and remember to take note of the `Directory`. Press `Clone`.
 
 [source]
 ----
