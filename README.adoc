@@ -39,9 +39,7 @@ image::Clone.PNG[]
 Should you choose you close the Project under `File`, you an open it again by going to `Open`.
 Then you can find the repository in the directory that you saved it in earlier.
 
-image::Open.png[]
-
-image::directory.png[]
+image::directory.PNG[]
 
 Then you can run the first example https://github.com/OpenHFT/Chronicle-Queue-Sample/tree/master/simple-input[Simple Input]
 
