@@ -31,7 +31,7 @@ and remember to take note of the `Directory`. Press `Clone`.
 
 [source]
 ----
-https://github.com/OpenHFT/Chronicle-Queue-Sample.git
+https://github.com/OpenHFT/Chronicle-Queue-Demo.git
 ----
 
 image::Clone.PNG[]
@@ -41,6 +41,6 @@ Then you can find the repository in the directory that you saved it in earlier.
 
 image::directory.PNG[]
 
-Then you can run the first example https://github.com/OpenHFT/Chronicle-Queue-Sample/tree/master/simple-input[Simple Input]
+Then you can run the first example https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/simple-input[Simple Input]
 
-The second example is https://github.com/OpenHFT/Chronicle-Queue-Sample/tree/master/simple-translator[Simple Translator]
+The second example is https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/simple-translator[Simple Translator]
