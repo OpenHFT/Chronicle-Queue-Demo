@@ -26,7 +26,7 @@ Open Intelij or your https://en.wikipedia.org/wiki/Integrated_development_enviro
 Intelij is used for this tutorial.
 
 Go to `Check out from Version Control` and select `Git`, opening the `Clone Repository`.
-This is where you will get a copy of the Chronicle Queue Sample code.
+This is where you will get a copy of the Chronicle Queue Demo code.
 
 image::homegit.png[]
 
@@ -35,7 +35,7 @@ and remember to take note of the `Parent Directory`. Press `Clone`.
 
 [source]
 ----
-https://github.com/OpenHFT/Chronicle-Queue-Sample.git
+https://github.com/OpenHFT/Chronicle-Queue-Demo.git
 ----
 
 image::Clone.png[]
@@ -47,6 +47,6 @@ image::Open.png[]
 
 image::directory.png[]
 
-Then you can run the first example https://github.com/OpenHFT/Chronicle-Queue-Sample/tree/master/simple-input[Simple Input]
+Then you can run the first example https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/simple-input[Simple Input]
 
-The second example is https://github.com/OpenHFT/Chronicle-Queue-Sample/tree/master/simple-translator[Simple Translator]
+The second example is https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/simple-translator[Simple Translator]
