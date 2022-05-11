@@ -15,10 +15,8 @@ import java.io.IOException;
 import net.openhft.chronicle.wire.Wires;
 
 public class RecordInputMain {
-  //  private static SaysOutput c1 = new SaysOutput();
     public static void main(String[] args) throws IOException {
-      //System.out.
-
-          SaysInput.input(Wires.recordAsYaml(Says.class, System.out));
+        final Says says = Wires.recordAsYaml(Says.class, System.out);
+        SaysInput.input(says);
     }
 }
