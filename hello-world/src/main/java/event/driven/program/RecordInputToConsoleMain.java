@@ -10,15 +10,15 @@
 package event.driven.program;
 
 import event.driven.program.api.Says;
-
-import java.io.IOException;
 import net.openhft.chronicle.wire.Wires;
 
-public class RecordInputMain {
+import java.io.IOException;
+
+public class RecordInputToConsoleMain {
     public static void main(String[] args) throws IOException {
-        // obtains a proxy that writes to the PrintStream the method calls and their arguments
-        final Says says = Wires.recordAsYaml(Says.class, System.out);
-        // Takes each line input and calls say(theLine) each time
+        // writes text in each calls to say(line) to the console
+        final Says says = new SaysOutput();
+        // Takes each line input and calls say(line) each time
         SaysInput.input(says);
     }
 }
