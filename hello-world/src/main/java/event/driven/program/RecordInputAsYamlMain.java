@@ -11,7 +11,12 @@ package event.driven.program;
 
 import event.driven.program.api.Says;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+
 import net.openhft.chronicle.wire.Wires;
 
 public class RecordInputAsYamlMain {
