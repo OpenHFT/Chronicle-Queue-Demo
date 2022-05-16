@@ -16,7 +16,7 @@ import java.io.IOException;
 
 public class RecordInputToConsoleMain {
     public static void main(String[] args) throws IOException {
-        // writes text in each calls to say(line) to the console
+        // Writes text in each call to say(line) to the console
         final Says says = new SaysOutput();
         // Takes each line input and calls say(line) each time
         SaysInput.input(says);
