@@ -4,13 +4,14 @@
 
 package town.lost.oms.api;
 
+import net.openhft.chronicle.bytes.MethodId;
 import town.lost.oms.dto.CancelOrderRequest;
 import town.lost.oms.dto.NewOrderSingle;
 
 public interface OMSIn {
-    //    @MethodId(1)
+    @MethodId(1)
     void newOrderSingle(NewOrderSingle nos);
 
-    //    @MethodId(2)
+    @MethodId(2)
     void cancelOrderRequest(CancelOrderRequest cor);
 }

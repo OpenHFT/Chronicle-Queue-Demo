@@ -13,16 +13,11 @@ import net.openhft.chronicle.jlbh.JLBH;
 import net.openhft.chronicle.jlbh.JLBHOptions;
 import net.openhft.chronicle.jlbh.JLBHTask;
 import net.openhft.chronicle.queue.ChronicleQueue;
-import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.threads.Pauser;
 import net.openhft.chronicle.wire.Base85LongConverter;
-import net.openhft.chronicle.wire.DocumentContext;
 import town.lost.oms.api.OMSIn;
 import town.lost.oms.api.OMSOut;
-import town.lost.oms.dto.AbstractEvent;
-import town.lost.oms.dto.BuySell;
-import town.lost.oms.dto.NewOrderSingle;
-import town.lost.oms.dto.OrderType;
+import town.lost.oms.dto.*;
 // isolcpus=5,6,7 set in grub.cfg
 // sudo cpupower frequency-set -g performance -d 4.5g
 
@@ -69,11 +64,26 @@ Percentile   run1         run2         run3         run4         run5      % Var
 99.7:           4.80         4.80         3.90         3.40         3.40        21.55
 99.9:          19.40        14.70        14.60        14.30        14.40         1.83
 worst:       1678.85     28090.37     12480.51      1005.31      6952.96        94.73
+
+// -Dthroughput=100000 -DrunTime=30 on a i9-10980HK windows laptop
+-------------------------------- SUMMARY (end to end) us -------------------------------------------
+Percentile   run1         run2         run3         run4         run5      % Variation
+50.0:            3.10         3.10         3.10         3.10         3.10         0.00
+90.0:            3.40         3.30         3.30         3.30         3.30         0.00
+99.0:            4.90         5.00         5.10         5.61         5.00         7.50
+99.7:           47.04       113.54       165.12       299.52       118.14        52.20
+99.9:          163.07      1579.01      2879.49      5218.30      1624.06        60.58
+99.97:         326.14      6823.94      7610.37      8019.97      7380.99        10.46
+99.99:        3403.78     11747.33     10076.16      9650.18     11059.20        12.65
+99.997:       5136.38     13451.26     11255.81     11386.88     12795.90        11.51
+worst:        5873.66     14336.00     12009.47     12107.78     13516.80        11.44
+----------------------------------------------------------------------------------------------------
  */
 public class OMSBenchmarkMain {
     public static final int THROUGHPUT = Integer.getInteger("throughput", 100_000);
+    public static final int RUN_TIME = Integer.getInteger("runTime", 10);
     public static final Base85LongConverter BASE85 = Base85LongConverter.INSTANCE;
-    public static final String PATH = System.getProperty("path", OS.TMP);
+    public static final String PATH = System.getProperty("path", OS.getTarget());
     public static final boolean ACCOUNT_FOR_COORDINATED_OMMISSION = Boolean.getBoolean("accountForCoordinatedOmmission");
 
     static {
@@ -109,13 +119,37 @@ public class OMSBenchmarkMain {
                     .warmUpIterations(50000)
                     .pauseAfterWarmupMS(500)
                     .throughput(THROUGHPUT)
-                    .iterations(Math.min(2_000_000, THROUGHPUT * 10))
+                    .iterations(Math.min(5_000_000, THROUGHPUT * RUN_TIME))
                     .runs(5)
                     .recordOSJitter(false)
                     .accountForCoordinatedOmission(ACCOUNT_FOR_COORDINATED_OMMISSION)
                     .jlbhTask(new MyJLBHTask(input)));
+
+            Thread last = new Thread(() -> {
+                try (AffinityLock ignored = AffinityLock.acquireCore()) {
+                    final MethodReader reader = output.createTailer().methodReader(new OMSOut() {
+                        @Override
+                        public void executionReport(ExecutionReport er) {
+                            jlbh.sampleNanos(System.nanoTime() - er.sendingTime());
+                        }
+
+                        @Override
+                        public void orderCancelReject(OrderCancelReject ocr) {
+                        }
+                    });
+                    while (!Thread.currentThread().isInterrupted())
+                        reader.readOne();
+
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+            }, "last");
+            last.start();
+
             jlbh.start();
+
             processor.interrupt();
+            last.interrupt();
         }
         printProperties();
         Jvm.pause(1000);
@@ -128,6 +162,7 @@ public class OMSBenchmarkMain {
                 "-DbyteInBinary=" + AbstractEvent.BYTES_IN_BINARY + " " +
                 "-DpregeneratedMarshallable=" + AbstractEvent.PREGENERATED_MARSHALLABLE + " " +
                 "-Dthroughput=" + THROUGHPUT + " " +
+                "-DrunTime=" + RUN_TIME + " " +
                 "-Dpath=" + PATH + " " +
                 "-DaccountForCoordinatedOmission=" + ACCOUNT_FOR_COORDINATED_OMMISSION);
     }
@@ -135,7 +170,6 @@ public class OMSBenchmarkMain {
     private static class MyJLBHTask implements JLBHTask {
         private JLBH jlbh;
         private NewOrderSingle nos;
-        private ExcerptTailer tailer;
         private OMSIn in;
 
         public MyJLBHTask(ChronicleQueue input) {
@@ -148,7 +182,6 @@ public class OMSBenchmarkMain {
                     .symbol(BASE85.parse("AUDUSD"))
                     .ordType(OrderType.limit)
                     .side(BuySell.buy);
-            tailer = input.createTailer();
             in = input.acquireAppender().methodWriter(OMSIn.class);
         }
 
@@ -159,31 +192,7 @@ public class OMSBenchmarkMain {
 
         @Override
         public void run(long startTimeNS) {
-            try {
-                in.newOrderSingle(nos.sendingTime(startTimeNS));
-                long start = System.currentTimeMillis();
-                while (true) {
-                    try (DocumentContext dc = tailer.readingDocument()) {
-                        if (dc.isPresent())
-                            break;
-                    }
-                    if (start + 1e3 > System.currentTimeMillis()) {
-                        System.err.println("Failed to get message");
-                        break;
-                    }
-                }
-
-                jlbh.sampleNanos(System.nanoTime() - startTimeNS);
-/*
-                try (DocumentContext dc = tailer.readingDocument()) {
-                    if (dc.isPresent())
-                        throw new AssertionError();
-                }
-*/
-
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
+            in.newOrderSingle(nos.sendingTime(startTimeNS));
         }
     }
 }
