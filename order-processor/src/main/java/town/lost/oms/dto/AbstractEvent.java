@@ -20,7 +20,7 @@ public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMar
     @LongConversion(Base85LongConverter.class)
     private long target;
     // client sending time
-    @LongConversion(MicroTimestampLongConverter.class)
+    @LongConversion(NanoTimestampLongConverter.class)
     private long sendingTime;
 
     @Override

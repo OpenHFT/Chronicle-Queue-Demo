@@ -1,3 +1,4 @@
+---
 cancelOrderRequest: {
   sender: CLIENT,
   target: OMS,
@@ -5,3 +6,4 @@ cancelOrderRequest: {
   clOrdID: dkj4378fwh,
   symbol: EURUSD
 }
+...

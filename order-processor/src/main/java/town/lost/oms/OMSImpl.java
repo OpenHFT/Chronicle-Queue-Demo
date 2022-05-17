@@ -4,6 +4,7 @@
 
 package town.lost.oms;
 
+import net.openhft.chronicle.core.time.SystemTimeProvider;
 import town.lost.oms.api.OMSIn;
 import town.lost.oms.api.OMSOut;
 import town.lost.oms.dto.CancelOrderRequest;
@@ -23,6 +24,7 @@ public class OMSImpl implements OMSIn {
     @Override
     public void newOrderSingle(NewOrderSingle nos) {
         er.reset();
+        final long orderID = SystemTimeProvider.CLOCK.currentTimeNanos();
         er.sender(nos.target())
                 .target(nos.sender())
                 .symbol(nos.symbol())
@@ -33,6 +35,7 @@ public class OMSImpl implements OMSIn {
                 .sendingTime(nos.sendingTime())
                 .transactTime(nos.transactTime())
                 .leavesQty(0)
+                .orderID(orderID)
                 .text("Not ready");
         out.executionReport(er);
     }

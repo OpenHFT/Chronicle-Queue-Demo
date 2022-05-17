@@ -12,11 +12,11 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     private static final int MASHALLABLE_VERSION = 1;
     @LongConversion(Base85LongConverter.class)
     private long symbol;
-    @LongConversion(MicroTimestampLongConverter.class)
+    @LongConversion(NanoTimestampLongConverter.class)
     private long transactTime;
     private double orderQty;
     private double price;
-    @LongConversion(Base32LongConverter.class)
+    @LongConversion(NanoTimestampLongConverter.class)
     private long orderID;
     private double lastPx;
     private double leavesQty;

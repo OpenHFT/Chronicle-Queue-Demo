@@ -1,3 +1,4 @@
+---
 newOrderSingle: {
   sender: CLIENT,
   target: OMS,
@@ -10,4 +11,4 @@ newOrderSingle: {
   price: 1.2123,
   ordType: limit
 }
-
+...

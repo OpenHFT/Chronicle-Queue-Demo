@@ -12,7 +12,7 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
     private static final int MASHALLABLE_VERSION = 1;
     @LongConversion(Base85LongConverter.class)
     private long symbol;
-    @LongConversion(MicroTimestampLongConverter.class)
+    @LongConversion(NanoTimestampLongConverter.class)
     private long transactTime;
     private double orderQty;
     private double price;
