@@ -198,7 +198,7 @@ By clicking on the <click to see difference> link, you will see the difference b
 image::../docs/images/hello-world-fig3.png[]
 
 == Running the Demo from Maven
-From the example directory ie hello-world run the following commands.
+Open a shell and from the example directory, hello-world, run the following. commands.
 
 .Building the code
 [source,sh]
@@ -206,17 +206,17 @@ mvn clean install
 
 .Run RecordInputToConsoleMain
 [source,sh]
-mvn exec:java@RecordInputToConsoleMain
+mvn install exec:java@RecordInputToConsoleMain
 
 .Run RecordInputAsYamlMain
 [source,sh]
-mvn exec:java@RecordInputAsYamlMain
+mvn install exec:java@RecordInputAsYamlMain -Dexec="says.yaml"
 
 .Run ReplayOutputMain
 [source,sh]
-mvn exec:java@ReplayOutputMain
+mvn install exec:java@ReplayOutputMain
 
 .Run DirectWithExclamationMark
 [source,sh]
-mvn exec:java@DirectWithExclamationMark
+mvn install exec:java@DirectWithExclamationMark
 
