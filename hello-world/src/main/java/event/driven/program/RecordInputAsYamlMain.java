@@ -1,8 +1,9 @@
 package event.driven.program;
 
 import event.driven.program.api.Says;
-import java.io.IOException;
 import net.openhft.chronicle.wire.Wires;
+
+import java.io.IOException;
 
 public class RecordInputAsYamlMain {
     public static void main(String[] args) throws IOException {

@@ -1,17 +1,21 @@
 = Event Driven Program Demo
 
-This demo steps through event driven program development, testing and writing a simple microservice which operates a simple function on input events. In this demo event driven systems have been modeled so that, the event driven core systems has input and output gateways connecting to external systems that might not be event driven and the business logic is placed in the core event driven system. Figure 1 shows a general sketch of the introduced model with a simple business logic that adds exclamation mark to input messages (events) and then sends them to the output gateway.
+This demo steps through event driven program development, testing and writing a simple microservice which operates a simple function on input events.
+In this demo event driven systems have been modeled so that, the event driven core systems has input and output gateways connecting to external systems that might not be event driven and the business logic is placed in the core event driven system.
+Figure 1 shows a general sketch of the introduced model with a simple business logic that adds exclamation mark to input messages (events) and then sends them to the output gateway.
 
 .An event driven system based on the introduced model, the system adds exclamation mark to input messages and sends them to output
 image::../docs/images/hello-world-fig1.png[]
 
 == Implementation
 
-In the following sections several event driven systems with the general structured shown in Figure 1 are implemented. All the implementations use the same input and output gateways.
+In the following sections several event driven systems with the general structured shown in Figure 1 are implemented.
+All the implementations use the same input and output gateways.
 
 === Input and Output Gateways
 
-The input and output gateways used in this demo are implementations of the functional interface link:../hello-world/src/main/java/event/driven/program/api/Says.java[Says]. The input gateway reads each input line and calls say(input line) method.
+The input and output gateways used in this demo are implementations of the functional interface link:../hello-world/src/main/java/event/driven/program/api/Says.java[Says].
+The input gateway reads each input line and calls say(input line) method.
 
 .Input gateway
 [source,java]
@@ -24,6 +28,7 @@ public class SaysInput {
     }
 }
 ----
+
 The output gateway prints out the received messages.
 
 .Output gateway
@@ -40,7 +45,8 @@ In the following section several event driven examples are implemented using the
 
 === Relaying Input Events to Output
 
-This system simply relays input events to output thus it can be implemented easily as the output of one gateway is wired to the input of the other. This is implemented in `RecordInputToConsoleMain` class.
+This system simply relays input events to output thus it can be implemented easily as the output of one gateway is wired to the input of the other.
+This is implemented in `RecordInputToConsoleMain` class.
 
 .RecordInputToConsoleMain
 [source,java]
@@ -85,7 +91,8 @@ public class RecordInputAsYamlMain {
 }
 ----
 
-To run `RecordInputAsYamlMain` right click on `RecordInputAsYamlMain` and select "Modify Run Configuration ...". In the pop-up window in the "program arguments" field write the input file name (ie says.yaml) then click on OK and run the program, the following can be observed on console.
+To run `RecordInputAsYamlMain` right click on `RecordInputAsYamlMain` and select "Modify Run Configuration ...".
+In the pop-up window in the "program arguments" field write the input file name (ie says.yaml) then click on OK and run the program, the following can be observed on console.
 
 [source,text]
 ----
@@ -102,11 +109,12 @@ say: Three             // output event
 
 === Replaying Logged Outputs from a Yaml File
 
-For this example the outputs from the above section have been logged into resources/says.yaml file. The file is read and replayed to `SaysOutput` by Wire.replay method.
+For this example the outputs from the above section have been logged into resources/says.yaml file.
+The file is read and replayed to `SaysOutput` by Wire.replay method.
 //TODO add link to Wires.replay method.
 
 .ReplayOutputMain
-[source, java]
+[source,java]
 ----
 public class ReplayOutputMain {
     public static void main(String[] args) throws IOException {
@@ -118,7 +126,7 @@ public class ReplayOutputMain {
 
 By running `ReplayOutputMain` the following output will be printed out on the console.
 
-[source, java]
+[source,text]
 ----
 One
 Two
@@ -135,6 +143,7 @@ public class DirectWithExclamationMain {
     }
 }
 ----
+
 === Adding a Microservice
 
 Now the intermediate block in Figure 1 is implemented using a microservice that appends an exclamation mark to input messages and passes it to the output gateway.
@@ -187,6 +196,7 @@ public class AddsExclamationTest {
     }
 }
 ----
+
 Running the test should log "Process finished with exit code 0" on the console which shows the test has passed.
 Change the second input in in.yaml to Hello World and run the test again, to see the test fails.
 
@@ -201,6 +211,7 @@ By clicking on the <click to see difference> link, you will see the difference b
 image::../docs/images/hello-world-fig3.png[]
 
 == Running the Demo from Maven
+
 Open a shell and from the example directory, hello-world, run the following. commands.
 
 .Building the code

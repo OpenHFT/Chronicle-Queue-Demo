@@ -12,11 +12,11 @@ https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/order-processor
 
 == Downloading and running sample programs
 
-If you're running Windows, you will need to install the `git` client and `open-ssh` Cygwin, https://cygwin.com/install.html[here],
-with a guide showing installation and packages http://www.mcclean-cooper.com/valentino/cygwin_install/[here].
+If you're running Windows, you will need to install the `git` client and `open-ssh` Cygwin, https://cygwin.com/install.html[here], with a guide showing installation and packages http://www.mcclean-cooper.com/valentino/cygwin_install/[here].
 This allows you to install Linux packages that aren't already on Windows.
 
-When this asks you which packages you want to install, search for and add `git`. This is under `Development` and you need to click `skip` so it says to `install`.
+When this asks you which packages you want to install, search for and add `git`.
+This is under `Development` and you need to click `skip` so it says to `install`.
 
 image::gitpack.png[]
 
@@ -30,8 +30,8 @@ This is where you will get a copy of the Chronicle Queue Sample code.
 
 image::homegit.png[]
 
-Next, copy the URL below into the `Git Repository URL`,
-and remember to take note of the `Parent Directory`. Press `Clone`.
+Next, copy the URL below into the `Git Repository URL`, and remember to take note of the `Parent Directory`.
+Press `Clone`.
 
 [source]
 ----
