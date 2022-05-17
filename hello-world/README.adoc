@@ -102,8 +102,8 @@ say: Three             // output event
 
 === Replaying Logged Outputs from a Yaml File
 
-For this example the outputs from the above section has benn logged into resources/says.yaml file. The file is read and replayed to `SaysOutput` by Wire.replay method.
-//TODO add link to the method.
+For this example the outputs from the above section have been logged into resources/says.yaml file. The file is read and replayed to `SaysOutput` by Wire.replay method.
+//TODO add link to Wires.replay method.
 
 .ReplayOutputMain
 [source, java]
@@ -125,6 +125,7 @@ Two
 Three
 ----
 
+.DirectWithExclamationMain
 [source,java]
 ----
 public class DirectWithExclamationMain {
@@ -136,7 +137,7 @@ public class DirectWithExclamationMain {
 ----
 === Adding a Microservice
 
-Now the intermediate block in Figure 1 is implemented using a microservice that appends an exclamation mark to input messages and pass it to the output gateway.
+Now the intermediate block in Figure 1 is implemented using a microservice that appends an exclamation mark to input messages and passes it to the output gateway.
 
 .AddsExclamation microservice
 [source,java]
@@ -192,7 +193,9 @@ Change the second input in in.yaml to Hello World and run the test again, to see
 .Test result (fail)
 image::../docs/images/hello-world-fig2.png[]
 
+{nbsp} +
 By clicking on the <click to see difference> link, you will see the difference between expected and actual outputs.
+{nbsp} +
 
 .Difference between expected and actual test result
 image::../docs/images/hello-world-fig3.png[]
