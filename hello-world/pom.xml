@@ -14,4 +14,56 @@
     <artifactId>hello-world</artifactId>
     <name>OpenHFT/${project.parent.artifactId}/${project.artifactId}</name>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>RecordInputToConsoleMain</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <skip>false</skip>
+                            <mainClass>event.driven.program.RecordInputToConsoleMain</mainClass>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>RecordInputAsYamlMain</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <skip>false</skip>
+                            <mainClass>event.driven.program.RecordInputAsYamlMain</mainClass>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>ReplayOutputMain</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <skip>false</skip>
+                            <mainClass>event.driven.program.ReplayOutputMain</mainClass>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>DirectWithExclamationMain</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <skip>false</skip>
+                            <mainClass>event.driven.program.DirectWithExclamationMain</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
