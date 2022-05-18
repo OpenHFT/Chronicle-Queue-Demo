@@ -12,11 +12,11 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     private static final int MASHALLABLE_VERSION = 1;
     @LongConversion(Base85LongConverter.class)
     private long symbol;
-    @LongConversion(MicroTimestampLongConverter.class)
+    @LongConversion(NanoTimestampLongConverter.class)
     private long transactTime;
     private double orderQty;
     private double price;
-    @LongConversion(Base32LongConverter.class)
+    @LongConversion(NanoTimestampLongConverter.class)
     private long orderID;
     private double lastPx;
     private double leavesQty;
@@ -195,10 +195,10 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
         super.writeMarshallable(out);
         if (PREGENERATED_MARSHALLABLE) {
             out.write("symbol").writeLong(Base85LongConverter.INSTANCE, symbol);
-            out.write("transactTime").writeLong(MicroTimestampLongConverter.INSTANCE, transactTime);
+            out.write("transactTime").writeLong(NanoTimestampLongConverter.INSTANCE, transactTime);
             out.write("orderQty").writeDouble(orderQty);
             out.write("price").writeDouble(price);
-            out.write("orderID").writeLong(Base32LongConverter.INSTANCE, orderID);
+            out.write("orderID").writeLong(NanoTimestampLongConverter.INSTANCE, orderID);
             out.write("lastPx").writeDouble(lastPx);
             out.write("leavesQty").writeDouble(leavesQty);
             out.write("cumQty").writeDouble(cumQty);
@@ -215,10 +215,10 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
         super.readMarshallable(in);
         if (PREGENERATED_MARSHALLABLE) {
             symbol = in.read("symbol").readLong(Base85LongConverter.INSTANCE);
-            transactTime = in.read("transactTime").readLong(MicroTimestampLongConverter.INSTANCE);
+            transactTime = in.read("transactTime").readLong(NanoTimestampLongConverter.INSTANCE);
             orderQty = in.read("orderQty").readDouble();
             price = in.read("price").readDouble();
-            orderID = in.read("orderID").readLong(Base32LongConverter.INSTANCE);
+            orderID = in.read("orderID").readLong(NanoTimestampLongConverter.INSTANCE);
             lastPx = in.read("lastPx").readDouble();
             leavesQty = in.read("leavesQty").readDouble();
             cumQty = in.read("cumQty").readDouble();

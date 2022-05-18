@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 26.2.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   version="1.1"
+   id="Lager_1"
+   x="0px"
+   y="0px"
+   viewBox="0 0 1007.9 431.1"
+   style="enable-background:new 0 0 1007.9 431.1;"
+   xml:space="preserve"
+   sodipodi:docname="hello-world-fig1.svg"
+   inkscape:version="1.1.2 (1:1.1+202205011109+08b2f3d93c)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs251" /><sodipodi:namedview
+   id="namedview249"
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1.0"
+   inkscape:pageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   showgrid="false"
+   inkscape:zoom="1.6202004"
+   inkscape:cx="503.95"
+   inkscape:cy="215.71405"
+   inkscape:window-width="1846"
+   inkscape:window-height="1016"
+   inkscape:window-x="74"
+   inkscape:window-y="27"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Lager_1" />
+<style
+   type="text/css"
+   id="style147">
+	.st0{fill:#212449;}
+	.st1{fill:#FFFFFF;}
+	.st2{font-family:'Poppins-Medium';}
+	.st3{font-size:10px;}
+	.st4{fill:#E09631;}
+	.st5{font-family:'Poppins-Light';}
+	.st6{font-size:18px;}
+	.st7{fill:#29ABE2;}
+	.st8{font-size:13px;}
+	.st9{fill:#FFFFFF;stroke:#FFFFFF;stroke-width:3;stroke-miterlimit:10;stroke-dasharray:12,12;}
+	.st10{fill:#FFFFFF;stroke:#FFFFFF;stroke-miterlimit:10;}
+	.st11{font-size:20px;}
+	.st12{fill:#FFFFFF;stroke:#FFFFFF;stroke-width:0.25;stroke-miterlimit:10;}
+</style>
+<rect
+   y="66.924622"
+   class="st0"
+   width="879.35565"
+   height="251.22772"
+   id="rect149"
+   x="42.844982"
+   style="stroke-width:0.711646" />
+<text
+   transform="matrix(1 0 0 1 428.2706 185.6929)"
+   class="st1 st2 st3"
+   id="text151">Output</text>
+<rect
+   id="rect12"
+   x="178.7"
+   y="146.3"
+   class="st4"
+   width="123.8"
+   height="123.2" />
+<text
+   transform="matrix(1 0 0 1 196.3662 212.189)"
+   class="st1 st5 st6"
+   id="text154">SaysInput </text>
+<g
+   id="g160">
+	<rect
+   x="80"
+   y="162.6"
+   class="st7"
+   width="80.9"
+   height="30"
+   id="rect156" />
+	<text
+   transform="matrix(0.9752 0 0 1 89.1533 182.4507)"
+   class="st1 st5 st8"
+   id="text158">HelloWorld </text>
+</g>
+<g
+   id="g168">
+	<path
+   class="st9"
+   d="M78,208.5c27.7,0.1,55.4,0.2,82.9,0.3"
+   id="path162" />
+	<g
+   id="g166">
+		<polygon
+   class="st10"
+   points="158.4,217.7 173.4,208.8 158.5,199.7   "
+   id="polygon164" />
+	</g>
+</g>
+<g
+   id="g176">
+	<path
+   class="st9"
+   d="M552.2,208.6c27.7,0.1,55.4,0.2,82.9,0.3"
+   id="path170" />
+	<g
+   id="g174">
+		<polygon
+   class="st10"
+   points="632.6,217.8 647.6,208.9 632.7,199.8   "
+   id="polygon172" />
+	</g>
+</g>
+<g
+   id="g184">
+	<path
+   class="st9"
+   d="M785,207.7c27.7,0.1,55.4,0.2,82.9,0.3"
+   id="path178" />
+	<g
+   id="g182">
+		<polygon
+   class="st10"
+   points="865.3,216.9 880.3,208 865.4,198.9   "
+   id="polygon180" />
+	</g>
+</g>
+<text
+   transform="matrix(1 0 0 1 94.2501 136.7207)"
+   class="st1 st5 st6"
+   id="text186">Input </text>
+<text
+   transform="matrix(1 0 0 1 97.7501 158.3208)"
+   class="st0 st5 st6"
+   id="text188">Data</text>
+<text
+   transform="matrix(1 0 0 1 793.0613 136.3865)"
+   class="st1 st5 st6"
+   id="text190">Output </text>
+<text
+   transform="matrix(1 0 0 1 804.7613 157.9866)"
+   class="st0 st5 st6"
+   id="text192">Data</text>
+<g
+   id="g202">
+	<text
+   transform="matrix(0.9053 0 0 1 215.1909 110.5625)"
+   class="st1 st5 st11"
+   id="text194">Input </text>
+	<text
+   transform="matrix(0.9053 0 0 1 200.0723 134.5625)"
+   class="st1 st5 st11"
+   id="text196">Gateway</text>
+	<text
+   transform="matrix(0.9053 0 0 1 215.2783 110.5625)"
+   class="st1 st5 st11"
+   id="text198">Input </text>
+	<text
+   transform="matrix(0.9053 0 0 1 200.1597 134.5625)"
+   class="st1 st5 st11"
+   id="text200">Gateway</text>
+</g>
+<text
+   transform="matrix(0.9053 0 0 1 440.7822 136.541)"
+   class="st0 st5 st11"
+   id="text204">Function</text>
+<text
+   transform="matrix(0.9053 0 0 1 440.7822 136.541)"
+   class="st12 st5 st11"
+   id="text206">Function</text>
+<g
+   id="g216">
+	<text
+   transform="matrix(0.9053 0 0 1 682.7061 112.3867)"
+   class="st1 st5 st11"
+   id="text208">Output </text>
+	<text
+   transform="matrix(0.9053 0 0 1 675.916 136.3867)"
+   class="st1 st5 st11"
+   id="text210">Gateway</text>
+	<text
+   transform="matrix(0.9053 0 0 1 682.7061 112.3867)"
+   class="st1 st5 st11"
+   id="text212">Output </text>
+	<text
+   transform="matrix(0.9053 0 0 1 675.916 136.3867)"
+   class="st1 st5 st11"
+   id="text214">Gateway</text>
+</g>
+<g
+   id="g224">
+	<path
+   class="st9"
+   d="M312.7,212c27.7,0.1,55.4,0.2,82.9,0.3"
+   id="path218" />
+	<g
+   id="g222">
+		<polygon
+   class="st10"
+   points="393.1,221.2 408.1,212.3 393.2,203.2   "
+   id="polygon220" />
+	</g>
+</g>
+<g
+   id="g230">
+	<rect
+   x="309.9"
+   y="162.6"
+   class="st7"
+   width="101.9"
+   height="30"
+   id="rect226" />
+	<text
+   transform="matrix(0.9752 0 0 1 313.374 183.5508)"
+   class="st1 st5 st8"
+   id="text228">say: HelloWorld </text>
+</g>
+<rect
+   id="rect12_00000003790211618261713060000013830681872397141142_"
+   x="418.3"
+   y="146.8"
+   class="st4"
+   width="123.8"
+   height="123.2" />
+<text
+   transform="matrix(1 0 0 1 457.5927 203.2002)"
+   class="st1 st5 st6"
+   id="text233">Adds</text>
+<text
+   transform="matrix(1 0 0 1 425.8927 224.8)"
+   class="st1 st5 st6"
+   id="text235">Exclamation</text>
+<rect
+   id="rect12_00000018212432639626968480000002386739191412012467_"
+   x="655.2"
+   y="147"
+   class="st4"
+   width="123.8"
+   height="123.2" />
+<text
+   transform="matrix(1 0 0 1 664.1394 213.189)"
+   class="st1 st5 st6"
+   id="text238">SaysOutput </text>
+<rect
+   x="547.3"
+   y="162.6"
+   class="st7"
+   width="103.6"
+   height="30"
+   id="rect240" />
+<text
+   transform="matrix(0.9752 0 0 1 550.8086 183.5508)"
+   class="st1 st5 st8"
+   id="text242">say: HelloWorld! </text>
+<rect
+   x="785"
+   y="163.7"
+   class="st7"
+   width="80.9"
+   height="30"
+   id="rect244" />
+<text
+   transform="matrix(0.9752 0 0 1 791.1201 183.5034)"
+   class="st1 st5 st8"
+   id="text246">HelloWorld! </text>
+</svg>

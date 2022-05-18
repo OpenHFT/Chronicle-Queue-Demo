@@ -12,7 +12,7 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
     private static final int MASHALLABLE_VERSION = 1;
     @LongConversion(Base85LongConverter.class)
     private long symbol;
-    @LongConversion(MicroTimestampLongConverter.class)
+    @LongConversion(NanoTimestampLongConverter.class)
     private long transactTime;
     private double orderQty;
     private double price;
@@ -120,7 +120,7 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
         super.writeMarshallable(out);
         if (PREGENERATED_MARSHALLABLE) {
             out.write("symbol").writeLong(Base85LongConverter.INSTANCE, symbol);
-            out.write("transactTime").writeLong(MicroTimestampLongConverter.INSTANCE, transactTime);
+            out.write("transactTime").writeLong(NanoTimestampLongConverter.INSTANCE, transactTime);
             out.write("orderQty").writeDouble(orderQty);
             out.write("price").writeDouble(price);
             out.write("side").object(BuySell.class, side);
@@ -134,7 +134,7 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
         super.readMarshallable(in);
         if (PREGENERATED_MARSHALLABLE) {
             symbol = in.read("symbol").readLong(Base85LongConverter.INSTANCE);
-            transactTime = in.read("transactTime").readLong(MicroTimestampLongConverter.INSTANCE);
+            transactTime = in.read("transactTime").readLong(NanoTimestampLongConverter.INSTANCE);
             orderQty = in.read("orderQty").readDouble();
             price = in.read("price").readDouble();
             side = in.read("side").object(side, BuySell.class);

@@ -6,21 +6,22 @@ package town.lost.oms.dto;
 
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
+import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.wire.*;
 
 public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMarshallable {
     // used to control the benchmark
-    public static final boolean BYTES_IN_BINARY = Boolean.getBoolean("byteInBinary");
+    public static final boolean BYTES_IN_BINARY = Jvm.getBoolean("bytesInBinary", true);
 
     // used to control the benchmark
-    public static final boolean PREGENERATED_MARSHALLABLE = Boolean.getBoolean("pregeneratedMarshallable");
+    public static final boolean PREGENERATED_MARSHALLABLE = Jvm.getBoolean("pregeneratedMarshallable", true);
     private static final int MASHALLABLE_VERSION = 1;
     @LongConversion(Base85LongConverter.class)
     private long sender;
     @LongConversion(Base85LongConverter.class)
     private long target;
     // client sending time
-    @LongConversion(MicroTimestampLongConverter.class)
+    @LongConversion(NanoTimestampLongConverter.class)
     private long sendingTime;
 
     @Override
