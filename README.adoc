@@ -20,12 +20,10 @@ This is under `Development` and you need to click `skip` so it says to `install`
 
 image::gitpack.png[]
 
-Ensure you have the JDK for Java 8, you could use http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[this].
-
 Open Intelij or your https://en.wikipedia.org/wiki/Integrated_development_environment[IDE], or https://www.jetbrains.com/idea/download/#section=windows[install Intelij] first if you haven't already.
 Intelij is used for this tutorial.
 
-Go to `Check out from Version Control` and select `Git`, opening the `Clone Repository`.
+Go to `Get from VCS`
 This is where you will get a copy of the Chronicle Queue Sample code.
 
 image::homegit.png[]
@@ -35,18 +33,16 @@ Press `Clone`.
 
 [source]
 ----
-https://github.com/OpenHFT/Chronicle-Queue-Sample.git
+https://github.com/OpenHFT/Chronicle-Queue-Demo.git
 ----
 
-image::Clone.png[]
+image::Clone.PNG[]
 
 Should you choose you close the Project under `File`, you an open it again by going to `Open`.
 Then you can find the repository in the directory that you saved it in earlier.
 
-image::Open.png[]
+image::directory.PNG[]
 
-image::directory.png[]
+Then you can run the first example https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/simple-input[Simple Input]
 
-Then you can run the first example https://github.com/OpenHFT/Chronicle-Queue-Sample/tree/master/simple-input[Simple Input]
-
-The second example is https://github.com/OpenHFT/Chronicle-Queue-Sample/tree/master/simple-translator[Simple Translator]
+The second example is https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/simple-translator[Simple Translator]
