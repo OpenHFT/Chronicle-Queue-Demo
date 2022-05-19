@@ -9,6 +9,7 @@ newOrderSingle: {
   transactTime: 2019-12-03T09:54:37.344751,
   orderQty: 10E6,
   price: 1.2123,
+  clOrdID: dkj4378fwh,
   ordType: limit
 }
 ...

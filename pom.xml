@@ -14,10 +14,10 @@
         <module>simple-input</module>
         <module>simple-translator</module>
         <module>simple-avro-example</module>
+        <module>hello-world</module>
         <module>order-processor</module>
         <module>message-history-demo</module>
         <module>messages-with-text</module>
-        <module>hello-world</module>
     </modules>
 
     <dependencyManagement>

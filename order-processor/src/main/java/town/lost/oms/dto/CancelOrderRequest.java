@@ -13,9 +13,9 @@ import net.openhft.chronicle.wire.WireOut;
 
 public class CancelOrderRequest extends AbstractEvent<CancelOrderRequest> {
     private static final int MASHALLABLE_VERSION = 1;
-    private String clOrdID = "";
     @LongConversion(Base85LongConverter.class)
     private long symbol;
+    private String clOrdID = "";
 
     public String clOrdID() {
         return clOrdID;
@@ -39,8 +39,8 @@ public class CancelOrderRequest extends AbstractEvent<CancelOrderRequest> {
     public void writeMarshallable(WireOut out) {
         super.writeMarshallable(out);
         if (PREGENERATED_MARSHALLABLE) {
-            out.write("clOrdID").object(String.class, clOrdID);
             out.write("symbol").writeLong(Base85LongConverter.INSTANCE, symbol);
+            out.write("clOrdID").object(String.class, clOrdID);
         }
     }
 
@@ -48,8 +48,8 @@ public class CancelOrderRequest extends AbstractEvent<CancelOrderRequest> {
     public void readMarshallable(WireIn in) {
         super.readMarshallable(in);
         if (PREGENERATED_MARSHALLABLE) {
-            clOrdID = in.read("clOrdID").object(clOrdID, String.class);
             symbol = in.read("symbol").readLong(Base85LongConverter.INSTANCE);
+            clOrdID = in.read("clOrdID").object(clOrdID, String.class);
         }
     }
 
@@ -58,8 +58,8 @@ public class CancelOrderRequest extends AbstractEvent<CancelOrderRequest> {
         super.writeMarshallable(out);
         if (PREGENERATED_MARSHALLABLE) {
             out.writeStopBit(MASHALLABLE_VERSION);
-            out.writeObject(String.class, clOrdID);
             out.writeLong(symbol);
+            out.writeObject(String.class, clOrdID);
         }
     }
 
@@ -69,8 +69,8 @@ public class CancelOrderRequest extends AbstractEvent<CancelOrderRequest> {
         if (PREGENERATED_MARSHALLABLE) {
             int version = (int) in.readStopBit();
             if (version == MASHALLABLE_VERSION) {
-                clOrdID = (String) in.readObject(String.class);
                 symbol = in.readLong();
+                clOrdID = (String) in.readObject(String.class);
             } else {
                 throw new IllegalStateException("Unknown version " + version);
             }
