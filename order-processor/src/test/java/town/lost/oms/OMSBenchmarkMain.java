@@ -22,48 +22,36 @@ import town.lost.oms.dto.*;
 // sudo cpupower frequency-set -g performance -d 4.5g
 
 // -Xmx64m -XX:+UnlockCommercialFeatures -XX:+FlightRecorder -XX:StartFlightRecording=name=test,filename=test.jfr,dumponexit=true,settings=profile -XX:-UseTLAB
-/*
-All run with -Dthroughput=100000 on a 4.5 Ghz Centos 7.5 system.
-extends SelfDescribingMarshallable - default
+/* Run on a Ryzen 9 5950X, Ubuntu 20.10
+-Xmx1g -DbyteInBinary=true -DpregeneratedMarshallable=true -Dthroughput=100000 -DrunTime=120 -Dpath=/tmp
+-------------------------------- SUMMARY (end to end) us -------------------------------------------
 Percentile   run1         run2         run3         run4         run5      % Variation
-50:             1.01         1.03         1.06         1.12         1.15         7.32
-90:             1.76         1.26         1.32         1.39         1.45         9.18
-99:             2.75         2.47         2.50         2.55         2.59         3.19
-99.7:           3.37         2.71         2.73         2.82         2.86         3.56
-99.9:          11.36        11.31        11.31        11.42        11.49         1.07
+50.0:            2.06         1.99         1.99         1.99         1.99         0.00
+90.0:            2.13         2.04         2.04         2.05         2.05         0.33
+99.0:            3.16         3.09         3.09         3.10         3.10         0.17
+99.7:            3.66         3.57         3.58         3.58         3.57         0.15
+99.9:            4.02         3.92         3.90         3.90         3.90         0.41
+99.97:           4.78         4.66         4.65         4.70         4.65         0.68
+99.99:           5.58         5.29         5.21         5.34         5.14         2.43
+99.997:          8.56         6.01         5.88         6.34         5.90         5.00
+99.999:          9.30         6.81         6.42         9.39         6.47        23.55
+worst:          50.11        74.11        10.58        13.30        11.15        80.02
+----------------------------------------------------------------------------------------------------
 
-// extends SelfDescribingMarshallable - with code generation
+-Xmx772m -DbyteInBinary=true -DpregeneratedMarshallable=true -Dthroughput=100000 -DrunTime=120 -Dpath=/nvme/tmp
+-------------------------------- SUMMARY (end to end) us -------------------------------------------
 Percentile   run1         run2         run3         run4         run5      % Variation
-50:             0.92         0.81         0.85         0.87         0.88         5.83
-90:             1.09         1.07         1.07         1.22         1.23         8.85
-99:             2.35         2.24         2.24         2.31         2.33         2.61
-99.7:           2.64         2.46         2.41         2.51         2.52         2.85
-99.9:           6.30         3.76         3.09         3.75         3.59        12.67
-
-// extends BytesInBinaryMarshallable
-Percentile   run1         run2         run3         run4         run5      % Variation
-50:             0.65         0.71         0.71         0.66         0.66         5.02
-90:             0.79         0.90         0.90         0.78         0.78         9.09
-99:             2.05         2.01         2.01         2.03         1.98         1.59
-99.7:           2.31         2.17         2.16         2.18         2.14         1.48
-99.9:           3.00         2.74         2.66         2.65         2.45         7.51
-
-// extends BytesInBinaryMarshallable - with code generation + MethodIds
-Percentile   run1         run2         run3         run4         run5      % Variation
-50:             0.54         0.55         0.54         0.56         0.55         2.40
-90:             0.61         0.65         0.62         0.67         0.63         5.14
-99:             1.95         1.88         1.91         1.90         1.89         1.09
-99.7:           2.15         2.08         2.06         2.08         2.07         0.64
-99.9:           2.74         2.46         2.36         2.34         2.36         3.25
-
-// -Dthroughput=100000 on a i4770 windows laptop
-Percentile   run1         run2         run3         run4         run5      % Variation
-50:             0.80         0.80         0.80         0.80         0.80         0.00
-90:             0.90         1.00         0.90         0.80         0.80        14.28
-99:             2.90         3.10         2.70         2.70         2.70         8.99
-99.7:           4.80         4.80         3.90         3.40         3.40        21.55
-99.9:          19.40        14.70        14.60        14.30        14.40         1.83
-worst:       1678.85     28090.37     12480.51      1005.31      6952.96        94.73
+50.0:            1.98         1.97         1.97         1.97         1.97         0.00
+90.0:            2.05         2.04         2.04         2.04         2.04         0.00
+99.0:            3.38         3.39         3.36         3.34         3.34         0.95
+99.7:            6.34         6.38         5.80         5.45         5.46        10.20
+99.9:           16.27        16.42        16.48        16.42        16.48         0.26
+99.97:          17.38        17.38        17.38        17.25        17.38         0.49
+99.99:          18.91        18.46        18.66        18.21        18.66         1.61
+99.997:         24.29        22.24        22.82        21.09        25.12        11.31
+99.999:         29.15        27.94        26.40        25.76       402.94        90.71
+worst:         214.27        51.78       537.60        50.24      1255.42        94.12
+----------------------------------------------------------------------------------------------------
 
 // -Dthroughput=100000 -DrunTime=30 on a i9-10980HK windows laptop
 -------------------------------- SUMMARY (end to end) us -------------------------------------------
@@ -83,7 +71,7 @@ public class OMSBenchmarkMain {
     public static final int THROUGHPUT = Integer.getInteger("throughput", 100_000);
     public static final int RUN_TIME = Integer.getInteger("runTime", 10);
     public static final Base85LongConverter BASE85 = Base85LongConverter.INSTANCE;
-    public static final String PATH = System.getProperty("path", OS.getTarget());
+    public static final String PATH = System.getProperty("path", OS.TMP);
     public static final boolean ACCOUNT_FOR_COORDINATED_OMMISSION = Jvm.getBoolean("accountForCoordinatedOmmission");
 
     static {
@@ -95,8 +83,8 @@ public class OMSBenchmarkMain {
         printProperties();
 
         String tmpDir = PATH + "/bench-" + System.nanoTime();
-        try (ChronicleQueue input = ChronicleQueue.single(tmpDir + "/input");
-             ChronicleQueue output = ChronicleQueue.single(tmpDir + "/output")) {
+        try (ChronicleQueue input = single(tmpDir, "/input");
+             ChronicleQueue output = single(tmpDir, "/output")) {
 
             // processing thread
             Thread processor = new Thread(() -> {
@@ -116,10 +104,10 @@ public class OMSBenchmarkMain {
             processor.start();
 
             JLBH jlbh = new JLBH(new JLBHOptions()
-                    .warmUpIterations(50000)
+                    .warmUpIterations(300_000)
                     .pauseAfterWarmupMS(500)
                     .throughput(THROUGHPUT)
-                    .iterations(Math.min(5_000_000, THROUGHPUT * RUN_TIME))
+                    .iterations(THROUGHPUT * RUN_TIME)
                     .runs(5)
                     .recordOSJitter(false)
                     .accountForCoordinatedOmission(ACCOUNT_FOR_COORDINATED_OMMISSION)
@@ -154,6 +142,12 @@ public class OMSBenchmarkMain {
         printProperties();
         Jvm.pause(1000);
         IOTools.deleteDirWithFiles(tmpDir);
+    }
+
+    static ChronicleQueue single(String tmpDir, String x) {
+        return ChronicleQueue.singleBuilder(tmpDir + x)
+                .blockSize(OS.isSparseFileSupported() ? 64L << 30 : 64L << 20)
+                .build();
     }
 
     private static void printProperties() {
