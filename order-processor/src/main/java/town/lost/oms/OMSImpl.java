@@ -30,6 +30,7 @@ public class OMSImpl implements OMSIn {
                 .symbol(nos.symbol())
                 .clOrdID(nos.clOrdID())
                 .ordType(nos.ordType())
+                .orderQty(nos.orderQty())
                 .price(nos.price())
                 .side(nos.side())
                 .sendingTime(nos.sendingTime())
