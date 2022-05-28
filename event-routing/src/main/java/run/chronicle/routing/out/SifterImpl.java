@@ -17,12 +17,12 @@ public class SifterImpl implements SifterIn {
 
     @Override
     public void value(Value value) {
-        if (value.value() % 2 == 0)
+        if (value.val() % 2 == 0)
             so.evens()
-                    .even(even.value(value.value()));
-        if (value.value() % 3 == 0)
+                    .even(even.val(value.val()));
+        if (value.val() % 3 == 0)
             so.triples()
-                    .triple(triple.value(value.value()));
+                    .triple(triple.val(value.val()));
         so.out().value(value);
     }
 }

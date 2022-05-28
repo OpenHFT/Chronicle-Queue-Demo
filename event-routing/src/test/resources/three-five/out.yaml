@@ -1,63 +1,63 @@
 ---
 out: ""
 value: {
-  value: 0
+  val: 0
 }
 ...
 ---
 out: ""
 value: {
-  value: 1
+  val: 1
 }
 ...
 ---
 out: ""
 value: {
-  value: 2
+  val: 2
 }
 ...
 ---
 via: three
 value: {
-  value: 3
+  val: 3
 }
 ...
 out: ""
 value: {
-  value: 3
+  val: 3
 }
 ...
 ---
 out: ""
 value: {
-  value: 4
+  val: 4
 }
 ...
 ---
 via: five
 value: {
-  value: 5
+  val: 5
 }
 ...
 out: ""
 value: {
-  value: 5
+  val: 5
 }
 ...
 ---
 via: three
 value: {
-  value: 6
+  val: 6
 }
 ...
 out: ""
 value: {
-  value: 6
+  val: 6
 }
 ...
 ---
 out: ""
 value: {
-  value: 15
+  val: 15
 }
 ...

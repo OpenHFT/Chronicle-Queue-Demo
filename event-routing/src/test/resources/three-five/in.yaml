@@ -1,48 +1,48 @@
 ---
 in: ""
 value: {
-  value: 0
+  val: 0
 }
 ...
 ---
 via: aye
 value: {
-  value: 1
+  val: 1
 }
 ...
 ---
 via: bee
 value: {
-  value: 2
+  val: 2
 }
 ...
 ---
 via: cee
 value: {
-  value: 3
+  val: 3
 }
 ...
 ---
 via: dee
 value: {
-  value: 4
+  val: 4
 }
 ...
 ---
 via: ee
 value: {
-  value: 5
+  val: 5
 }
 ...
 ---
 via: eff
 value: {
-  value: 6
+  val: 6
 }
 ...
 ---
 via: oh
 value: {
-  value: 15
+  val: 15
 }
 ...

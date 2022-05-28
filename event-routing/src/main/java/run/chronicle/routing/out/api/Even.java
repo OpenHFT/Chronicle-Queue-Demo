@@ -3,14 +3,14 @@ package run.chronicle.routing.out.api;
 import net.openhft.chronicle.wire.SelfDescribingMarshallable;
 
 public class Even extends SelfDescribingMarshallable {
-    private long value;
+    private long val;
 
-    public long value() {
-        return value;
+    public long val() {
+        return val;
     }
 
-    public Even value(long value) {
-        this.value = value;
+    public Even val(long value) {
+        this.val = value;
         return this;
     }
 }
