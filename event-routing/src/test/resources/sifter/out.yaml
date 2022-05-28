@@ -1,0 +1,72 @@
+---
+out: ""
+value: {
+  value: 1
+}
+...
+---
+evens: ""
+even: {
+  value: 2
+}
+...
+out: ""
+value: {
+  value: 2
+}
+...
+---
+triples: ""
+triple: {
+  value: 3
+}
+...
+out: ""
+value: {
+  value: 3
+}
+...
+---
+evens: ""
+even: {
+  value: 4
+}
+...
+out: ""
+value: {
+  value: 4
+}
+...
+---
+out: ""
+value: {
+  value: 5
+}
+...
+---
+evens: ""
+even: {
+  value: 6
+}
+...
+triples: ""
+triple: {
+  value: 6
+}
+...
+out: ""
+value: {
+  value: 6
+}
+...
+---
+triples: ""
+triple: {
+  value: 15
+}
+...
+out: ""
+value: {
+  value: 15
+}
+...

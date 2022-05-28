@@ -1,4 +1,4 @@
-package run.chronicle.routing;
+package run.chronicle.routing.inout;
 
 import net.openhft.chronicle.wire.utils.YamlTester;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package run.chronicle.routing;
+package run.chronicle.routing.inout.api;
 
 import net.openhft.chronicle.bytes.UpdateInterceptor;
 import net.openhft.chronicle.core.Jvm;
