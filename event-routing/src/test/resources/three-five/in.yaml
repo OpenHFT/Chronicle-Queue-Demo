@@ -1,0 +1,48 @@
+---
+in: ""
+value: {
+  val: 0
+}
+...
+---
+via: aye
+value: {
+  val: 1
+}
+...
+---
+via: bee
+value: {
+  val: 2
+}
+...
+---
+via: cee
+value: {
+  val: 3
+}
+...
+---
+via: dee
+value: {
+  val: 4
+}
+...
+---
+via: ee
+value: {
+  val: 5
+}
+...
+---
+via: eff
+value: {
+  val: 6
+}
+...
+---
+via: oh
+value: {
+  val: 15
+}
+...

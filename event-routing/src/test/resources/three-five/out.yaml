@@ -1,0 +1,63 @@
+---
+out: ""
+value: {
+  val: 0
+}
+...
+---
+out: ""
+value: {
+  val: 1
+}
+...
+---
+out: ""
+value: {
+  val: 2
+}
+...
+---
+via: three
+value: {
+  val: 3
+}
+...
+out: ""
+value: {
+  val: 3
+}
+...
+---
+out: ""
+value: {
+  val: 4
+}
+...
+---
+via: five
+value: {
+  val: 5
+}
+...
+out: ""
+value: {
+  val: 5
+}
+...
+---
+via: three
+value: {
+  val: 6
+}
+...
+out: ""
+value: {
+  val: 6
+}
+...
+---
+out: ""
+value: {
+  val: 15
+}
+...
