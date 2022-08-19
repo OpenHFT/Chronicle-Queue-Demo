@@ -1,0 +1,37 @@
+= Chronicle-Queue-Sample
+:imagesdir: ../images
+
+== Market Data Pipeline
+
+This example is code for the article link:https://chronicle.software/unix-philosophy-for-low-latency[The Unix Philosophy for Low Latency]
+
+=== To run
+
+Start up three terminal screens and run the the following in the `md-pipeline` directory to start the services
+
+```
+mvn exec:java@generate
+```
+
+```
+mvn exec:java@aggregator
+```
+
+```
+mvn exec:java@strategy
+```
+
+And to watch the output from each service start up three more screens
+
+```
+mvn exec:java@tailf -Dqueue=agg-in
+```
+
+```
+mvn exec:java@tailf -Dqueue=agg-out
+```
+
+```
+mvn exec:java@tailf -Dqueue=strat-out
+```
+

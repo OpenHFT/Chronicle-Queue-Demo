@@ -1,0 +1,14 @@
+---
+marketDataSnapshot: {
+  symbol: BTCUSD,
+  transactTime: 2019-12-03T09:54:37.345678,
+  bid: 23418.5,
+  ask: 23420.1
+}
+---
+marketDataSnapshot: {
+  symbol: BTCUSD,
+  transactTime: 2019-12-03T09:54:38,
+  bid: 23419.01,
+  ask: 23420.0
+}

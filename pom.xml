@@ -19,6 +19,7 @@
         <module>event-routing</module>
         <module>message-history-demo</module>
         <module>messages-with-text</module>
+        <module>md-pipeline</module>
     </modules>
 
     <dependencyManagement>
@@ -78,4 +79,14 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>Snapshot Repository</id>
+            <name>Snapshot Repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
 </project>

@@ -1,0 +1,11 @@
+---
+---
+newOrderSingle: {
+  symbol: BTCUSD,
+  transactTime: 2019-12-03T09:54:38,
+  orderQty: 10E3,
+  price: 23420.0,
+  side: sell,
+  clOrdID: "0"
+}
+...
