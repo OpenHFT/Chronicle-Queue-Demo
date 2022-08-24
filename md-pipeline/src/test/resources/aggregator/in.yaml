@@ -1,0 +1,14 @@
+---
+mdi: {
+  symbol: BTCUSD,
+  transactTime: 2019-12-03T09:54:37.345678,
+  rate: 23418.5,
+  side: buy
+}
+---
+mdi: {
+  symbol: BTCUSD,
+  transactTime: 2019-12-03T09:54:38,
+  rate: 23419.5,
+  side: sell
+}
