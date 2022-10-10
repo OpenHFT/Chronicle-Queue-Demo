@@ -7,13 +7,13 @@ package town.lost.oms.dto;
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.wire.Base85LongConverter;
-import net.openhft.chronicle.wire.LongConversion;
 import net.openhft.chronicle.wire.WireIn;
 import net.openhft.chronicle.wire.WireOut;
+import net.openhft.chronicle.wire.converter.Base85;
 
 public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
     private static final int MASHALLABLE_VERSION = 1;
-    @LongConversion(Base85LongConverter.class)
+    @Base85
     private long symbol;
     private String clOrdID = "";
     private String reason = "";

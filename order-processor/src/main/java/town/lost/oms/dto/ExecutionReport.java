@@ -6,17 +6,22 @@ package town.lost.oms.dto;
 
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
-import net.openhft.chronicle.wire.*;
+import net.openhft.chronicle.wire.Base85LongConverter;
+import net.openhft.chronicle.wire.NanoTimestampLongConverter;
+import net.openhft.chronicle.wire.WireIn;
+import net.openhft.chronicle.wire.WireOut;
+import net.openhft.chronicle.wire.converter.Base85;
+import net.openhft.chronicle.wire.converter.NanoTime;
 
 public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     private static final int MASHALLABLE_VERSION = 1;
-    @LongConversion(Base85LongConverter.class)
+    @Base85
     private long symbol;
-    @LongConversion(NanoTimestampLongConverter.class)
+    @NanoTime
     private long transactTime;
     private double orderQty;
     private double price;
-    @LongConversion(NanoTimestampLongConverter.class)
+    @NanoTime
     private long orderID;
     private double lastPx;
     private double leavesQty;

@@ -8,6 +8,8 @@ import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.wire.*;
+import net.openhft.chronicle.wire.converter.Base85;
+import net.openhft.chronicle.wire.converter.NanoTime;
 
 public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMarshallable {
     // used to control the benchmark
@@ -16,12 +18,12 @@ public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMar
     // used to control the benchmark
     public static final boolean PREGENERATED_MARSHALLABLE = Jvm.getBoolean("pregeneratedMarshallable", true);
     private static final int MASHALLABLE_VERSION = 1;
-    @LongConversion(Base85LongConverter.class)
+    @Base85
     private long sender;
-    @LongConversion(Base85LongConverter.class)
+    @Base85
     private long target;
     // client sending time
-    @LongConversion(NanoTimestampLongConverter.class)
+    @NanoTime
     private long sendingTime;
 
     @Override
