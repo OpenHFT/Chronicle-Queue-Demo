@@ -137,7 +137,7 @@ public class LatencyDistributionMain {
     public void run(String[] args) throws InterruptedException {
         File tmpDir = getTmpDir();
         SingleChronicleQueueBuilder builder = SingleChronicleQueueBuilder
-                .fieldlessBinary(tmpDir)
+                .binary(tmpDir)
                 .blockSize(128 << 20);
         try (ChronicleQueue queue = builder
                 .writeBufferMode(BUFFER_MODE)
@@ -191,9 +191,6 @@ public class LatencyDistributionMain {
                 int counter = 0;
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
-                        // if (SAMPLING)
-                        // sampler.thread(Thread.currentThread());
-                        // boolean found = tailer.readDocument(myReadMarshallable);
                         boolean found;
                         try (DocumentContext dc = tailer.readingDocument()) {
                             found = dc.isPresent();
@@ -213,21 +210,6 @@ public class LatencyDistributionMain {
                                 if (count % INTLOG_INTERVAL == 0) System.out.println("read  " + count);
                             }
                         }
-/*
-                        if (SAMPLING) {
-                            StackTraceElement[] stack = sampler.getAndReset();
-                            if (stack != null) {
-                                if (!stack[0].getClassName().equals(name) &&
-                                        !stack[0].getClassName().equals("java.lang.Thread")) {
-                                    StringBuilder sb = new StringBuilder();
-                                    Jvm.trimStackTrace(sb, stack);
-                                   // System.out.println(sb);
-                                }
-                            } else if (!found) {
-                                Thread.yield();
-                            }
-                        }
-                        */
 
                     } catch (Exception e) {
                         break;

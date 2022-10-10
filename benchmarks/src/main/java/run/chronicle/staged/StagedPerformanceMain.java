@@ -157,8 +157,6 @@ public class StagedPerformanceMain {
     public static void firstStage() {
         IFacadeAll datum = Values.newNativeReference(IFacadeAll.class);
         long datumSize = datum.maxSize();
-//        int count = 0;
-//        long start = System.nanoTime();
         try (ExcerptTailer tailer = q0.createTailer();
              LongValue value = q0.indexForId("stage1")) {
 
@@ -177,14 +175,8 @@ public class StagedPerformanceMain {
                 }
                 // write the index processed
                 value.setOrderedValue(index);
-//                count++;
                 final int left = datum.getValue3();
-//                if (left % REPORT_INTERVAL == 0 & !WARMUP & left > 0)
-//                    System.out.println("stage " + 1 + ", left " + left);
                 if (left == 0) {
-//                    long time = System.nanoTime() - start;
-//                    if (!WARMUP)
-//                        System.out.println("First stage read " + count + " messages in " + time / 1000 / 1e6 + " seconds");
                     break;
                 }
             }
@@ -204,8 +196,6 @@ public class StagedPerformanceMain {
     private static void runStage(int s) {
         IFacadeAll datum = Values.newNativeReference(IFacadeAll.class);
         long datumSize = datum.maxSize();
-//        int count = 0;
-//        long start = System.nanoTime();
         try (ExcerptTailer tailer = q0.createTailer();
              LongValue stageP = q0.indexForId("stage" + (s - 1));
              LongValue stage = q0.indexForId("stage" + s)) {
@@ -226,14 +216,8 @@ public class StagedPerformanceMain {
                     // write the index processed
                     stage.setOrderedValue(dc.index());
                 }
-//                count++;
                 final int left = datum.getValue3();
-//                if (left % REPORT_INTERVAL == 0 & !WARMUP & left > 0)
-//                    System.out.println("stage " + s + ", left " + left);
                 if (left == 0) {
-//                    long time = System.nanoTime() - start;
-//                    if (!WARMUP)
-//                        System.out.println("Stage " + s + " read " + count + " messages in " + time / 1000 / 1e6 + " seconds");
                     break;
                 }
             }

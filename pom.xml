@@ -72,7 +72,7 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <!-- we want to fail if we depend on any deprecated methods -->
-                    <failOnWarning>false</failOnWarning>
+                    <failOnWarning>true</failOnWarning>
                     <showWarnings>true</showWarnings>
                     <compilerArgument>-Xlint:all,-rawtypes,-unchecked</compilerArgument>
                 </configuration>
