@@ -20,6 +20,7 @@
         <module>message-history-demo</module>
         <module>messages-with-text</module>
         <module>md-pipeline</module>
+        <module>benchmarks</module>
     </modules>
 
     <dependencyManagement>
