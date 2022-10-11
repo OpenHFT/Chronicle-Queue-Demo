@@ -5,14 +5,14 @@
 package org.trading.dto;
 
 import net.openhft.chronicle.wire.Base85LongConverter;
-import net.openhft.chronicle.wire.LongConversion;
-import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 import net.openhft.chronicle.wire.SelfDescribingMarshallable;
+import net.openhft.chronicle.wire.converter.Base85;
+import net.openhft.chronicle.wire.converter.NanoTime;
 
 public class NewOrderSingle extends SelfDescribingMarshallable {
-    @LongConversion(Base85LongConverter.class)
+    @Base85
     private long symbol;
-    @LongConversion(MicroTimestampLongConverter.class)
+    @NanoTime
     private long transactTime;
     private double orderQty;
     private double price;

@@ -1,13 +1,12 @@
 package town.lost.processor.events;
 
-import net.openhft.chronicle.wire.LongConversion;
-import net.openhft.chronicle.wire.MicroTimestampLongConverter;
 import net.openhft.chronicle.wire.SelfDescribingMarshallable;
+import net.openhft.chronicle.wire.converter.NanoTime;
 
 public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMarshallable {
     private String eventSource;
 
-    @LongConversion(MicroTimestampLongConverter.class)
+    @NanoTime
     private long eventTimeStamp;
 
     public String eventSource() {
