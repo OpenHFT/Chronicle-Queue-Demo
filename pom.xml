@@ -21,6 +21,7 @@
         <module>messages-with-text</module>
         <module>md-pipeline</module>
         <module>benchmarks</module>
+        <module>account-example</module>
     </modules>
 
     <dependencyManagement>
