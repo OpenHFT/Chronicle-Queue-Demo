@@ -21,6 +21,8 @@
         <module>messages-with-text</module>
         <module>md-pipeline</module>
         <module>benchmarks</module>
+        <module>account-example</module>
+        <module>echo-perf</module>
     </modules>
 
     <dependencyManagement>
@@ -29,9 +31,8 @@
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>third-party-bom</artifactId>
-                <!-- PLEASE DON'T LEAVE THIS ON A SNAPSHOT because they get missed in a release  -->
-                <type>pom</type>
                 <version>3.22.3</version>
+                <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
@@ -80,14 +81,4 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>Snapshot Repository</id>
-            <name>Snapshot Repository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-    </repositories>
 </project>

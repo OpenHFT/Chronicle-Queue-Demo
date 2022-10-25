@@ -1,0 +1,44 @@
+# transfer to self ok
+---
+OnTransfer: {
+  time: 2022-10-18T12:34:56.7,
+  from: account1,
+  to: account1,
+  amount: 10.0,
+  success: true,
+  reason: ""
+}
+...
+# transfer to self too much
+---
+OnTransfer: {
+  time: 2022-10-18T12:34:56.8,
+  from: account1,
+  to: account1,
+  amount: 1E3,
+  success: false,
+  reason: Insufficient funds
+}
+...
+# transfer to nonexistent account
+---
+OnTransfer: {
+  time: 2022-10-18T12:34:56.9,
+  from: account1,
+  to: account2,
+  amount: 500.0,
+  success: false,
+  reason: To account doesn't exist
+}
+...
+# transfer from nonexistent account
+---
+OnTransfer: {
+  time: 2022-10-18T12:34:56.95,
+  from: account2,
+  to: account1,
+  amount: 500.0,
+  success: false,
+  reason: From account doesn't exist
+}
+...

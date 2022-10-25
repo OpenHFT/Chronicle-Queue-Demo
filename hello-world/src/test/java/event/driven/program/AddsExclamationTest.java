@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class AddsExclamationTest {
+public class HellAddsExclamationTest {
     @Test
     public void say() {
         YamlTester yt = YamlTester.runTest(AddsExclamation.class, "says");
