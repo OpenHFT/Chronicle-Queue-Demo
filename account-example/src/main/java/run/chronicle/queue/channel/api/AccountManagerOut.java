@@ -20,5 +20,6 @@ package run.chronicle.queue.channel.api;
 
 public interface AccountManagerOut {
     void OnCreateAccount(OnCreateAccount onCreateAccount);
+
     void OnTransfer(OnTransfer onTransfer);
 }

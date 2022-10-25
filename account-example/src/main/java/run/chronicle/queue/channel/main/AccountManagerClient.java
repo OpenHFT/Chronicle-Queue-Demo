@@ -2,14 +2,14 @@ package run.chronicle.queue.channel.main;
 
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
-import run.chronicle.queue.channel.AccountSvcHandler;
-import run.chronicle.queue.channel.api.AccountManagerIn;
-import run.chronicle.queue.channel.api.CreateAccount;
-import run.chronicle.queue.channel.api.OnCreateAccount;
 import net.openhft.chronicle.wire.Base85LongConverter;
 import net.openhft.chronicle.wire.LongConverter;
 import net.openhft.chronicle.wire.channel.ChronicleChannel;
 import net.openhft.chronicle.wire.channel.ChronicleContext;
+import run.chronicle.queue.channel.AccountSvcHandler;
+import run.chronicle.queue.channel.api.AccountManagerIn;
+import run.chronicle.queue.channel.api.CreateAccount;
+import run.chronicle.queue.channel.api.OnCreateAccount;
 
 public class AccountManagerClient {
 
@@ -27,9 +27,9 @@ public class AccountManagerClient {
             final AccountManagerIn accountManagerIn = channel.methodWriter(AccountManagerIn.class);
 
             CreateAccount createAccount = new CreateAccount()
-                                                .name(base85LongConverter.parse("Account1"))
-                                                .balance(2000.0)
-                                                .time(SystemTimeProvider.CLOCK.currentTimeNanos());
+                    .name(base85LongConverter.parse("Account1"))
+                    .balance(2000.0)
+                    .time(SystemTimeProvider.CLOCK.currentTimeNanos());
             Jvm.startup().on(AccountManagerClient.class, "Create: " + createAccount.toString());
             accountManagerIn.createAccount(createAccount);
 

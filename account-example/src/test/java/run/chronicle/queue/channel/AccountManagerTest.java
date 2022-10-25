@@ -17,10 +17,8 @@ package run.chronicle.queue.channel;/*
  */
 
 import net.openhft.chronicle.wire.TextMethodTester;
-
-import run.chronicle.queue.channel.AccountManager;
-import run.chronicle.queue.channel.api.AccountManagerOut;
 import org.junit.Test;
+import run.chronicle.queue.channel.api.AccountManagerOut;
 
 import java.io.IOException;
 
@@ -30,12 +28,12 @@ public class AccountManagerTest {
 
     static void testMessages(String path) throws IOException {
         TextMethodTester test = new TextMethodTester<>(
-            path + "/in.yaml",
-            AccountManager::new,
-            AccountManagerOut.class,
-            path + "/out.yaml")
-            .setup(path + "/setup.yaml")
-            .run();
+                path + "/in.yaml",
+                AccountManager::new,
+                AccountManagerOut.class,
+                path + "/out.yaml")
+                .setup(path + "/setup.yaml")
+                .run();
         assertEquals(test.expected(), test.actual());
     }
 
