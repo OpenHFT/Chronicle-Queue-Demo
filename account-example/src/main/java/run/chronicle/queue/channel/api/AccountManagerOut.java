@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package net.openhft.chronicle.queue.channel.accountex.api;
+package run.chronicle.queue.channel.api;
 
 public interface AccountManagerOut {
     void OnCreateAccount(OnCreateAccount onCreateAccount);

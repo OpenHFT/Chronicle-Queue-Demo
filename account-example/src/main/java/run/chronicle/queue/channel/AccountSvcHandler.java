@@ -1,6 +1,6 @@
-package net.openhft.chronicle.queue.channel.accountex;
+package run.chronicle.queue.channel;
 
-import net.openhft.chronicle.queue.channel.accountex.api.AccountManagerOut;
+import run.chronicle.queue.channel.api.AccountManagerOut;
 import net.openhft.chronicle.wire.channel.AbstractHandler;
 import net.openhft.chronicle.wire.channel.ChronicleChannel;
 import net.openhft.chronicle.wire.channel.ChronicleChannelCfg;

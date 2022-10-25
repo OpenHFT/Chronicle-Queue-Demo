@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-package net.openhft.chronicle.queue.channel.accountex;
+package run.chronicle.queue.channel;
 
-import net.openhft.chronicle.queue.channel.accountex.api.*;
+import run.chronicle.queue.channel.api.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

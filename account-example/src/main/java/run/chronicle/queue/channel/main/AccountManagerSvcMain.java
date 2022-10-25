@@ -1,4 +1,4 @@
-package net.openhft.chronicle.queue.channel.accountex.main;
+package run.chronicle.queue.channel.main;
 
 import net.openhft.chronicle.wire.channel.ChronicleGatewayMain;
 

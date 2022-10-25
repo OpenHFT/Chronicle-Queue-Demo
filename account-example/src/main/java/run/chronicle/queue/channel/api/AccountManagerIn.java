@@ -16,28 +16,10 @@
  * limitations under the License.
  */
 
-package net.openhft.chronicle.queue.channel.accountex.api;
+package run.chronicle.queue.channel.api;
 
-public class OnCreateAccount extends CreateAccount {
-    private boolean success;
+public interface AccountManagerIn {
+    void createAccount(CreateAccount createAccount);
 
-    private String reason;
-
-    public boolean success() {
-        return success;
-    }
-
-    public OnCreateAccount success(boolean success) {
-        this.success = success;
-        return this;
-    }
-
-    public String reason() {
-        return reason;
-    }
-
-    public OnCreateAccount reason(String reason) {
-        this.reason = reason;
-        return this;
-    }
+    void transfer(Transfer transfer);
 }

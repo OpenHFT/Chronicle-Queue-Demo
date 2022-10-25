@@ -1,11 +1,11 @@
-package net.openhft.chronicle.queue.channel.accountex.main;
+package run.chronicle.queue.channel.main;
 
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
-import net.openhft.chronicle.queue.channel.accountex.AccountSvcHandler;
-import net.openhft.chronicle.queue.channel.accountex.api.AccountManagerIn;
-import net.openhft.chronicle.queue.channel.accountex.api.CreateAccount;
-import net.openhft.chronicle.queue.channel.accountex.api.OnCreateAccount;
+import run.chronicle.queue.channel.AccountSvcHandler;
+import run.chronicle.queue.channel.api.AccountManagerIn;
+import run.chronicle.queue.channel.api.CreateAccount;
+import run.chronicle.queue.channel.api.OnCreateAccount;
 import net.openhft.chronicle.wire.Base85LongConverter;
 import net.openhft.chronicle.wire.LongConverter;
 import net.openhft.chronicle.wire.channel.ChronicleChannel;

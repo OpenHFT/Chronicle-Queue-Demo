@@ -1,4 +1,4 @@
-package net.openhft.chronicle.queue.channel.accountex;/*
+package run.chronicle.queue.channel;/*
  * Copyright 2016-2022 chronicle.software
  *
  *       https://chronicle.software
@@ -18,8 +18,8 @@ package net.openhft.chronicle.queue.channel.accountex;/*
 
 import net.openhft.chronicle.wire.TextMethodTester;
 
-import net.openhft.chronicle.queue.channel.accountex.api.AccountManagerOut;
-import net.openhft.chronicle.wire.TextMethodTester;
+import run.chronicle.queue.channel.AccountManager;
+import run.chronicle.queue.channel.api.AccountManagerOut;
 import org.junit.Test;
 
 import java.io.IOException;

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package net.openhft.chronicle.queue.channel.accountex.api;
+package run.chronicle.queue.channel.api;
 
 public class OnTransfer extends Transfer {
     private boolean success;

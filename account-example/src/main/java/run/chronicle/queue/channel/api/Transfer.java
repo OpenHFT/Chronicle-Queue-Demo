@@ -16,43 +16,52 @@
  * limitations under the License.
  */
 
-package net.openhft.chronicle.queue.channel.accountex.api;
+package run.chronicle.queue.channel.api;
 
 import net.openhft.chronicle.wire.SelfDescribingMarshallable;
 import net.openhft.chronicle.wire.converter.Base85;
 import net.openhft.chronicle.wire.converter.NanoTime;
 
-public class CreateAccount extends SelfDescribingMarshallable {
+public class Transfer extends SelfDescribingMarshallable {
     @NanoTime
     private long time;
     @Base85
-    private long name;
-    private double balance;
+    private long from, to;
+    private double amount;
 
     public long time() {
         return time;
     }
 
-    public CreateAccount time(long time) {
+    public Transfer time(long time) {
         this.time = time;
         return this;
     }
 
-    public long name() {
-        return name;
+    public long from() {
+        return from;
     }
 
-    public CreateAccount name(long name) {
-        this.name = name;
+    public Transfer from(long from) {
+        this.from = from;
         return this;
     }
 
-    public double balance() {
-        return balance;
+    public long to() {
+        return to;
     }
 
-    public CreateAccount balance(double balance) {
-        this.balance = balance;
+    public Transfer to(long to) {
+        this.to = to;
+        return this;
+    }
+
+    public double amount() {
+        return amount;
+    }
+
+    public Transfer amount(double amount) {
+        this.amount = amount;
         return this;
     }
 }
