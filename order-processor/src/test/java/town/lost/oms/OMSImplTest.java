@@ -32,4 +32,9 @@ public class OMSImplTest {
     public void cancelOrderRequest() {
         runTest("cancelOrderRequest");
     }
+
+    @Test
+    public void cancelAll() {
+        runTest("cancelAll");
+    }
 }
