@@ -134,9 +134,10 @@ public class ThroughputMain {
         long length = 0;
         long count = 0;
         long fromAddress = nbs.addressForRead(0);
+        UnsafeMemory memory = UnsafeMemory.MEMORY;
         while (writeCount > count && length + 4 + size <= canWrite) {
-            UnsafeMemory.UNSAFE.copyMemory(fromAddress, address + 4, size);
-            UnsafeMemory.UNSAFE.putOrderedInt(null, address, size);
+            memory.copyMemory(fromAddress, address + 4, size);
+            memory.writeOrderedInt(address, size);
             address += 4 + size;
             length += 4 + size;
             count++;
