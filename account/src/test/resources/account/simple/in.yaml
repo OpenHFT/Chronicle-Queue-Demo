@@ -1,0 +1,71 @@
+---
+# 1000 EUR for Alice
+createAccount: {
+  sender: gw1,
+  target: vault,
+  sendingTime: 2023-01-20T10:00:00,
+  name: alice,
+  account: 101013,
+  currency: EUR,
+  balance: 15
+}
+...
+---
+# 1000 EUR for Bob
+createAccount: {
+  sender: gw1,
+  target: vault,
+  sendingTime: 2023-01-20T10:00:01,
+  name: bob,
+  account: 101025,
+  currency: EUR,
+  balance: 1000
+}
+...
+---
+# Alice sends 10 EUR to bob
+transfer: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T10:01:00,
+  from: 101013,
+  to: 101025,
+  currency: EUR,
+  amount: 10,
+  reference: Dog food
+}
+...
+---
+# No account sends 10 EUR to bob
+transfer: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T10:02:00,
+  from: 1,
+  to: 101025,
+  currency: EUR,
+  amount: 10,
+  reference: Junk food
+}
+...
+---
+# Alice sends 10 EUR to a non-existent account
+transfer: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T10:03:00,
+  from: 101013,
+  to: 9999,
+  currency: EUR,
+  amount: 10,
+  reference: Cat food
+}
+...
+---
+# dump all the accounts
+checkPoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T11:00:00,
+}
+...

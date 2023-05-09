@@ -21,7 +21,7 @@
         <module>messages-with-text</module>
         <module>md-pipeline</module>
         <module>benchmarks</module>
-        <module>account-example</module>
+        <module>account</module>
         <module>echo-perf</module>
     </modules>
 
@@ -38,7 +38,7 @@
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle-bom</artifactId>
-                <version>2.24ea55</version>
+                <version>2.24ea-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
