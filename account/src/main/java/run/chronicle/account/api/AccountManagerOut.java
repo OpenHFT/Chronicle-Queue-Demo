@@ -18,18 +18,9 @@
 
 package run.chronicle.account.api;
 
-import run.chronicle.account.dto.*;
-import run.chronicle.account.util.ErrorListener;
+import run.chronicle.account.dto.CheckPoint;
 
-public interface AccountManagerOut extends ErrorListener {
-    void onCreateAccount(OnCreateAccount onCreateAccount);
-
-    void createAccountFailed(CreateAccountFailed createAccountFailed);
-
-    void onTransfer(OnTransfer onTransfer);
-
-    void transferFailed(TransferFailed transferFailed);
-
+public interface AccountManagerOut extends CreateAccountOut, TransferOut {
     void startCheckpoint(CheckPoint checkPoint);
 
     void endCheckpoint(CheckPoint checkPoint);
