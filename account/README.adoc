@@ -1,0 +1,4 @@
+= Account Manager Example
+Peter Lawrey
+
+This example shows a simple microservice accessible via TCP storing each message in and out via a Chronicle Queue
