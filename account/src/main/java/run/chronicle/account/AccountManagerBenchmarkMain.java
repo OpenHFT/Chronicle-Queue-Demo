@@ -22,6 +22,20 @@ import java.util.concurrent.TimeUnit;
 
 import static net.openhft.chronicle.core.time.SystemTimeProvider.CLOCK;
 
+/*
+-Xmx64m -Dthroughput=100000 -DrunTime=30 -Dbuffered=false -Durl=tcp://localhost:1248 -DaccountForCoordinatedOmission=false
+-------------------------------- SUMMARY (end to end) us -------------------------------------------
+Percentile   run1         run2         run3         run4         run5      % Variation
+50.0:           10.99        10.99        11.02        11.02        10.99         0.19
+90.0:           18.02        17.89        15.70        11.22        11.12        28.86
+99.0:           20.96        19.94        15.86        15.86        15.79        14.89
+99.7:           34.11        21.02        16.11        15.92        15.89        17.73
+99.9:           42.18        22.62        16.67        16.34        16.18        21.00
+99.97:        2021.38        26.08        18.21        17.44        17.25        25.45
+99.99:        5480.45        60.48        44.48        22.82        47.68        52.39
+99.997:       6938.62       332.29       426.50        80.26       451.07        75.49
+worst:        7593.98       728.06       820.22       303.62       838.66        54.02
+ */
 public class AccountManagerBenchmarkMain {
     public static final int THROUGHPUT = Integer.getInteger("throughput", 100_000);
     public static final int RUN_TIME = Integer.getInteger("runTime", 10);
