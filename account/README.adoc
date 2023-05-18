@@ -2,3 +2,17 @@
 Peter Lawrey
 
 This example shows a simple microservice accessible via TCP storing each message in and out via a Chronicle Queue
+
+[source,mermaid]
+....
+sequenceDiagram
+Client->>Gateway: createAccount
+Note right of Client: via TCP
+Gateway->>Service: createAccount
+Note right of Gateway: via Shared Memory
+Note right of Service: processes event
+Service->>Gateway: onCreateAccount
+Note left of Service: via Shared Memory
+Gateway->>Client: onCreateAccount
+Note left of Gateway: via Shared Memory
+....
