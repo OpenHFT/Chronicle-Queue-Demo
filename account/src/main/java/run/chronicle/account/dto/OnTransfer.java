@@ -37,4 +37,10 @@ public class OnTransfer extends AbstractEvent<OnTransfer> {
         super.validate();
         if (transfer == null) throw new InvalidMarshallableException("transfer must be set");
     }
+
+    @Override
+    public boolean usesSelfDescribingMessage() {
+        // use a lower level binary format
+        return false;
+    }
 }

@@ -24,12 +24,17 @@
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-wire</artifactId>
-            <version>2.24ea15-SNAPSHOT</version>
+            <version>2.24ea16-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-queue</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>jlbh</artifactId>
         </dependency>
     </dependencies>
 
@@ -67,8 +72,8 @@
                     --add-opens=java.base/java.lang=ALL-UNNAMED
                     --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
                     --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED
-                    --add-exports java.base/jdk.internal.util=ALL-UNNAMED
-                    --add-exports java.base/jdk.internal.misc=ALL-UNNAMED
+                    --add-exports=java.base/jdk.internal.util=ALL-UNNAMED
+                    --add-exports=java.base/jdk.internal.misc=ALL-UNNAMED
                 </jvm.requiredArgs>
             </properties>
         </profile>

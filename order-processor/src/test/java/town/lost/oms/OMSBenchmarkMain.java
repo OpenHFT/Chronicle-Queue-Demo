@@ -72,7 +72,7 @@ public class OMSBenchmarkMain {
     public static final int RUN_TIME = Integer.getInteger("runTime", 10);
     public static final Base85LongConverter BASE85 = Base85LongConverter.INSTANCE;
     public static final String PATH = System.getProperty("path", OS.TMP);
-    public static final boolean ACCOUNT_FOR_COORDINATED_OMMISSION = Jvm.getBoolean("accountForCoordinatedOmmission");
+    public static final boolean ACCOUNT_FOR_COORDINATED_OMISSION = Jvm.getBoolean("accountForCoordinatedOmission");
 
     static {
         System.setProperty("pauser.minProcessors", "2");
@@ -110,7 +110,7 @@ public class OMSBenchmarkMain {
                     .iterations(THROUGHPUT * RUN_TIME)
                     .runs(5)
                     .recordOSJitter(false)
-                    .accountForCoordinatedOmission(ACCOUNT_FOR_COORDINATED_OMMISSION)
+                    .accountForCoordinatedOmission(ACCOUNT_FOR_COORDINATED_OMISSION)
                     .jlbhTask(new MyJLBHTask(input)));
 
             Thread last = new Thread(() -> {
@@ -158,7 +158,7 @@ public class OMSBenchmarkMain {
                 "-Dthroughput=" + THROUGHPUT + " " +
                 "-DrunTime=" + RUN_TIME + " " +
                 "-Dpath=" + PATH + " " +
-                "-DaccountForCoordinatedOmission=" + ACCOUNT_FOR_COORDINATED_OMMISSION);
+                "-DaccountForCoordinatedOmission=" + ACCOUNT_FOR_COORDINATED_OMISSION);
     }
 
     private static class MyJLBHTask implements JLBHTask {

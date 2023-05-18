@@ -15,5 +15,5 @@ Note right of Service: processes event
 Service->>-Gateway: onCreateAccount
 Note left of Service: via Shared Memory
 Gateway->>Client: onCreateAccount
-Note left of Gateway: via Shared Memory
+Note left of Gateway: via TCP
 ....

@@ -79,4 +79,10 @@ public class Transfer extends AbstractEvent<Transfer> {
         if (amount == 0) throw new InvalidMarshallableException("amount must be set");
         if (reference == null) throw new InvalidMarshallableException("reference must be set");
     }
+
+    @Override
+    public boolean usesSelfDescribingMessage() {
+        // use a lower level binary format
+        return false;
+    }
 }
