@@ -8,8 +8,8 @@ import net.openhft.chronicle.core.Mocker;
 import net.openhft.chronicle.core.pool.ClassAliasPool;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
 import net.openhft.chronicle.queue.ChronicleQueue;
-import net.openhft.chronicle.queue.RollCycles;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
+import net.openhft.chronicle.queue.rollcycles.TestRollCycles;
 import net.openhft.chronicle.wire.Base85LongConverter;
 import town.lost.oms.api.OMSIn;
 import town.lost.oms.dto.BuySell;
@@ -23,7 +23,9 @@ import java.io.InputStreamReader;
 public class OrderAdderMain {
     public static void main(String[] args) throws IOException {
         ClassAliasPool.CLASS_ALIASES.addAlias(NewOrderSingle.class);
-        try (ChronicleQueue q = SingleChronicleQueueBuilder.binary("in").rollCycle(RollCycles.TEST8_DAILY).build()) {
+        try (ChronicleQueue q = SingleChronicleQueueBuilder.binary("in")
+                .rollCycle(TestRollCycles.TEST8_DAILY)
+                .build()) {
             OMSIn in = q.acquireAppender().methodWriter(OMSIn.class);
             OMSIn in2 = Mocker.logging(OMSIn.class, "in - ", System.out);
 

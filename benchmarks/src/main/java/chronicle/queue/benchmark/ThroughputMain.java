@@ -49,7 +49,7 @@ public class ThroughputMain {
             BytesStore<?, Void> nbs = BytesStore.nativeStoreWithFixedCapacity(size);
 
             try (ChronicleQueue q = ChronicleQueue.singleBuilder(base + i)
-                    .rollCycle(RollCycles.LARGE_HOURLY_XSPARSE)
+                    .rollCycle(RollCycles.FAST_DAILY)
                     .blockSize(blockSize)
                     .build()) {
 
@@ -92,7 +92,7 @@ public class ThroughputMain {
 
             Bytes<?> bytes = Bytes.allocateElasticDirect(64);
             try (ChronicleQueue q = ChronicleQueue.singleBuilder(base + i)
-                    .rollCycle(RollCycles.LARGE_HOURLY_XSPARSE)
+                    .rollCycle(RollCycles.FAST_DAILY)
                     .blockSize(blockSize)
                     .build()) {
                 ExcerptTailer tailer = q.createTailer();
@@ -136,7 +136,7 @@ public class ThroughputMain {
         long fromAddress = nbs.addressForRead(0);
         UnsafeMemory memory = UnsafeMemory.MEMORY;
         while (writeCount > count && length + 4 + size <= canWrite) {
-            memory.copyMemory(fromAddress, address + 4, size);
+            UnsafeMemory.copyMemory(fromAddress, address + 4, size);
             memory.writeOrderedInt(address, size);
             address += 4 + size;
             length += 4 + size;
