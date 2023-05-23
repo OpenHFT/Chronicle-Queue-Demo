@@ -1,0 +1,90 @@
+# 1000 EUR for Alice
+---
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-20T10:10:00,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:00,
+    name: alice,
+    account: 101013,
+    currency: EUR,
+    balance: 15.0
+  }
+}
+...
+# 1000 EUR for Bob
+---
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-20T10:10:00.001,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:01,
+    name: bob,
+    account: 101025,
+    currency: EUR,
+    balance: 1E3
+  }
+}
+...
+# Alice sends 10 EUR to bob
+# missing to: 101025,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: to must be set"
+...
+# No account sends 10 EUR to bob
+# missing to: 101025,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: to must be set"
+...
+# Alice sends 10 EUR to a non-existent account
+# missing to: 9999,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: to must be set"
+...
+# dump all the accounts
+---
+startCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T11:00:00
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-20T10:10:00.002,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:00,
+    name: alice,
+    account: 101013,
+    currency: EUR,
+    balance: 15.0
+  }
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-20T10:10:00.003,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:01,
+    name: bob,
+    account: 101025,
+    currency: EUR,
+    balance: 1E3
+  }
+}
+...
+endCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T11:00:00
+}
+...

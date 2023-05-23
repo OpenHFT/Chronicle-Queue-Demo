@@ -1,0 +1,24 @@
+---
+# 1000 EUR for Alice
+createAccount: {
+  sender: gw1,
+  target: vault,
+  sendingTime: 2023-01-20T10:00:00,
+  name: alice,
+  account: 101013,
+  currency: EUR,
+  balance: 15
+}
+...
+---
+# 1000 USD for Bob
+createAccount: {
+  sender: gw1,
+  target: vault,
+  sendingTime: 2023-01-20T10:00:01,
+  name: bob,
+  account: 101025,
+  currency: USD,
+  balance: 1000
+}
+...

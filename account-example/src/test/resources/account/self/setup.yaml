@@ -1,6 +1,0 @@
-# Create one account
-createAccount: {
-  time: 2022-10-18T12:34:56,
-  name: account1,
-  balance: 100.0
-}

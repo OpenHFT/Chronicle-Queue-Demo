@@ -49,7 +49,7 @@ public class ThroughputMain {
             BytesStore<?, Void> nbs = BytesStore.nativeStoreWithFixedCapacity(size);
 
             try (ChronicleQueue q = ChronicleQueue.singleBuilder(base + i)
-                    .rollCycle(RollCycles.FAST_DAILY)
+                    .rollCycle(RollCycles.FAST_HOURLY)
                     .blockSize(blockSize)
                     .build()) {
 
@@ -92,7 +92,7 @@ public class ThroughputMain {
 
             Bytes<?> bytes = Bytes.allocateElasticDirect(64);
             try (ChronicleQueue q = ChronicleQueue.singleBuilder(base + i)
-                    .rollCycle(RollCycles.FAST_DAILY)
+                    .rollCycle(RollCycles.FAST_HOURLY)
                     .blockSize(blockSize)
                     .build()) {
                 ExcerptTailer tailer = q.createTailer();
