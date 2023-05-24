@@ -3,6 +3,7 @@ package run.chronicle.account;
 import net.openhft.affinity.AffinityThreadFactory;
 import net.openhft.chronicle.bytes.MethodReader;
 import net.openhft.chronicle.core.Jvm;
+import net.openhft.chronicle.core.OS;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.jlbh.JLBH;
 import net.openhft.chronicle.jlbh.JLBHOptions;
@@ -37,8 +38,8 @@ Percentile   run1         run2         run3         run4         run5      % Var
 worst:        7593.98       728.06       820.22       303.62       838.66        54.02
  */
 public class AccountManagerBenchmarkMain {
-    public static final int THROUGHPUT = Integer.getInteger("throughput", 100_000);
-    public static final int RUN_TIME = Integer.getInteger("runTime", 10);
+    public static final int THROUGHPUT = Integer.getInteger("throughput", OS.isLinux() ? 100_000 : 10_000);
+    public static final int RUN_TIME = Integer.getInteger("runTime", 30);
     public static final boolean BUFFERED = Jvm.getBoolean("buffered");
     public static final String URL = System.getProperty("url", "tcp://localhost:1248");
     public static final boolean ACCOUNT_FOR_COORDINATED_OMISSION = Jvm.getBoolean("accountForCoordinatedOmission");

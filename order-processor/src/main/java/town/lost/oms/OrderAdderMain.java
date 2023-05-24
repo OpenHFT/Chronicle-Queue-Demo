@@ -10,7 +10,7 @@ import net.openhft.chronicle.core.time.SystemTimeProvider;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
 import net.openhft.chronicle.queue.rollcycles.TestRollCycles;
-import net.openhft.chronicle.wire.Base85LongConverter;
+import net.openhft.chronicle.wire.converter.Base85;
 import town.lost.oms.api.OMSIn;
 import town.lost.oms.dto.BuySell;
 import town.lost.oms.dto.NewOrderSingle;
@@ -57,6 +57,6 @@ public class OrderAdderMain {
     }
 
     static long toLong(String s) {
-        return Base85LongConverter.INSTANCE.parse(s);
+        return Base85.INSTANCE.parse(s);
     }
 }
