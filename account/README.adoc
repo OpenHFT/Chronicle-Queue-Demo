@@ -37,3 +37,5 @@ For demos, we might include `main` classes, however for a production system, we 
 `AccountManagerGatewayMain` acts as a gateway listening for TCP connections and writing to/reading from the shared memory queue the microservices uses
 
 `AccountManagerClientMain` injects a few simple messages and waits for resulting events from the AccountManagerImpl
+
+`AccountManagerBenchmarkMain` runs a `JLBH` benchmark to report on the latency distribution running on your machine. By default
