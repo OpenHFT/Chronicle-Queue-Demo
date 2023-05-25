@@ -18,6 +18,7 @@
 
 package run.chronicle.account.api;
 
+import net.openhft.chronicle.bytes.MethodId;
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 import run.chronicle.account.dto.CheckPoint;
 import run.chronicle.account.dto.CreateAccount;
@@ -26,6 +27,7 @@ import run.chronicle.account.dto.Transfer;
 public interface AccountManagerIn {
     void createAccount(CreateAccount createAccount) throws InvalidMarshallableException;
 
+    @MethodId('t')
     void transfer(Transfer transfer);
 
     void checkPoint(CheckPoint checkPoint);

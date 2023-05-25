@@ -9,7 +9,6 @@ import net.openhft.chronicle.jlbh.JLBH;
 import net.openhft.chronicle.jlbh.JLBHOptions;
 import net.openhft.chronicle.jlbh.JLBHTask;
 import net.openhft.chronicle.queue.channel.PipeHandler;
-import net.openhft.chronicle.threads.PauserMode;
 import net.openhft.chronicle.wire.channel.ChronicleChannel;
 import net.openhft.chronicle.wire.channel.ChronicleContext;
 import run.chronicle.account.api.AccountManagerIn;
@@ -36,6 +35,21 @@ Percentile   run1         run2         run3         run4         run5      % Var
 99.99:        5480.45        60.48        44.48        22.82        47.68        52.39
 99.997:       6938.62       332.29       426.50        80.26       451.07        75.49
 worst:        7593.98       728.06       820.22       303.62       838.66        54.02
+
+Windows 11 laptop, i7-1360P, Java 11
+-Dthroughput=10000
+-------------------------------- SUMMARY (end to end) us -------------------------------------------
+Percentile   run1         run2         run3         run4         run5      % Variation
+50.0:           24.42        24.29        24.42        24.42        24.29         0.35
+90.0:           36.80        32.42        32.96        32.96        34.11         3.37
+99.0:          221.95       152.83       156.42       163.07       232.70        25.84
+
+-Dthroughput=20000
+-------------------------------- SUMMARY (end to end) us -------------------------------------------
+Percentile   run1         run2         run3         run4         run5      % Variation
+50.0:           24.67        24.67        24.67        25.12        25.12         1.20
+90.0:           35.78        33.34        34.62        34.37        34.24         2.50
+99.0:         4124.67       373.25      2086.91       474.62       537.60        75.37
  */
 public class AccountManagerBenchmarkMain {
     public static final int THROUGHPUT = Integer.getInteger("throughput", OS.isLinux() ? 100_000 : 10_000);
@@ -45,6 +59,8 @@ public class AccountManagerBenchmarkMain {
     public static final boolean ACCOUNT_FOR_COORDINATED_OMISSION = Jvm.getBoolean("accountForCoordinatedOmission");
 
     static {
+        if (!OS.isLinux())
+            System.setProperty("affinity.reserved", "0");
         System.setProperty("disable.single.threaded.check", "true");
         System.setProperty("pauser.minProcessors", "4");
     }
@@ -60,7 +76,7 @@ public class AccountManagerBenchmarkMain {
         es.submit(service);
 
         AccountManagerGatewayMain gateway = new AccountManagerGatewayMain(URL);
-        gateway.pauserMode(PauserMode.busy).buffered(BUFFERED);
+        gateway.buffered(BUFFERED);
         es.submit(gateway);
 
         try (ChronicleContext context = ChronicleContext.newContext(URL)) {
