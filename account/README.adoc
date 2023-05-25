@@ -17,3 +17,25 @@ Note left of Service: via Shared Memory
 Gateway->>Client: onCreateAccount
 Note left of Gateway: via TCP
 ....
+
+== Structure
+
+We lay out our packages in the following manner
+
+- `api` package for the input and output interfaces.
+The input of one microservice might be the output of another microservice.
+- `dto` package for POJOs (Plain Old Java Objects) that hold the data associated with each event.
+- `impl` package for the service implementation and the high level classes it uses
+- `util` package for separating low level helper methods and classes.
+
+For demos, we might include `main` classes, however for a production system, we use a framework Chronicle Services https://chronicle.software/services/ to handle manageability, monitoring, restart and fail over.
+
+=== Main methods
+
+`AccountManagerServiceMain` runs the end service responsible for holding state and generating results of transactions
+
+`AccountManagerGatewayMain` acts as a gateway listening for TCP connections and writing to/reading from the shared memory queue the microservices uses
+
+`AccountManagerClientMain` injects a few simple messages and waits for resulting events from the AccountManagerImpl
+
+`AccountManagerBenchmarkMain` runs a `JLBH` benchmark to report on the latency distribution running on your machine. By default

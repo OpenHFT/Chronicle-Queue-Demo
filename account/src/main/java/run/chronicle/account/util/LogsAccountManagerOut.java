@@ -1,4 +1,4 @@
-package run.chronicle.account.impl;
+package run.chronicle.account.util;
 
 import net.openhft.chronicle.core.Jvm;
 import run.chronicle.account.api.AccountManagerOut;
