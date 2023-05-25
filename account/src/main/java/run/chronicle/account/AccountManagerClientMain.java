@@ -12,7 +12,7 @@ import net.openhft.chronicle.wire.channel.ChronicleContext;
 import net.openhft.chronicle.wire.channel.ChronicleGatewayMain;
 import run.chronicle.account.api.AccountManagerIn;
 import run.chronicle.account.dto.*;
-import run.chronicle.account.impl.LogsAccountManagerOut;
+import run.chronicle.account.util.LogsAccountManagerOut;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

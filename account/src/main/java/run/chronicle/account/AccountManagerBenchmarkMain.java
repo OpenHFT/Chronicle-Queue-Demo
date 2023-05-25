@@ -15,7 +15,7 @@ import net.openhft.chronicle.wire.channel.ChronicleContext;
 import run.chronicle.account.api.AccountManagerIn;
 import run.chronicle.account.dto.OnTransfer;
 import run.chronicle.account.dto.Transfer;
-import run.chronicle.account.impl.LogsAccountManagerOut;
+import run.chronicle.account.util.LogsAccountManagerOut;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
