@@ -4,6 +4,7 @@ import net.openhft.affinity.AffinityThreadFactory;
 import net.openhft.chronicle.bytes.MethodReader;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.OS;
+import net.openhft.chronicle.core.io.Closeable;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.jlbh.JLBH;
 import net.openhft.chronicle.jlbh.JLBHOptions;
@@ -11,11 +12,13 @@ import net.openhft.chronicle.jlbh.JLBHTask;
 import net.openhft.chronicle.queue.channel.PipeHandler;
 import net.openhft.chronicle.wire.channel.ChronicleChannel;
 import net.openhft.chronicle.wire.channel.ChronicleContext;
+import net.openhft.chronicle.wire.channel.impl.internal.Handler;
 import run.chronicle.account.api.AccountManagerIn;
 import run.chronicle.account.dto.OnTransfer;
 import run.chronicle.account.dto.Transfer;
 import run.chronicle.account.util.LogsAccountManagerOut;
 
+import java.net.MalformedURLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -37,12 +40,12 @@ Percentile   run1         run2         run3         run4         run5      % Var
 worst:        7593.98       728.06       820.22       303.62       838.66        54.02
 
 Windows 11 laptop, i7-1360P, Java 11
--Dthroughput=10000
+-Dthroughput=20000 -Durl=internal://
 -------------------------------- SUMMARY (end to end) us -------------------------------------------
 Percentile   run1         run2         run3         run4         run5      % Variation
-50.0:           24.42        24.29        24.42        24.42        24.29         0.35
-90.0:           36.80        32.42        32.96        32.96        34.11         3.37
-99.0:          221.95       152.83       156.42       163.07       232.70        25.84
+50.0:            1.50         1.70         1.80         1.80         1.70         3.77
+90.0:            1.90         2.10         2.20         2.30         2.10         5.97
+99.0:           19.62        14.42        20.83        18.59        19.68        22.88
 
 -Dthroughput=20000
 -------------------------------- SUMMARY (end to end) us -------------------------------------------
@@ -55,7 +58,7 @@ public class AccountManagerBenchmarkMain {
     public static final int THROUGHPUT = Integer.getInteger("throughput", OS.isLinux() ? 100_000 : 10_000);
     public static final int RUN_TIME = Integer.getInteger("runTime", 30);
     public static final boolean BUFFERED = Jvm.getBoolean("buffered");
-    public static final String URL = System.getProperty("url", "tcp://localhost:1248");
+    public static final String URL = System.getProperty("url", "tcp://:1248");
     public static final boolean ACCOUNT_FOR_COORDINATED_OMISSION = Jvm.getBoolean("accountForCoordinatedOmission");
 
     static {
@@ -63,21 +66,25 @@ public class AccountManagerBenchmarkMain {
             System.setProperty("affinity.reserved", "0");
         System.setProperty("disable.single.threaded.check", "true");
         System.setProperty("pauser.minProcessors", "4");
+        Handler.init();
     }
 
     @SuppressWarnings("try")
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, MalformedURLException {
         deleteQueues();
         printProperties();
 
         ExecutorService es = Executors.newCachedThreadPool(new AffinityThreadFactory("test"));
 
-        AccountManagerServiceMain service = new AccountManagerServiceMain();
-        es.submit(service);
+        AccountManagerServiceMain service = null;
+        if (new java.net.URL(URL).getHost().isEmpty()) {
+            service = new AccountManagerServiceMain();
+            es.submit(service);
 
-        AccountManagerGatewayMain gateway = new AccountManagerGatewayMain(URL);
-        gateway.buffered(BUFFERED);
-        es.submit(gateway);
+        } else {
+            Jvm.startup().on(AccountManagerBenchmarkMain.class,
+                    "You need to start the Gateway and Service in another process first.");
+        }
 
         try (ChronicleContext context = ChronicleContext.newContext(URL)) {
             ChronicleChannel channel = context.newChannelSupplier(new PipeHandler().publish("account-in").subscribe("account-out")).get();
@@ -114,8 +121,7 @@ public class AccountManagerBenchmarkMain {
             jlbh.start();
 
         }
-        gateway.close();
-        service.close();
+        Closeable.closeQuietly(service);
         Jvm.pause(100);
         es.shutdownNow();
         es.awaitTermination(1, TimeUnit.SECONDS);
