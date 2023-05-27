@@ -3,22 +3,62 @@ Peter Lawrey
 
 This example shows a simple microservice accessible via TCP storing each message in and out via a Chronicle Queue
 
+== Layouts
+
+The client and the service can be liad out in a variety of ways without changing the code
+
+=== TCP Client, TCP Service
+
 [source,mermaid]
 ....
 sequenceDiagram
 autonumber
-Client->>Gateway: createAccount
-Note right of Client: via TCP
-Gateway->>+Service: createAccount
-Note right of Gateway: via Shared Memory
+Client->>Gateway: transfer
+Note over Client,Gateway: via TCP, persisted
+Gateway->>+Service: transfer
+Note right of Gateway: via TCP
 Note right of Service: processes event
-Service->>-Gateway: onCreateAccount
-Note left of Service: via Shared Memory
-Gateway->>Client: onCreateAccount
+Service->>-Gateway: onTransfer
+Note over Service,Gateway: via TCP, persisted
+Gateway->>Client: onTransfer
 Note left of Gateway: via TCP
 ....
 
-== Structure
+=== TCP Client, Shared Memory Service
+
+[source,mermaid]
+....
+sequenceDiagram
+autonumber
+Client->>Gateway: transfer
+Note over Client,Gateway: via TCP, persisted
+Gateway->>+Service: transfer
+Note right of Gateway: via Shared Memory
+Note right of Service: processes event
+Service->>-Gateway: onTransfer
+Note over Service,Gateway: via Shared Memory, persisted
+Gateway->>Client: onTransfer
+Note left of Gateway: via TCP
+....
+
+=== Shared Memory Client and Service
+
+[source,mermaid]
+....
+sequenceDiagram
+autonumber
+Client->>queue: transfer
+Note over Client,queue: via Shared Memory, persisted
+queue->>+Service: transfer
+Note right of queue: via Shared Memory
+Note right of Service: processes event
+Service->>-queue: onTransfer
+Note over Service,queue: via Shared Memory, persisted
+queue->>Client: onTransfer
+Note left of queue: via Shared Memory
+....
+
+== Package Structure
 
 We lay out our packages in the following manner
 
