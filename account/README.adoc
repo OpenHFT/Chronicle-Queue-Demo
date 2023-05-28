@@ -3,13 +3,23 @@ Peter Lawrey
 
 This example shows a simple microservice accessible via TCP storing each message in and out via a Chronicle Queue
 
-== Layouts
+This Account Management System is designed to handle basic account operations such as account creation and fund transfers.
+It's built on Chronicle Wire and uses Fluent Interface pattern, taking advantage of YAML files for test input data.
 
-The client and the service can be liad out in a variety of ways without changing the code
+== Features
+
+. *Account Creation*: You can create new accounts with details such as account holder's name, account ID, currency type, and initial balance.
+. *Fund Transfers*: The system can process fund transfers between different accounts.
+. *Checkpoints*: The system can perform checkpoints, a way of marking a specific point in the sequence of operations.
+
+== Network Layouts
+
+The client and the service can be laid out in a variety of ways without changing the code
 
 === TCP Client, TCP Service
 
-This approach offers the most distributed option. The typical latencies are under 20 &micro;s with the 99%ile latency not much higher.
+This approach offers the most distributed option.
+The typical latencies are under 20 &micro;s with the 99%ile latency not much higher.
 
 [source,mermaid]
 ....
@@ -91,3 +101,62 @@ For demos, we might include `main` classes, however for a production system, we 
 `AccountManagerClientMain` injects a few simple messages and waits for resulting events from the AccountManagerImpl
 
 `AccountManagerBenchmarkMain` runs a `JLBH` benchmark to report on the latency distribution running on your machine.
+
+== Prerequisites
+
+You need Java 8 or above installed on your machine to run this system.
+
+== How to Run
+
+. Compile the source files using your preferred Java compiler.
+. Run the `main` function in the `AccountManagerServiceMain` class.
+This will start the account management service.
+
+Input data is provided through YAML files, where each operation (account creation or transfer) is defined in a separate document.
+
+== Input Data Format
+
+Input data is given in YAML format.
+Here's an example of an account creation:
+
+[source,yaml]
+----
+# Creating an account for Alice with 1000 EUR
+createAccount: {
+  sender: gw1,
+  target: vault,
+  sendingTime: 2023-01-20T10:00:00,
+  name: alice,
+  account: 101013,
+  currency: EUR,
+  balance: 1000
+}
+----
+
+And an example of a transfer:
+
+[source,yaml]
+----
+# Alice sends 10 EUR to Bob
+transfer: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T10:03:00,
+  from: 101013,
+  to: 101025,
+  currency: EUR,
+  amount: 10,
+  reference: Dog food
+}
+----
+
+== Note
+
+This is a basic implementation and does not handle many edge cases.
+It also lacks a user-friendly interface, and the input is provided directly through YAML files.
+It's intended as a demonstration of a system built on Chronicle Wire, and may not be suitable for production use without further modifications and improvements.
+
+== Contribute
+
+We would love your contributions!
+Please submit a pull request with any improvements or bug fixes you have made.
