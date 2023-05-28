@@ -18,35 +18,70 @@
 
 package run.chronicle.account.dto;
 
-
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 
+/**
+ * This class, CreateAccountFailed, is an extension of AbstractEvent used to represent a situation
+ * where an attempt to create an account has failed. This class adds two properties to the event:
+ * a reference to the original CreateAccount object that failed, and a reason string describing why
+ * the account creation failed. As with other classes in this system, it uses a fluent style of
+ * setters, and includes a validate method to ensure all necessary properties have been set.
+ */
 public class CreateAccountFailed extends AbstractEvent<CreateAccountFailed> {
-    private CreateAccount createAccount;
-    private String reason;
+    private CreateAccount createAccount; // Reference to the CreateAccount instance that failed
+    private String reason; // The reason for the failure
 
+    /**
+     * Returns the CreateAccount instance that failed.
+     *
+     * @return the CreateAccount instance that failed
+     */
     public CreateAccount createAccount() {
         return createAccount;
     }
 
+    /**
+     * Sets the CreateAccount instance that failed and returns the updated object.
+     *
+     * @param createAccount the CreateAccount instance that failed
+     * @return the updated object
+     */
     public CreateAccountFailed createAccount(CreateAccount createAccount) {
         this.createAccount = createAccount;
         return this;
     }
 
+    /**
+     * Returns the reason for the failure.
+     *
+     * @return the reason for the failure
+     */
     public String reason() {
         return reason;
     }
 
+    /**
+     * Sets the reason for the failure and returns the updated object.
+     *
+     * @param reason the reason for the failure
+     * @return the updated object
+     */
     public CreateAccountFailed reason(String reason) {
         this.reason = reason;
         return this;
     }
 
+    /**
+     * The validate method is used to verify that all necessary properties have been set.
+     *
+     * @throws InvalidMarshallableException If any of these properties is not set
+     */
     @Override
     public void validate() throws InvalidMarshallableException {
-        super.validate();
-        if (createAccount == null) throw new InvalidMarshallableException("createAccount must be set");
-        if (reason == null) throw new InvalidMarshallableException("reason must be set");
+        super.validate(); // Validate fields in the parent class
+        if (createAccount == null)
+            throw new InvalidMarshallableException("createAccount must be set"); // Ensure createAccount is set
+        if (reason == null)
+            throw new InvalidMarshallableException("reason must be set"); // Ensure reason is set
     }
 }

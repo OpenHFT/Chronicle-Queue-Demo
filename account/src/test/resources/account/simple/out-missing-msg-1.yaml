@@ -1,4 +1,4 @@
-# 1000 EUR for Alice
+# This operation creates an account for Alice with account number 101013.
 ---
 onCreateAccount: {
   sender: vault,
@@ -16,7 +16,7 @@ onCreateAccount: {
 }
 ...
 # Missing message 1
-# Alice sends 10 EUR to bob
+# This operation represents a transfer of 10 EUR from Alice to Bob.
 ---
 transferFailed: {
   sender: vault,
@@ -35,7 +35,8 @@ transferFailed: {
   reason: to account doesn't exist
 }
 ...
-# No account sends 10 EUR to bob
+# This operation attempts to make a transfer from a non-existent account to Bob.
+# This operation will fail due to the 'from' account not existing.
 ---
 transferFailed: {
   sender: vault,
@@ -54,7 +55,8 @@ transferFailed: {
   reason: from account doesn't exist
 }
 ...
-# Alice sends 10 EUR to a non-existent account
+# This operation attempts to transfer 10 EUR from Alice to a non-existent account.
+# This operation will fail due to the 'to' account not existing.
 ---
 transferFailed: {
   sender: vault,
@@ -73,7 +75,9 @@ transferFailed: {
   reason: to account doesn't exist
 }
 ...
-# dump all the accounts
+# This operation requests a checkpoint.
+# Checkpoints are typically used to dump or save the state of the system at a certain point in time.
+# In this case, it will dump all the accounts.
 ---
 startCheckpoint: {
   sender: gw2,

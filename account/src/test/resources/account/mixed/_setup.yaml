@@ -1,5 +1,5 @@
 ---
-# 1000 EUR for Alice
+# This is an operation to create an account for Alice with account number 101013.
 createAccount: {
   sender: gw1,
   target: vault,
@@ -11,7 +11,7 @@ createAccount: {
 }
 ...
 ---
-# 1000 USD for Bob
+# This is another operation to create an account, this time for Bob with account number 101025.
 createAccount: {
   sender: gw1,
   target: vault,

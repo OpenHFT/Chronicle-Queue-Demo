@@ -1,0 +1,73 @@
+---
+# This operation creates an account for Charlie with account number 101045.
+# The 'sender' is 'gw1' and the 'target' is 'vault'.
+# The 'currency' for Charlie's account is EUR and the initial account 'balance' is 5000.
+createAccount: {
+  sender: gw1,
+  target: vault,
+  sendingTime: 2023-01-20T10:05:00,
+  name: charlie,
+  account: 101045,
+  currency: EUR,
+  balance: 5000
+}
+---
+# This operation creates an account for Dania with account number 101055.
+# The 'sender' is 'gw1' and the 'target' is 'vault'.
+# The 'currency' for Dania's account is EUR and the initial account 'balance' is 3500.
+createAccount: {
+  sender: gw1,
+  target: vault,
+  sendingTime: 2023-01-20T10:05:01,
+  name: Dania,
+  account: 101055,
+  currency: EUR,
+  balance: 3500
+}
+---
+# This operation represents a transfer of 500 EUR from Charlie to Dania.
+# The 'sender' is 'gw2' and the 'target' is 'vault'.
+transfer: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T10:06:00,
+  from: 101045,
+  to: 101055,
+  currency: EUR,
+  amount: 500,
+  reference: Grocery Shopping
+}
+---
+# This operation attempts to make a transfer from a non-existent account to Charlie.
+# This operation will likely fail due to the 'from' account not existing.
+transfer: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T10:07:00,
+  from: 2,
+  to: 101045,
+  currency: EUR,
+  amount: 500,
+  reference: Unexpected Income
+}
+---
+# This operation attempts to transfer 1000 EUR from Dania to a non-existent account.
+# This operation will likely fail due to the 'to' account not existing.
+transfer: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T10:08:00,
+  from: 101055,
+  to: 9998,
+  currency: EUR,
+  amount: 1000,
+  reference: Charity Donation
+}
+---
+# This operation requests a checkpoint.
+# It will dump all the accounts.
+checkPoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T11:05:00,
+}

@@ -73,31 +73,49 @@ public class AccountManagerBenchmarkMain {
 
     @SuppressWarnings("try")
     public static void main(String[] args) throws InterruptedException, MalformedURLException {
+        // Delete existing queues if any before starting. This is typically done to clean up any leftover data from previous runs.
         deleteQueues();
+
+        // Print out system properties used to configure this benchmark
         printProperties();
 
+        // Create a new ExecutorService with a custom thread factory named 'test'.
+        // This ExecutorService is used for running the client/gateway/service in the current process
         ExecutorService es = Executors.newCachedThreadPool(new AffinityThreadFactory("test"));
 
+        // Initialize a new instance of AccountManagerServiceMain. This is the main service for managing accounts.
         AccountManagerServiceMain service = null;
+
+        // Check if the host part of the URL is empty. If it is, that means we are running the service locally.
         if (new java.net.URL(URL).getHost().isEmpty()) {
             service = new AccountManagerServiceMain();
+            // Submit the service to run in the ExecutorService.
+            // The 'wrap' method is used to ensure any Throwable are logged instead of added to the discarded Future silently
             es.submit(wrap(service));
-
         } else {
+            // If the URL is not empty, inform the user to start the Gateway and Service in another process.
             Jvm.startup().on(AccountManagerBenchmarkMain.class,
                     "You need to start the Gateway and Service in another process first.");
         }
 
+        // Use a ChronicleContext to connect to the service.
+        // ChronicleContext is a part of the Chronicle network library
+        // which provides high performance, low latency networking capabilities.
         try (ChronicleContext context = ChronicleContext.newContext(URL)) {
-            ChronicleChannel channel = context.newChannelSupplier(new PipeHandler().publish("account-in").subscribe("account-out")).get();
+            ChronicleChannel channel = context.newChannelSupplier(
+                    new PipeHandler().publish("account-in").subscribe("account-out")).get();
 
+            // Log the connection details.
             Jvm.startup().on(AccountManagerClientMain.class, "Channel connected to: " + channel.channelCfg().hostname() + "[" + channel.channelCfg().port() + "]");
 
+            // Create an AccountManagerIn instance to interact with the service.
             final AccountManagerIn accountManagerIn = channel.methodWriter(AccountManagerIn.class);
 
+            // Create some accounts.
             AccountManagerClientMain.createAccount(accountManagerIn, CLOCK.currentTimeNanos(), 1);
             AccountManagerClientMain.createAccount(accountManagerIn, CLOCK.currentTimeNanos(), 2);
 
+            // Prepare JLBH for benchmarking.
             JLBH jlbh = new JLBH(new JLBHOptions()
                     .throughput(THROUGHPUT)
                     .iterations(THROUGHPUT * RUN_TIME)
@@ -106,6 +124,7 @@ public class AccountManagerBenchmarkMain {
                     .accountForCoordinatedOmission(ACCOUNT_FOR_COORDINATED_OMISSION)
                     .jlbhTask(new MyJLBHTask(accountManagerIn)));
 
+            // Submit a new task to the executor service. This task reads from the channel and records benchmarks.
             es.submit(wrap(() -> {
                 MethodReader reader = channel.methodReader(new LogsAccountManagerOut() {
                     @Override
@@ -115,19 +134,25 @@ public class AccountManagerBenchmarkMain {
                         jlbh.sample(durationNs);
                     }
                 });
+
+                // Keep reading until interrupted.
                 while (!Thread.interrupted()) {
                     reader.readOne();
                 }
             }));
 
+            // Start the benchmark.
             jlbh.start();
 
         }
+
+        // Cleanup: Close the service and shutdown the ExecutorService.
         Closeable.closeQuietly(service);
         Jvm.pause(100);
         es.shutdownNow();
         es.awaitTermination(1, TimeUnit.SECONDS);
 
+        // Delete the queues after finishing. This is done to clean up any data that was created during the run.
         deleteQueues();
     }
 

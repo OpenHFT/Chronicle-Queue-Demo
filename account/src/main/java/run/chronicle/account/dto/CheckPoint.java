@@ -19,5 +19,8 @@
 package run.chronicle.account.dto;
 
 
+/**
+ * Requests a CheckPoint of all state be dumped
+ */
 public class CheckPoint extends AbstractEvent<CheckPoint> {
 }

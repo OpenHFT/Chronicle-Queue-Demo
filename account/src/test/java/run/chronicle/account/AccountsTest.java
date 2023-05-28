@@ -36,24 +36,42 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * This class AccountsTest is a test class that uses
+ * JUnit's Parameterized runner to run multiple tests with different parameters.
+ * The test parameters are set up in the parameters method
+ * and are used to create an instance of YamlTester for each test.
+ * Each test runs through the runTester method which sets the system clock to a specific time,
+ * runs the test, and checks the output.
+ * After each test, the system clock is reset to its default state in the tearDown method.
+ */
+// This class is used to run tests for the Account system.
 @RunWith(Parameterized.class)
 public class AccountsTest {
+    // Defines the paths to the tests to run.
     static final String paths = "" +
             "account/simple," +
             "account/mixed," +
-            "account/waterfall";
+            "account/waterfall," +
+            "account/gpt-gen";
     static final long VAULT = Base85.INSTANCE.parse("vault");
 
+    // The name of the test, and the tester that will run the test.
     final String name;
     final YamlTester tester;
 
+    // Constructor that sets the name and tester.
     public AccountsTest(String name, YamlTester tester) {
         this.name = name;
         this.tester = tester;
     }
 
+    // Defines the parameters for the parameterized test runner.
     @Parameterized.Parameters(name = "{0}")
     public static List<Object[]> parameters() {
+        // Returns a list of test parameters to run the tests with.
+        // Each test will be run with an instance of AccountManagerImpl,
+        // and will be subjected to various agitations to ensure robustness.
         return new YamlTesterParametersBuilder<>(out -> new AccountManagerImpl(out).id(VAULT), AccountManagerOut.class, paths)
                 .agitators(
                         YamlAgitator.messageMissing(),
@@ -65,15 +83,20 @@ public class AccountsTest {
                 .get();
     }
 
+    // After each test, this method resets the system time provider.
     @After
     public void tearDown() {
         SystemTimeProvider.CLOCK = SystemTimeProvider.INSTANCE;
     }
 
+    // This is the actual test method, which uses the provided tester
+    // to run the test and then compares the expected output to the actual output.
     @Test
     public void runTester() {
+        // Sets the system clock to a specific time for the purpose of testing.
         SystemTimeProvider.CLOCK = new SetTimeProvider("2023-01-20T10:10:00")
                 .autoIncrement(1, TimeUnit.MILLISECONDS);
+        // Asserts that the expected output matches the actual output.
         assertEquals(tester.expected(), tester.actual());
     }
 }

@@ -20,27 +20,56 @@ package run.chronicle.account.dto;
 
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 
+/**
+ * The OnTransfer class extends AbstractEvent and represents an event that's triggered when a Transfer action takes place.
+ * It encapsulates a reference to the Transfer instance that initiated this event.
+ * This class follows the convention of using a fluent interface for setters,
+ * and it includes a validate method that checks if the transfer field has been properly set.
+ */
 public class OnTransfer extends AbstractEvent<OnTransfer> {
-    private Transfer transfer;
+    private Transfer transfer; // The Transfer instance that triggered this event
 
+    /**
+     * Returns the Transfer instance that triggered this event.
+     *
+     * @return the Transfer instance that triggered this event
+     */
     public Transfer transfer() {
         return transfer;
     }
 
+    /**
+     * Sets the Transfer instance that triggered this event and returns the updated object.
+     *
+     * @param transfer the Transfer instance that triggered this event
+     * @return the updated object
+     */
     public OnTransfer transfer(Transfer transfer) {
         this.transfer = transfer;
         return this;
     }
 
+    /**
+     * The validate method is used to verify that all necessary properties have been set.
+     *
+     * @throws InvalidMarshallableException If any of these properties is not set
+     */
     @Override
     public void validate() throws InvalidMarshallableException {
-        super.validate();
-        if (transfer == null) throw new InvalidMarshallableException("transfer must be set");
+        super.validate(); // Validate fields in the parent class
+        if (transfer == null)
+            throw new InvalidMarshallableException("transfer must be set"); // Ensure transfer is set
     }
 
+    /**
+     * Overridden to specify the message format. In this case, it uses a lower level binary format,
+     * not a self-describing message.
+     *
+     * @return false as it does not use a self-describing message.
+     */
     @Override
     public boolean usesSelfDescribingMessage() {
-        // use a lower level binary format
+        // use a lower level binary format, not a self-describing message
         return false;
     }
 }

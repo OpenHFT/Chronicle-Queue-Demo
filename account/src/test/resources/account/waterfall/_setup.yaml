@@ -1,5 +1,5 @@
 ---
-# 1000 EUR for Alice
+# This operation is creating an account for Alice with 15 EUR.
 createAccount: {
   sender: gw1,
   target: vault,
@@ -11,7 +11,7 @@ createAccount: {
 }
 ...
 ---
-# 10 EUR for Bob
+# This operation is creating an account for Bob with 10 EUR
 createAccount: {
   sender: gw1,
   target: vault,
@@ -23,7 +23,7 @@ createAccount: {
 }
 ...
 ---
-# 10 EUR for Cate
+# This operation is creating an account for Cate with 10 EUR.
 createAccount: {
   sender: gw1,
   target: vault,

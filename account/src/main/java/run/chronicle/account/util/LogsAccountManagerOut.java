@@ -4,6 +4,9 @@ import net.openhft.chronicle.core.Jvm;
 import run.chronicle.account.api.AccountManagerOut;
 import run.chronicle.account.dto.*;
 
+/**
+ * Mock interface implementation of AccountManagerOut that logs everything
+ */
 public class LogsAccountManagerOut implements AccountManagerOut {
     @Override
     public void startCheckpoint(CheckPoint checkPoint) {
@@ -22,7 +25,7 @@ public class LogsAccountManagerOut implements AccountManagerOut {
 
     @Override
     public void createAccountFailed(CreateAccountFailed createAccountFailed) {
-        Jvm.debug().on(getClass(), "createAccountFailed " + createAccountFailed);
+        Jvm.warn().on(getClass(), "createAccountFailed " + createAccountFailed);
     }
 
     @Override
@@ -32,11 +35,11 @@ public class LogsAccountManagerOut implements AccountManagerOut {
 
     @Override
     public void transferFailed(TransferFailed transferFailed) {
-        Jvm.debug().on(getClass(), "transferFailed " + transferFailed);
+        Jvm.warn().on(getClass(), "transferFailed " + transferFailed);
     }
 
     @Override
     public void jvmError(String msg) {
-        Jvm.warn().on(getClass(), "jvmError " + msg);
+        Jvm.error().on(getClass(), "jvmError " + msg);
     }
 }

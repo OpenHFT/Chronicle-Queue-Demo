@@ -1,4 +1,4 @@
-# Alice sends 100 EUR to Bob
+# This operation represents a transfer 10 EUR from Alice to Bob.
 # override amount: 10 to amount: NaN
 ---
 transferFailed: {
@@ -18,7 +18,7 @@ transferFailed: {
   reason: invalid amount
 }
 ...
-# Bob sends 20 USD to Cate
+# This operation represents a transfer 20 EUR from Bob to Cate.
 # override amount: 20 to amount: NaN
 ---
 transferFailed: {
