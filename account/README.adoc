@@ -92,27 +92,20 @@ The input of one microservice might be the output of another microservice.
 
 For demos, we might include `main` classes, however for a production system, we use a framework Chronicle Services https://chronicle.software/services/ to handle manageability, monitoring, restart and fail over.
 
-=== Main methods
+== How to Run
 
-`AccountManagerServiceMain` runs the end service responsible for holding state and generating results of transactions
+. Compile the source files using your preferred Java compiler.
+. `AccountManagerServiceMain` runs the end service responsible for holding state and generating results of transactions
 
-`AccountManagerGatewayMain` acts as a gateway listening for TCP connections and writing to/reading from the shared memory queue the microservices uses
+. `AccountManagerGatewayMain` acts as a gateway listening for TCP connections and writing to/reading from the shared memory queue the microservices uses
 
-`AccountManagerClientMain` injects a few simple messages and waits for resulting events from the AccountManagerImpl
+. `AccountManagerClientMain` injects a few simple messages and waits for resulting events from the AccountManagerImpl
 
 `AccountManagerBenchmarkMain` runs a `JLBH` benchmark to report on the latency distribution running on your machine.
 
 == Prerequisites
 
 You need Java 8 or above installed on your machine to run this system.
-
-== How to Run
-
-. Compile the source files using your preferred Java compiler.
-. Run the `main` function in the `AccountManagerServiceMain` class.
-This will start the account management service.
-
-Input data is provided through YAML files, where each operation (account creation or transfer) is defined in a separate document.
 
 == Input Data Format
 
