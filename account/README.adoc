@@ -9,6 +9,8 @@ The client and the service can be liad out in a variety of ways without changing
 
 === TCP Client, TCP Service
 
+This approach offers the most distributed option. The typical latencies are under 20 &micro;s with the 99%ile latency not much higher.
+
 [source,mermaid]
 ....
 sequenceDiagram
@@ -24,7 +26,11 @@ Gateway->>Client: onTransfer
 Note left of Gateway: via TCP
 ....
 
+This can be benchmarked all in one with the command line properties `-Durl=tcp://localhost:1248 -DserviceUrl=tcp://:1248` running `AccountManagerBenchmarkMain`
+
 === TCP Client, Shared Memory Service
+
+This approach offers the most distributed option. The typical latencies are around 10 &micro;s with the 99%ile latency not much higher.
 
 [source,mermaid]
 ....
@@ -41,7 +47,11 @@ Gateway->>Client: onTransfer
 Note left of Gateway: via TCP
 ....
 
+This can be benchmarked all in one with the command line properties `-Durl=tcp://:1248` running `AccountManagerBenchmarkMain`
+
 === Shared Memory Client and Service
+
+This approach offers the most distributed option. The typical latencies are under 2 &micro;s with the 99%ile latency about double this.
 
 [source,mermaid]
 ....
@@ -57,6 +67,8 @@ Note over Service,queue: via Shared Memory, persisted
 queue->>Client: onTransfer
 Note left of queue: via Shared Memory
 ....
+
+This can be benchmarked all in one with the default command line properties running `AccountManagerBenchmarkMain`
 
 == Package Structure
 
