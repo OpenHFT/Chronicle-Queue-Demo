@@ -6,7 +6,6 @@ import net.openhft.chronicle.core.io.SimpleCloseable;
 import net.openhft.chronicle.queue.channel.PipeHandler;
 import net.openhft.chronicle.threads.Pauser;
 import net.openhft.chronicle.wire.Base85LongConverter;
-import net.openhft.chronicle.wire.Marshallable;
 import net.openhft.chronicle.wire.channel.ChronicleChannel;
 import net.openhft.chronicle.wire.channel.ChronicleContext;
 import run.chronicle.account.api.AccountManagerOut;
@@ -15,8 +14,14 @@ import run.chronicle.account.impl.AccountManagerImpl;
 public class AccountManagerServiceMain extends SimpleCloseable implements Runnable {
     private static final Base85LongConverter BASE85 = Base85LongConverter.INSTANCE;
     private static final String SERVICE_URL = System.getProperty("serviceUrl", "internal://");
+
     public static void main(String[] args) {
         new AccountManagerServiceMain().run();
+    }
+
+    private static AccountManagerImpl createService(String serviceId, AccountManagerOut out) {
+        return new AccountManagerImpl(out)
+                .id(BASE85.parse(serviceId));
     }
 
     @Override
@@ -44,10 +49,5 @@ public class AccountManagerServiceMain extends SimpleCloseable implements Runnab
                 }
             }
         }
-    }
-
-    private static AccountManagerImpl createService(String serviceId, AccountManagerOut out) {
-        return new AccountManagerImpl(out)
-                .id(BASE85.parse(serviceId));
     }
 }
