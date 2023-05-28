@@ -1,7 +1,7 @@
 = Account Manager Example
 Peter Lawrey
 
-This example shows a simple microservice accessible via TCP storing each message in and out via a Chronicle Queue
+This example shows a simple microservice accessible via TCP or shared memory storing each message in and out via a Chronicle Queue in a number of configurations with a comparison of the performance
 
 This Account Management System is designed to handle basic account operations such as account creation and fund transfers.
 It's built on Chronicle Wire and uses Fluent Interface pattern, taking advantage of YAML files for test input data.
