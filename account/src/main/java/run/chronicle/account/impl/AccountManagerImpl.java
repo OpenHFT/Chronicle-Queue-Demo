@@ -16,9 +16,6 @@
  * limitations under the License.
  */
 
-/**
- * This package contains the implementations of interfaces defined in the API package.
- */
 package run.chronicle.account.impl;
 
 import net.openhft.chronicle.core.io.InvalidMarshallableException;

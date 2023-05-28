@@ -31,8 +31,6 @@ public class OnCreateAccount extends AbstractEvent<OnCreateAccount> {
     private CreateAccount createAccount; // The CreateAccount instance that triggered this event
 
     /**
-     * Returns the CreateAccount instance that triggered this event.
-     *
      * @return the CreateAccount instance that triggered this event
      */
     public CreateAccount createAccount() {

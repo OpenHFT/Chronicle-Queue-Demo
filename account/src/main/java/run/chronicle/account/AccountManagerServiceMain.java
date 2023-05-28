@@ -15,7 +15,6 @@ import run.chronicle.account.impl.AccountManagerImpl;
  * The main service class for the Account Manager application.
  */
 public class AccountManagerServiceMain extends SimpleCloseable implements Runnable {
-    // Configuration constants
     private static final Base85LongConverter BASE85 = Base85LongConverter.INSTANCE;
     private static final String SERVICE_URL = System.getProperty("serviceUrl", "internal://");
 
@@ -43,7 +42,6 @@ public class AccountManagerServiceMain extends SimpleCloseable implements Runnab
      */
     @Override
     public void run() {
-        // Service id
         String serviceId = "service";
         // Logging startup information
         Jvm.startup().on(getClass(), "starting serviceId: " + serviceId);

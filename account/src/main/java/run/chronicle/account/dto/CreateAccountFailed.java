@@ -32,8 +32,6 @@ public class CreateAccountFailed extends AbstractEvent<CreateAccountFailed> {
     private String reason; // The reason for the failure
 
     /**
-     * Returns the CreateAccount instance that failed.
-     *
      * @return the CreateAccount instance that failed
      */
     public CreateAccount createAccount() {
@@ -52,8 +50,6 @@ public class CreateAccountFailed extends AbstractEvent<CreateAccountFailed> {
     }
 
     /**
-     * Returns the reason for the failure.
-     *
      * @return the reason for the failure
      */
     public String reason() {

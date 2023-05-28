@@ -34,8 +34,6 @@ public class Transfer extends AbstractEvent<Transfer> {
     private Bytes reference = Bytes.allocateElasticOnHeap(); // Reference to the transaction details
 
     /**
-     * Returns the sender's account number.
-     *
      * @return the sender's account number
      */
     public long from() {
@@ -54,8 +52,6 @@ public class Transfer extends AbstractEvent<Transfer> {
     }
 
     /**
-     * Returns the receiver's account number.
-     *
      * @return the receiver's account number
      */
     public long to() {
@@ -74,8 +70,6 @@ public class Transfer extends AbstractEvent<Transfer> {
     }
 
     /**
-     * Returns the currency of the transfer.
-     *
      * @return the currency of the transfer
      */
     public int currency() {
@@ -94,8 +88,6 @@ public class Transfer extends AbstractEvent<Transfer> {
     }
 
     /**
-     * Returns the amount to be transferred.
-     *
      * @return the amount to be transferred
      */
     public double amount() {

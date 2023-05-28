@@ -87,7 +87,7 @@ public class AccountManagerBenchmarkMain {
         AccountManagerServiceMain service = null;
 
         // Check if the host part of the URL is empty. If it is, that means we are running the service locally.
-        if (new java.net.URL(URL).getHost().isEmpty()) {
+        if (ChronicleContext.urlFor(URL).getHost().isEmpty()) {
             service = new AccountManagerServiceMain();
             // Submit the service to run in the ExecutorService.
             // The 'wrap' method is used to ensure any Throwable are logged instead of added to the discarded Future silently

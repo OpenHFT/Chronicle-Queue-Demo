@@ -16,12 +16,7 @@
  * limitations under the License.
  */
 
-/**
- * The package that contains the API interfaces for the account management system.
- */
 package run.chronicle.account.api;
-
-// Import relevant packages and classes
 
 import net.openhft.chronicle.bytes.MethodId;
 import run.chronicle.account.dto.OnTransfer;
@@ -36,8 +31,7 @@ import run.chronicle.account.util.ErrorListener;
 public interface TransferOut extends ErrorListener {
 
     /**
-     * Method to notify about a successful transfer. It takes an OnTransfer object as a parameter
-     * which contains the details of the successful transfer.
+     * Method to notify about a successful transfer.
      *
      * @param onTransfer an object of type OnTransfer which encapsulates the details of the
      *                   successful transfer.
@@ -46,8 +40,7 @@ public interface TransferOut extends ErrorListener {
     void onTransfer(OnTransfer onTransfer);
 
     /**
-     * Method to handle failures during a transfer. It takes a TransferFailed object as a parameter
-     * which contains the details of the transfer failure.
+     * Method to handle failures during a transfer.
      *
      * @param transferFailed an object of type TransferFailed which encapsulates the details of
      *                       the transfer failure.

@@ -30,8 +30,6 @@ public class OnTransfer extends AbstractEvent<OnTransfer> {
     private Transfer transfer; // The Transfer instance that triggered this event
 
     /**
-     * Returns the Transfer instance that triggered this event.
-     *
      * @return the Transfer instance that triggered this event
      */
     public Transfer transfer() {

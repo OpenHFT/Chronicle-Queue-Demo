@@ -16,12 +16,8 @@
  * limitations under the License.
  */
 
-/**
- * The package that contains the API interfaces for the account management system.
- */
 package run.chronicle.account.api;
 
-// Import relevant class
 import run.chronicle.account.dto.CheckPoint;
 
 /**
@@ -32,20 +28,18 @@ import run.chronicle.account.dto.CheckPoint;
 public interface AccountManagerOut extends CreateAccountOut, TransferOut {
 
     /**
-     * This method initiates a checkpoint operation. It takes a CheckPoint object
-     * as a parameter, which contains the details of the checkpoint to be started.
+     * This method initiates a checkpoint operation.
      *
      * @param checkPoint a CheckPoint object encapsulating the details of the
-     *                   checkpoint to be started.
+     *                   checkpoint that started the following state dump.
      */
     void startCheckpoint(CheckPoint checkPoint);
 
     /**
-     * This method concludes a checkpoint operation. It takes a CheckPoint object
-     * as a parameter, which contains the details of the checkpoint to be ended.
+     * This method concludes a checkpoint operation.
      *
      * @param checkPoint a CheckPoint object encapsulating the details of the
-     *                   checkpoint to be ended.
+     *                   checkpoint that started the previous state dump.
      */
     void endCheckpoint(CheckPoint checkPoint);
 }

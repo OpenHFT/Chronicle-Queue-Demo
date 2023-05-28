@@ -30,8 +30,6 @@ public class TransferFailed extends AbstractEvent<TransferFailed> {
     private String reason; // The reason for the failure
 
     /**
-     * Returns the original transfer that failed.
-     *
      * @return the original transfer that failed
      */
     public Transfer transfer() {
@@ -50,8 +48,6 @@ public class TransferFailed extends AbstractEvent<TransferFailed> {
     }
 
     /**
-     * Returns the reason for the failure.
-     *
      * @return the reason for the failure
      */
     public String reason() {

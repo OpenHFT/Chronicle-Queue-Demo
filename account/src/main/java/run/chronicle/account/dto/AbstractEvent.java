@@ -25,11 +25,13 @@ import net.openhft.chronicle.wire.converter.Base85;
 import net.openhft.chronicle.wire.converter.NanoTime;
 
 /**
- * The AbstractEvent class is a SelfDescribingMarshallable that is Validatable.
+ * The AbstractEvent class is a {@link SelfDescribingMarshallable} that is {@link Validatable}.
  *
  * @param <E> the type of the event
  */
-public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMarshallable implements Validatable {
+public class AbstractEvent<E extends AbstractEvent<E>>
+        extends SelfDescribingMarshallable
+        implements Validatable {
     @Base85
     private long sender;  // sender represented in Base85
 
@@ -40,8 +42,6 @@ public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMar
     private long sendingTime;  // sendingTime represented in nanoseconds
 
     /**
-     * Returns the sender.
-     *
      * @return the sender
      */
     public long sender() {
@@ -60,8 +60,6 @@ public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMar
     }
 
     /**
-     * Returns the target.
-     *
      * @return the target
      */
     public long target() {
@@ -80,8 +78,6 @@ public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMar
     }
 
     /**
-     * Returns the sending time.
-     *
      * @return the sending time
      */
     public long sendingTime() {

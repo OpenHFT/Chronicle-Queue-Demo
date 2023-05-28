@@ -34,8 +34,6 @@ public class CreateAccount extends AbstractEvent<CreateAccount> {
     private double balance; // Balance of the account
 
     /**
-     * Returns the account identifier.
-     *
      * @return the account identifier
      */
     public long account() {
@@ -54,6 +52,13 @@ public class CreateAccount extends AbstractEvent<CreateAccount> {
     }
 
     /**
+     * @return the name of the account
+     */
+    public String name() {
+        return name;
+    }
+
+    /**
      * Sets the name and returns the updated object.
      *
      * @param name the name to set
@@ -65,8 +70,6 @@ public class CreateAccount extends AbstractEvent<CreateAccount> {
     }
 
     /**
-     * Returns the currency.
-     *
      * @return the currency
      */
     public int currency() {
@@ -85,8 +88,6 @@ public class CreateAccount extends AbstractEvent<CreateAccount> {
     }
 
     /**
-     * Returns the balance.
-     *
      * @return the balance
      */
     public double balance() {

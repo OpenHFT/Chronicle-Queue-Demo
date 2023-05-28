@@ -16,10 +16,7 @@
  * limitations under the License.
  */
 
-// Defines the package that contains the API interfaces for the account management system
 package run.chronicle.account.api;
-
-// Import relevant packages and classes
 
 import net.openhft.chronicle.bytes.MethodId;
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
@@ -45,11 +42,12 @@ public interface AccountManagerIn {
      * This method is used to transfer money from one account to another
      * The 'MethodId' annotation is used for mapping methods during the method dispatch process
      * In this case, 't' is the ID assigned to the 'transfer' method
+     * It throws an 'InvalidMarshallableException' if there is an issue with the data in 'Transfer'
      *
      * @param transfer between accounts
      */
     @MethodId('t')
-    void transfer(Transfer transfer);
+    void transfer(Transfer transfer) throws InvalidMarshallableException;
 
     /**
      * This method is used to create a checkpoint in the system
@@ -59,4 +57,3 @@ public interface AccountManagerIn {
      */
     void checkPoint(CheckPoint checkPoint);
 }
-
