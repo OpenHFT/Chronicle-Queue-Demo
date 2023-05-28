@@ -41,6 +41,7 @@ public class AccountManagerImpl
     private final OnTransfer onTransfer = new OnTransfer();
     private final TransferFailed transferFailed = new TransferFailed();
     private long id;
+
     public AccountManagerImpl(AccountManagerOut out) {
         this.out = out;
     }

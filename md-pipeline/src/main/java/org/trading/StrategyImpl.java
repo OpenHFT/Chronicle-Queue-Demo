@@ -20,6 +20,10 @@ public class StrategyImpl implements AggregatorOut {
         this.nos = new NewOrderSingle();
     }
 
+    public static void main(String[] args) {
+        Runner.run("agg-out", "strat-out", OMSIn.class, StrategyImpl::new);
+    }
+
     @Override
     public void marketDataSnapshot(MarketDataSnapshot mds) {
         if (mds.spread() < 1)
@@ -34,9 +38,5 @@ public class StrategyImpl implements AggregatorOut {
                 .price(mds.ask())
                 .side(BuySell.sell);
         return nos;
-    }
-
-    public static void main(String[] args) {
-        Runner.run("agg-out", "strat-out", OMSIn.class, StrategyImpl::new);
     }
 }

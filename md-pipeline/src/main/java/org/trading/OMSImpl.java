@@ -15,12 +15,12 @@ public class OMSImpl implements OMSIn {
         this.out = out;
     }
 
+    public static void main(String[] args) {
+        Runner.run("strat-out", "oms-out", OMSOut.class, OMSImpl::new);
+    }
+
     @Override
     public void newOrderSingle(NewOrderSingle nos) {
         System.out.println("I got an order! " + nos);
-    }
-
-    public static void main(String[] args) {
-        Runner.run("strat-out", "oms-out", OMSOut.class, OMSImpl::new);
     }
 }

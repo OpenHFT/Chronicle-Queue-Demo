@@ -43,16 +43,18 @@ Windows 11 laptop, i7-1360P, Java 11
 -Dthroughput=20000 -Durl=internal://
 -------------------------------- SUMMARY (end to end) us -------------------------------------------
 Percentile   run1         run2         run3         run4         run5      % Variation
-50.0:            1.50         1.70         1.80         1.80         1.70         3.77
-90.0:            1.90         2.10         2.20         2.30         2.10         5.97
-99.0:           19.62        14.42        20.83        18.59        19.68        22.88
+50.0:            1.60         1.70         1.60         1.60         1.60         3.84
+90.0:            2.10         2.10         2.10         2.10         2.00         3.16
+99.0:           23.39        22.62        22.18        20.70        17.12        17.65
+99.7:          155.90       168.19       191.74       177.92       170.24         8.54
+99.9:          857.09       723.97       824.32       816.13       764.93         8.46
 
 -Dthroughput=20000
 -------------------------------- SUMMARY (end to end) us -------------------------------------------
 Percentile   run1         run2         run3         run4         run5      % Variation
-50.0:           24.67        24.67        24.67        25.12        25.12         1.20
-90.0:           35.78        33.34        34.62        34.37        34.24         2.50
-99.0:         4124.67       373.25      2086.91       474.62       537.60        75.37
+50.0:           24.93        24.67        24.93        24.80        24.93         0.69
+90.0:           37.95        35.26        38.34        35.52        35.14         5.72
+99.0:         1198.08       250.62      1243.14       469.50       477.70        72.53
  */
 public class AccountManagerBenchmarkMain {
     public static final int THROUGHPUT = Integer.getInteger("throughput", OS.isLinux() ? 100_000 : 10_000);
@@ -79,7 +81,7 @@ public class AccountManagerBenchmarkMain {
         AccountManagerServiceMain service = null;
         if (new java.net.URL(URL).getHost().isEmpty()) {
             service = new AccountManagerServiceMain();
-            es.submit(service);
+            es.submit(wrap(service));
 
         } else {
             Jvm.startup().on(AccountManagerBenchmarkMain.class,
@@ -104,7 +106,7 @@ public class AccountManagerBenchmarkMain {
                     .accountForCoordinatedOmission(ACCOUNT_FOR_COORDINATED_OMISSION)
                     .jlbhTask(new MyJLBHTask(accountManagerIn)));
 
-            es.submit(() -> {
+            es.submit(wrap(() -> {
                 MethodReader reader = channel.methodReader(new LogsAccountManagerOut() {
                     @Override
                     public void onTransfer(OnTransfer onTransfer) {
@@ -116,7 +118,7 @@ public class AccountManagerBenchmarkMain {
                 while (!Thread.interrupted()) {
                     reader.readOne();
                 }
-            });
+            }));
 
             jlbh.start();
 
@@ -127,6 +129,16 @@ public class AccountManagerBenchmarkMain {
         es.awaitTermination(1, TimeUnit.SECONDS);
 
         deleteQueues();
+    }
+
+    static Runnable wrap(Runnable runnable) {
+        return () -> {
+            try {
+                runnable.run();
+            } catch (Throwable t) {
+                Jvm.warn().on(runnable.getClass(), t);
+            }
+        };
     }
 
     private static void deleteQueues() {

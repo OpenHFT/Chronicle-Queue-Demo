@@ -17,19 +17,18 @@ import run.chronicle.account.util.LogsAccountManagerOut;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AccountManagerClientMain {
-    private static final String senderId = System.getProperty("senderId", "test");
-
     private static final String URL = System.getProperty("url", "tcp://localhost:" + ChronicleGatewayMain.PORT);
 
     private static final LongConverter BASE85 = Base85LongConverter.INSTANCE;
-    public static final long MANAGER = BASE85.parse("manager");
-    public static final int EUR = (int) BASE85.parse("EUR");
-    public static final long SENDER = BASE85.parse(senderId);
-    public static final Bytes<byte[]> REFERENCE = Bytes.from("test");
+    private static final long TARGET = BASE85.parse("service");
+    private static final int EUR = (int) BASE85.parse("EUR");
+    private static final String CLIENT = "client";
+    private static final long SENDER = BASE85.parse(CLIENT);
+    private static final Bytes<byte[]> REFERENCE = Bytes.from("benchmark");
 
     public static void main(String[] args) {
 
-        try (ChronicleContext context = ChronicleContext.newContext(URL)) {
+        try (ChronicleContext context = ChronicleContext.newContext(URL).name(CLIENT)) {
             ChronicleChannel channel = context.newChannelSupplier(new PipeHandler().publish("account-in").subscribe("account-out")).get();
 
             Jvm.startup().on(AccountManagerClientMain.class, "Channel connected to: " + channel.channelCfg().hostname() + "[" + channel.channelCfg().port() + "]");
@@ -84,7 +83,7 @@ public class AccountManagerClientMain {
     static void createAccount(AccountManagerIn accountManagerIn, long sendingTime, int num) {
         CreateAccount createAccount = new CreateAccount()
                 .sender(SENDER)
-                .target(MANAGER)
+                .target(TARGET)
                 .name("Account" + num)
                 .account(10 + num)
                 .balance(1e9)
@@ -98,7 +97,7 @@ public class AccountManagerClientMain {
     static void transfer(AccountManagerIn accountManagerIn, long sendingTime, Transfer transfer, boolean log) {
         transfer
                 .sender(SENDER)
-                .target(MANAGER)
+                .target(TARGET)
                 .from(11)
                 .to(12)
                 .amount(0.01)

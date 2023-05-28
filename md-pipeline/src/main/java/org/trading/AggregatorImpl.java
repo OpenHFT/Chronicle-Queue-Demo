@@ -21,6 +21,10 @@ public class AggregatorImpl implements AggregatorIn {
         this.out = out;
     }
 
+    public static void main(String[] args) {
+        Runner.run("agg-in", "agg-out", AggregatorOut.class, AggregatorImpl::new);
+    }
+
     @Override
     public void mdi(MarketDataIncrement mdi) {
         MarketDataSnapshot aggregated = md.computeIfAbsent(mdi.symbol(), MarketDataSnapshot::new);
@@ -32,9 +36,5 @@ public class AggregatorImpl implements AggregatorIn {
         aggregated.transactTime(mdi.transactTime());
         if (aggregated.valid())
             out.marketDataSnapshot(aggregated);
-    }
-
-    public static void main(String[] args) {
-        Runner.run("agg-in", "agg-out", AggregatorOut.class, AggregatorImpl::new);
     }
 }
