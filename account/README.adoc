@@ -22,11 +22,18 @@ The core functionality is built around three main components:
 Transfer details include sender account, target account, transfer amount, currency type, and a reference note.
 . *Checkpointing*: The checkpoint functionality provides a snapshot of the current state of all accounts in the system at a specific point in time.
 
-== Network Communication
+=== Network Communication
 
 The system communicates over TCP to ensure reliable data transmission, or shared memory where possible to minimise latencies.
 TCP is chosen for its built-in error checking and correction, ensuring that all account management data reaches the correct destination in the correct order and without errors.
 All shared memory messaging is persisted to memory mapped files as it is written.
+
+=== Testability and Benchmarking
+
+The system also comes with a comprehensive set of tests and a benchmarking suite, allowing for easy performance measurement and regression testing.
+The `AccountManagerBenchmarkMain` class acts as a benchmarking and testing entry point, demonstrating the functionality of the system and showing the execution time for the operations.
+
+=== Commercial Extensions to Productionise Microservices
 
 There is a commercial extension https://chronicle.software/services/ that supports
 
@@ -38,14 +45,17 @@ There is a commercial extension https://chronicle.software/services/ that suppor
 
 image:img/Chronicle-Services-Diagram.png[]
 
-== Testability and Benchmarking
-
-The system also comes with a comprehensive set of tests and a benchmarking suite, allowing for easy performance measurement and regression testing.
-The `AccountManagerBenchmarkMain` class acts as a benchmarking and testing entry point, demonstrating the functionality of the system and showing the execution time for the operations.
-
 == Network Layouts
 
 The client and the service can be laid out in a variety of ways without changing the code
+
+.Ballpark latencies running on a production quality server
+|===
+| Client Side | Service Side | Typical Latency | 99%ile latency
+| TCP | TCP | 20 &micro;s | 25 &micro;s
+| TCP | Shared Memory | 10 &micro;s | 13 &micro;s
+| Shared Memory | Shared Memory | 1.5 &micro;s | 3 &micro;s
+|===
 
 === TCP Client, TCP Service
 
