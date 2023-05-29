@@ -1,0 +1,98 @@
+# This operation creates an account for Charlie with account number 101045.
+# The 'sender' is 'gw1' and the 'target' is 'vault'.
+# The 'currency' for Charlie's account is EUR and the initial account 'balance' is 5000.
+---
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-20T10:10:00,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:05:00,
+    name: charlie,
+    account: 101045,
+    currency: EUR,
+    balance: 5E3
+  }
+}
+...
+# This operation creates an account for Dania with account number 101055.
+# The 'sender' is 'gw1' and the 'target' is 'vault'.
+# The 'currency' for Dania's account is EUR and the initial account 'balance' is 3500.
+---
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-20T10:10:00.001,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:05:01,
+    name: Dania,
+    account: 101055,
+    currency: EUR,
+    balance: 3500.0
+  }
+}
+...
+# This operation represents a transfer of 500 EUR from Charlie to Dania.
+# The 'sender' is 'gw2' and the 'target' is 'vault'.
+# missing amount: 500,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be set"
+...
+# This operation attempts to make a transfer from a non-existent account to Charlie.
+# This operation will likely fail due to the 'from' account not existing.
+# missing amount: 500,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be set"
+...
+# This operation attempts to transfer 1000 EUR from Dania to a non-existent account.
+# This operation will likely fail due to the 'to' account not existing.
+# missing amount: 1000,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be set"
+...
+# This operation requests a checkpoint.
+# It will dump all the accounts.
+---
+startCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T11:05:00
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-20T10:10:00.002,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:05:00,
+    name: charlie,
+    account: 101045,
+    currency: EUR,
+    balance: 5E3
+  }
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-20T10:10:00.003,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:05:01,
+    name: Dania,
+    account: 101055,
+    currency: EUR,
+    balance: 3500.0
+  }
+}
+...
+endCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T11:05:00
+}
+...

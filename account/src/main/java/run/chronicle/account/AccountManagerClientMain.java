@@ -15,7 +15,10 @@ import run.chronicle.account.dto.*;
 import run.chronicle.account.util.LogsAccountManagerOut;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-
+/**
+ * This class acts as the main entry point for the AccountManagerClient.
+ * It creates a client which connects to a Chronicle server and performs various actions.
+ */
 public class AccountManagerClientMain {
     private static final String URL = System.getProperty("url", "tcp://localhost:" + ChronicleGatewayMain.PORT);
 
@@ -26,15 +29,25 @@ public class AccountManagerClientMain {
     private static final long SENDER = BASE85.parse(CLIENT);
     private static final Bytes<byte[]> REFERENCE = Bytes.from("benchmark");
 
+    /**
+     * Main method to start the client.
+     *
+     * @param args The command line arguments.
+     */
     public static void main(String[] args) {
 
+        // Create a new ChronicleContext using a URL and client name...
+        // Obtain a ChronicleChannel...
         try (ChronicleContext context = ChronicleContext.newContext(URL).name(CLIENT)) {
             ChronicleChannel channel = context.newChannelSupplier(new PipeHandler().publish("account-in").subscribe("account-out")).get();
 
+            // Log the hostname and port of the connected channel...
             Jvm.startup().on(AccountManagerClientMain.class, "Channel connected to: " + channel.channelCfg().hostname() + "[" + channel.channelCfg().port() + "]");
 
+            // Create an instance of AccountManagerIn, which allows us to make calls to the server...
             final AccountManagerIn accountManagerIn = channel.methodWriter(AccountManagerIn.class);
 
+            // Generate a sending timestamp...
             long sendingTime = SystemTimeProvider.CLOCK.currentTimeNanos();
             createAccount(accountManagerIn, sendingTime, 1);
             createAccount(accountManagerIn, sendingTime, 2);
@@ -74,12 +87,20 @@ public class AccountManagerClientMain {
                     }
                 }
             });
+            // Loop until all transfers are complete...
             while (running.get()) {
                 reader.readOne();
             }
         }
     }
 
+    /**
+     * Creates an account.
+     *
+     * @param accountManagerIn An instance of AccountManagerIn.
+     * @param sendingTime      The sending timestamp.
+     * @param num              The account number.
+     */
     static void createAccount(AccountManagerIn accountManagerIn, long sendingTime, int num) {
         CreateAccount createAccount = new CreateAccount()
                 .sender(SENDER)
@@ -93,7 +114,14 @@ public class AccountManagerClientMain {
         accountManagerIn.createAccount(createAccount);
     }
 
-
+    /**
+     * Performs a transfer.
+     *
+     * @param accountManagerIn An instance of AccountManagerIn.
+     * @param sendingTime      The sending timestamp.
+     * @param transfer         An instance of Transfer.
+     * @param log              A boolean indicating whether to log the transfer.
+     */
     static void transfer(AccountManagerIn accountManagerIn, long sendingTime, Transfer transfer, boolean log) {
         transfer
                 .sender(SENDER)

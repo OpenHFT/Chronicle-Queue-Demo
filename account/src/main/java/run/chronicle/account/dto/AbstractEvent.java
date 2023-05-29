@@ -24,46 +24,89 @@ import net.openhft.chronicle.wire.SelfDescribingMarshallable;
 import net.openhft.chronicle.wire.converter.Base85;
 import net.openhft.chronicle.wire.converter.NanoTime;
 
-public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMarshallable implements Validatable {
+/**
+ * The AbstractEvent class is a {@link SelfDescribingMarshallable} that is {@link Validatable}.
+ *
+ * @param <E> the type of the event
+ */
+public class AbstractEvent<E extends AbstractEvent<E>>
+        extends SelfDescribingMarshallable
+        implements Validatable {
     @Base85
-    private long sender;
-    @Base85
-    private long target;
-    // time sent
-    @NanoTime
-    private long sendingTime;
+    private long sender;  // sender represented in Base85
 
+    @Base85
+    private long target;  // target represented in Base85
+
+    @NanoTime
+    private long sendingTime;  // sendingTime represented in nanoseconds
+
+    /**
+     * @return the sender
+     */
     public long sender() {
         return sender;
     }
 
+    /**
+     * Sets the sender and returns the updated object.
+     *
+     * @param sender the sender to set
+     * @return the updated object
+     */
     public E sender(long sender) {
         this.sender = sender;
         return (E) this;
     }
 
+    /**
+     * @return the target
+     */
     public long target() {
         return target;
     }
 
+    /**
+     * Sets the target and returns the updated object.
+     *
+     * @param target the target to set
+     * @return the updated object
+     */
     public E target(long target) {
         this.target = target;
         return (E) this;
     }
 
+    /**
+     * @return the sending time
+     */
     public long sendingTime() {
         return sendingTime;
     }
 
+    /**
+     * Sets the sending time and returns the updated object.
+     *
+     * @param sendingTime the sending time to set
+     * @return the updated object
+     */
     public E sendingTime(long sendingTime) {
         this.sendingTime = sendingTime;
         return (E) this;
     }
 
+    /**
+     * The validate method is used to verify that all necessary properties have been set.
+     *
+     * @throws InvalidMarshallableException If any of these properties is not set
+     */
     @Override
     public void validate() throws InvalidMarshallableException {
-        if (sender == 0) throw new InvalidMarshallableException("sender must be set");
-        if (target == 0) throw new InvalidMarshallableException("target must be set");
-        if (sendingTime == 0) throw new InvalidMarshallableException("sendingTime must be set");
+        if (sender == 0)
+            throw new InvalidMarshallableException("sender must be set");  // ensure sender is set
+        if (target == 0)
+            throw new InvalidMarshallableException("target must be set");  // ensure target is set
+        if (sendingTime == 0)
+            throw new InvalidMarshallableException("sendingTime must be set");  // ensure sendingTime is set
     }
 }

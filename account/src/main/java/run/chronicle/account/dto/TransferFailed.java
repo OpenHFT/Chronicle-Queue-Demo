@@ -18,35 +18,64 @@
 
 package run.chronicle.account.dto;
 
-
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 
+/**
+ * The TransferFailed class is a type of AbstractEvent that represents a failed transfer operation in the system.
+ * It contains the Transfer object that failed and the reason for the failure.
+ * Like other classes, it also follows the Fluent Interface pattern for setters, allowing chaining of method calls.
+ */
 public class TransferFailed extends AbstractEvent<TransferFailed> {
-    private Transfer transfer;
-    private String reason;
+    private Transfer transfer; // The original transfer that failed
+    private String reason; // The reason for the failure
 
+    /**
+     * @return the original transfer that failed
+     */
     public Transfer transfer() {
         return transfer;
     }
 
+    /**
+     * Sets the original transfer that failed and returns the updated object.
+     *
+     * @param transfer the original transfer that failed
+     * @return the updated object
+     */
     public TransferFailed transfer(Transfer transfer) {
         this.transfer = transfer;
         return this;
     }
 
+    /**
+     * @return the reason for the failure
+     */
     public String reason() {
         return reason;
     }
 
+    /**
+     * Sets the reason for the failure and returns the updated object.
+     *
+     * @param reason the reason for the failure
+     * @return the updated object
+     */
     public TransferFailed reason(String reason) {
         this.reason = reason;
         return this;
     }
 
+    /**
+     * The validate method is used to verify that all necessary properties have been set.
+     *
+     * @throws InvalidMarshallableException If any of these properties is not set
+     */
     @Override
     public void validate() throws InvalidMarshallableException {
-        super.validate();
-        if (transfer == null) throw new InvalidMarshallableException("transfer must be set");
-        if (reason == null) throw new InvalidMarshallableException("reason must be set");
+        super.validate(); // Validate fields in the parent class
+        if (transfer == null)
+            throw new InvalidMarshallableException("transfer must be set"); // Ensure 'transfer' is set
+        if (reason == null)
+            throw new InvalidMarshallableException("reason must be set"); // Ensure 'reason' is set
     }
 }

@@ -1,5 +1,5 @@
 # Missing message 0
-# Bob sends 20 USD to Cate
+# This operation represents a transfer 20 EUR from Bob to Cate.
 ---
 transferFailed: {
   sender: vault,
