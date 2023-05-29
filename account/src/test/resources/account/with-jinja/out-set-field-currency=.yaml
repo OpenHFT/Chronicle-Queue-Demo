@@ -1,0 +1,8 @@
+# Starting from account number 10, we create 20 new accounts
+# override currency: EUR to currency:
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
+...
+# Starting from account number 10, we initiate 20 transfers to the next account
+# override currency: EUR to currency:
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
+...

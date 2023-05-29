@@ -39,65 +39,17 @@ onCreateAccount: {
 # This operation represents a transfer of 500 EUR from Charlie to Dania.
 # The 'sender' is 'gw2' and the 'target' is 'vault'.
 # override amount: 500 to amount: -1
----
-transferFailed: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-20T10:10:00.002,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-20T10:06:00,
-    from: 101045,
-    to: 101055,
-    currency: EUR,
-    amount: -1.0,
-    reference: Grocery Shopping
-  },
-  reason: invalid amount
-}
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be positive"
 ...
 # This operation attempts to make a transfer from a non-existent account to Charlie.
 # This operation will likely fail due to the 'from' account not existing.
 # override amount: 500 to amount: -1
----
-transferFailed: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-20T10:10:00.003,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-20T10:07:00,
-    from: 2,
-    to: 101045,
-    currency: EUR,
-    amount: -1.0,
-    reference: Unexpected Income
-  },
-  reason: invalid amount
-}
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be positive"
 ...
 # This operation attempts to transfer 1000 EUR from Dania to a non-existent account.
 # This operation will likely fail due to the 'to' account not existing.
 # override amount: 1000 to amount: -1
----
-transferFailed: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-20T10:10:00.004,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-20T10:08:00,
-    from: 101055,
-    to: 9998,
-    currency: EUR,
-    amount: -1.0,
-    reference: Charity Donation
-  },
-  reason: invalid amount
-}
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be positive"
 ...
 # This operation requests a checkpoint.
 # It will dump all the accounts.
@@ -111,7 +63,7 @@ startCheckpoint: {
 onCreateAccount: {
   sender: vault,
   target: gw1,
-  sendingTime: 2023-01-20T10:10:00.005,
+  sendingTime: 2023-01-20T10:10:00.002,
   createAccount: {
     sender: gw1,
     target: vault,
@@ -126,7 +78,7 @@ onCreateAccount: {
 onCreateAccount: {
   sender: vault,
   target: gw1,
-  sendingTime: 2023-01-20T10:10:00.006,
+  sendingTime: 2023-01-20T10:10:00.003,
   createAccount: {
     sender: gw1,
     target: vault,

@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertEquals;
 
 /**
- * This class AccountsTest is a test class that uses
+ * This class AccountsWithJinjaTest is a test class that uses
  * JUnit's Parameterized runner to run multiple tests with different parameters.
  * The test parameters are set up in the parameters method
  * and are used to create an instance of YamlTester for each test.

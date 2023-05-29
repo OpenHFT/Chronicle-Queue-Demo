@@ -130,8 +130,8 @@ public class Transfer extends AbstractEvent<Transfer> {
             throw new InvalidMarshallableException("to must be set"); // Ensure 'to' is set
         if (currency == 0)
             throw new InvalidMarshallableException("currency must be set"); // Ensure 'currency' is set
-        if (amount == 0)
-            throw new InvalidMarshallableException("amount must be set"); // Ensure 'amount' is set
+        if (!(amount > 0))
+            throw new InvalidMarshallableException("amount must be positive"); // Ensure 'amount' is positive
         if (reference == null)
             throw new InvalidMarshallableException("reference must be set"); // Ensure 'reference' is set
     }

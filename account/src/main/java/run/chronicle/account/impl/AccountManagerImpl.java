@@ -82,9 +82,9 @@ public class AccountManagerImpl
         }
 
         // Verify if the initial balance for the account is greater than or equal to 0
-        // If it isn't, a failure message is sent with the reason "invalid amount" and the method returns
+        // If it isn't, a failure message is sent with the reason "invalid balance" and the method returns
         if (!(createAccount.balance() >= 0)) {
-            sendCreateAccountFailed(createAccount, "invalid amount");
+            sendCreateAccountFailed(createAccount, "invalid balance");
             return;
         }
 
@@ -121,14 +121,6 @@ public class AccountManagerImpl
             return;
         }
 
-        // Verify if the amount to be transferred is greater than 0
-        // If it isn't, a failure message is sent with the reason "invalid amount" and the method returns
-        double amount = transfer.amount();
-        if (!(amount > 0)) {
-            sendTransferFailed(transfer, "invalid amount");
-            return;
-        }
-
         // Get the account from which funds are to be transferred
         // If it doesn't exist, a failure message is sent with the reason "from account doesn't exist" and the method returns
         CreateAccount fromAccount = accountsMap.get(transfer.from());
@@ -143,6 +135,8 @@ public class AccountManagerImpl
             sendTransferFailed(transfer, "from account currency doesn't match");
             return;
         }
+
+        double amount = transfer.amount();
 
         // Check if the balance of the "from" account is sufficient to perform the transfer
         // If it isn't, a failure message is sent with the reason "insufficient funds" and the method returns
