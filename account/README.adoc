@@ -1,16 +1,47 @@
-= Account Manager Example
+= Low-Latency Account Management System Over TCP and Shared Memory
 Peter Lawrey
 
-This example shows a simple microservice accessible via TCP or shared memory storing each message in and out via a Chronicle Queue in a number of configurations with a comparison of the performance
+This example shows a simple high performance microservice accessible via TCP or shared memory storing each message in and out persisted in a Chronicle Queue.
+There are a number of configurations with a comparison of the performance.
+It is designed to produce minimal garbage to minimise jitter.
 
 This Account Management System is designed to handle basic account operations such as account creation and fund transfers.
 It's built on Chronicle Wire and uses Fluent Interface pattern, taking advantage of YAML files for test input data.
 
-== Features
+This system leverages the `channels` package in Chronicle Wire, a high-speed messaging framework that excels in handling high volume and latency-critical data.
 
-. *Account Creation*: You can create new accounts with details such as account holder's name, account ID, currency type, and initial balance.
-. *Fund Transfers*: The system can process fund transfers between different accounts.
-. *Checkpoints*: The system can perform checkpoints, a way of marking a specific point in the sequence of operations.
+== Overview
+
+The Account Management System serves as an efficient banking system that facilitates basic account operations, including account creation and fund transfers.
+It is architected for low latency, efficient memory utilization, and performance under high transaction volume scenarios.
+
+The core functionality is built around three main components:
+
+. *Account Creation*: This feature allows for the establishment of new bank accounts with relevant details, such as account holder's name, account ID, currency type, and the initial balance.
+. *Fund Transfer*: The system is capable of processing funds transfer between different accounts securely and swiftly.
+Transfer details include sender account, target account, transfer amount, currency type, and a reference note.
+. *Checkpointing*: The checkpoint functionality provides a snapshot of the current state of all accounts in the system at a specific point in time.
+
+== Network Communication
+
+The system communicates over TCP to ensure reliable data transmission, or shared memory where possible to minimise latencies.
+TCP is chosen for its built-in error checking and correction, ensuring that all account management data reaches the correct destination in the correct order and without errors.
+All shared memory messaging is persisted to memory mapped files as it is written.
+
+There is a commercial extension https://chronicle.software/services/ that supports
+
+- Control over restarting of services
+- Idempotent collections to simplify restarting event processing.
+- Acknowledged Replication for High Availability and Realtime Distribution restartable across hosts.
+- Encryption of messages stored on disk.
+- Monitoring and Management support
+
+image:img/Chronicle-Services-Diagram.png[]
+
+== Testability and Benchmarking
+
+The system also comes with a comprehensive set of tests and a benchmarking suite, allowing for easy performance measurement and regression testing.
+The `AccountManagerBenchmarkMain` class acts as a benchmarking and testing entry point, demonstrating the functionality of the system and showing the execution time for the operations.
 
 == Network Layouts
 
