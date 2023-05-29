@@ -1,4 +1,4 @@
-# Starting from account number 10, we create 20 new accounts
+# Starting from account number 10, we create 10 new accounts
 # override balance: 1000 to balance: -1
 ---
 createAccountFailed: {
@@ -179,192 +179,12 @@ createAccountFailed: {
   reason: invalid balance
 }
 ...
-# override balance: 1000 to balance: -1
----
-createAccountFailed: {
-  sender: vault,
-  target: gw1,
-  sendingTime: 2023-01-21T11:00:10,
-  createAccount: {
-    sender: gw1,
-    target: vault,
-    sendingTime: 2023-01-21T10:20:00,
-    name: user20,
-    account: 20,
-    currency: EUR,
-    balance: -1.0
-  },
-  reason: invalid balance
-}
-...
-# override balance: 1000 to balance: -1
----
-createAccountFailed: {
-  sender: vault,
-  target: gw1,
-  sendingTime: 2023-01-21T11:00:11,
-  createAccount: {
-    sender: gw1,
-    target: vault,
-    sendingTime: 2023-01-21T10:21:00,
-    name: user21,
-    account: 21,
-    currency: EUR,
-    balance: -1.0
-  },
-  reason: invalid balance
-}
-...
-# override balance: 1000 to balance: -1
----
-createAccountFailed: {
-  sender: vault,
-  target: gw1,
-  sendingTime: 2023-01-21T11:00:12,
-  createAccount: {
-    sender: gw1,
-    target: vault,
-    sendingTime: 2023-01-21T10:22:00,
-    name: user22,
-    account: 22,
-    currency: EUR,
-    balance: -1.0
-  },
-  reason: invalid balance
-}
-...
-# override balance: 1000 to balance: -1
----
-createAccountFailed: {
-  sender: vault,
-  target: gw1,
-  sendingTime: 2023-01-21T11:00:13,
-  createAccount: {
-    sender: gw1,
-    target: vault,
-    sendingTime: 2023-01-21T10:23:00,
-    name: user23,
-    account: 23,
-    currency: EUR,
-    balance: -1.0
-  },
-  reason: invalid balance
-}
-...
-# override balance: 1000 to balance: -1
----
-createAccountFailed: {
-  sender: vault,
-  target: gw1,
-  sendingTime: 2023-01-21T11:00:14,
-  createAccount: {
-    sender: gw1,
-    target: vault,
-    sendingTime: 2023-01-21T10:24:00,
-    name: user24,
-    account: 24,
-    currency: EUR,
-    balance: -1.0
-  },
-  reason: invalid balance
-}
-...
-# override balance: 1000 to balance: -1
----
-createAccountFailed: {
-  sender: vault,
-  target: gw1,
-  sendingTime: 2023-01-21T11:00:15,
-  createAccount: {
-    sender: gw1,
-    target: vault,
-    sendingTime: 2023-01-21T10:25:00,
-    name: user25,
-    account: 25,
-    currency: EUR,
-    balance: -1.0
-  },
-  reason: invalid balance
-}
-...
-# override balance: 1000 to balance: -1
----
-createAccountFailed: {
-  sender: vault,
-  target: gw1,
-  sendingTime: 2023-01-21T11:00:16,
-  createAccount: {
-    sender: gw1,
-    target: vault,
-    sendingTime: 2023-01-21T10:26:00,
-    name: user26,
-    account: 26,
-    currency: EUR,
-    balance: -1.0
-  },
-  reason: invalid balance
-}
-...
-# override balance: 1000 to balance: -1
----
-createAccountFailed: {
-  sender: vault,
-  target: gw1,
-  sendingTime: 2023-01-21T11:00:17,
-  createAccount: {
-    sender: gw1,
-    target: vault,
-    sendingTime: 2023-01-21T10:27:00,
-    name: user27,
-    account: 27,
-    currency: EUR,
-    balance: -1.0
-  },
-  reason: invalid balance
-}
-...
-# override balance: 1000 to balance: -1
----
-createAccountFailed: {
-  sender: vault,
-  target: gw1,
-  sendingTime: 2023-01-21T11:00:18,
-  createAccount: {
-    sender: gw1,
-    target: vault,
-    sendingTime: 2023-01-21T10:28:00,
-    name: user28,
-    account: 28,
-    currency: EUR,
-    balance: -1.0
-  },
-  reason: invalid balance
-}
-...
-# override balance: 1000 to balance: -1
----
-createAccountFailed: {
-  sender: vault,
-  target: gw1,
-  sendingTime: 2023-01-21T11:00:19,
-  createAccount: {
-    sender: gw1,
-    target: vault,
-    sendingTime: 2023-01-21T10:29:00,
-    name: user29,
-    account: 29,
-    currency: EUR,
-    balance: -1.0
-  },
-  reason: invalid balance
-}
-...
-# Starting from account number 10, we initiate 20 transfers to the next account
+# Starting from account number 10, we initiate 10 transfers to the next account
 ---
 transferFailed: {
   sender: vault,
   target: gw2,
-  sendingTime: 2023-01-21T11:00:20,
+  sendingTime: 2023-01-21T11:00:10,
   transfer: {
     sender: gw2,
     target: vault,
@@ -382,7 +202,7 @@ transferFailed: {
 transferFailed: {
   sender: vault,
   target: gw2,
-  sendingTime: 2023-01-21T11:00:21,
+  sendingTime: 2023-01-21T11:00:11,
   transfer: {
     sender: gw2,
     target: vault,
@@ -400,7 +220,7 @@ transferFailed: {
 transferFailed: {
   sender: vault,
   target: gw2,
-  sendingTime: 2023-01-21T11:00:22,
+  sendingTime: 2023-01-21T11:00:12,
   transfer: {
     sender: gw2,
     target: vault,
@@ -418,7 +238,7 @@ transferFailed: {
 transferFailed: {
   sender: vault,
   target: gw2,
-  sendingTime: 2023-01-21T11:00:23,
+  sendingTime: 2023-01-21T11:00:13,
   transfer: {
     sender: gw2,
     target: vault,
@@ -436,7 +256,7 @@ transferFailed: {
 transferFailed: {
   sender: vault,
   target: gw2,
-  sendingTime: 2023-01-21T11:00:24,
+  sendingTime: 2023-01-21T11:00:14,
   transfer: {
     sender: gw2,
     target: vault,
@@ -454,7 +274,7 @@ transferFailed: {
 transferFailed: {
   sender: vault,
   target: gw2,
-  sendingTime: 2023-01-21T11:00:25,
+  sendingTime: 2023-01-21T11:00:15,
   transfer: {
     sender: gw2,
     target: vault,
@@ -472,7 +292,7 @@ transferFailed: {
 transferFailed: {
   sender: vault,
   target: gw2,
-  sendingTime: 2023-01-21T11:00:26,
+  sendingTime: 2023-01-21T11:00:16,
   transfer: {
     sender: gw2,
     target: vault,
@@ -490,7 +310,7 @@ transferFailed: {
 transferFailed: {
   sender: vault,
   target: gw2,
-  sendingTime: 2023-01-21T11:00:27,
+  sendingTime: 2023-01-21T11:00:17,
   transfer: {
     sender: gw2,
     target: vault,
@@ -508,7 +328,7 @@ transferFailed: {
 transferFailed: {
   sender: vault,
   target: gw2,
-  sendingTime: 2023-01-21T11:00:28,
+  sendingTime: 2023-01-21T11:00:18,
   transfer: {
     sender: gw2,
     target: vault,
@@ -518,186 +338,6 @@ transferFailed: {
     currency: EUR,
     amount: 100.0,
     reference: Transfer 18 to 19
-  },
-  reason: from account doesn't exist
-}
-...
----
-transferFailed: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:29,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:19:00,
-    from: 19,
-    to: 20,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 19 to 20
-  },
-  reason: from account doesn't exist
-}
-...
----
-transferFailed: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:30,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:20:00,
-    from: 20,
-    to: 21,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 20 to 21
-  },
-  reason: from account doesn't exist
-}
-...
----
-transferFailed: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:31,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:21:00,
-    from: 21,
-    to: 22,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 21 to 22
-  },
-  reason: from account doesn't exist
-}
-...
----
-transferFailed: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:32,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:22:00,
-    from: 22,
-    to: 23,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 22 to 23
-  },
-  reason: from account doesn't exist
-}
-...
----
-transferFailed: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:33,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:23:00,
-    from: 23,
-    to: 24,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 23 to 24
-  },
-  reason: from account doesn't exist
-}
-...
----
-transferFailed: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:34,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:24:00,
-    from: 24,
-    to: 25,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 24 to 25
-  },
-  reason: from account doesn't exist
-}
-...
----
-transferFailed: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:35,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:25:00,
-    from: 25,
-    to: 26,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 25 to 26
-  },
-  reason: from account doesn't exist
-}
-...
----
-transferFailed: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:36,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:26:00,
-    from: 26,
-    to: 27,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 26 to 27
-  },
-  reason: from account doesn't exist
-}
-...
----
-transferFailed: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:37,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:27:00,
-    from: 27,
-    to: 28,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 27 to 28
-  },
-  reason: from account doesn't exist
-}
-...
----
-transferFailed: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:38,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:28:00,
-    from: 28,
-    to: 29,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 28 to 29
   },
   reason: from account doesn't exist
 }
