@@ -1,5 +1,5 @@
 # This operation creates an account for Alice with account number 101013.
-# override balance: 15
+# override balance: 15 to balance: -1
 ---
 createAccountFailed: {
   sender: vault,
@@ -18,7 +18,7 @@ createAccountFailed: {
 }
 ...
 # This operation creates an account for Bob with account number 101025.
-# override balance: 1000
+# override balance: 1000 to balance: -1
 ---
 createAccountFailed: {
   sender: vault,
