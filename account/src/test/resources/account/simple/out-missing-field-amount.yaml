@@ -34,17 +34,17 @@ onCreateAccount: {
 ...
 # This operation represents a transfer of 10 EUR from Alice to Bob.
 # missing amount: 10,
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be set"
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be positive"
 ...
 # This operation attempts to make a transfer from a non-existent account to Bob.
 # This operation will fail due to the 'from' account not existing.
 # missing amount: 10,
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be set"
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be positive"
 ...
 # This operation attempts to transfer 10 EUR from Alice to a non-existent account.
 # This operation will fail due to the 'to' account not existing.
 # missing amount: 10,
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be set"
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be positive"
 ...
 # This operation requests a checkpoint.
 # Checkpoints are typically used to dump or save the state of the system at a certain point in time.

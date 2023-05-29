@@ -39,17 +39,17 @@ onCreateAccount: {
 # This operation represents a transfer of 500 EUR from Charlie to Dania.
 # The 'sender' is 'gw2' and the 'target' is 'vault'.
 # missing amount: 500,
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be set"
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be positive"
 ...
 # This operation attempts to make a transfer from a non-existent account to Charlie.
 # This operation will likely fail due to the 'from' account not existing.
 # missing amount: 500,
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be set"
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be positive"
 ...
 # This operation attempts to transfer 1000 EUR from Dania to a non-existent account.
 # This operation will likely fail due to the 'to' account not existing.
 # missing amount: 1000,
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be set"
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: amount must be positive"
 ...
 # This operation requests a checkpoint.
 # It will dump all the accounts.

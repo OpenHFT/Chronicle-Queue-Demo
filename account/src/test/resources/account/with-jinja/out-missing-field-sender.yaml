@@ -1,0 +1,8 @@
+# Starting from account number 10, we create 10 new accounts
+# missing sender: gw1,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: sender must be set"
+...
+# Starting from account number 10, we initiate 10 transfers to the next account
+# missing sender: gw2,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: sender must be set"
+...

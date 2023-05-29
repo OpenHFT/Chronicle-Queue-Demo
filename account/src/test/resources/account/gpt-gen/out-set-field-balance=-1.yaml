@@ -16,7 +16,7 @@ createAccountFailed: {
     currency: EUR,
     balance: -1.0
   },
-  reason: invalid amount
+  reason: invalid balance
 }
 ...
 # This operation creates an account for Dania with account number 101055.
@@ -37,7 +37,7 @@ createAccountFailed: {
     currency: EUR,
     balance: -1.0
   },
-  reason: invalid amount
+  reason: invalid balance
 }
 ...
 # This operation represents a transfer of 500 EUR from Charlie to Dania.
