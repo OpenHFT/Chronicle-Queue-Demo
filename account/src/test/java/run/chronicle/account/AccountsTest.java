@@ -83,7 +83,7 @@ public class AccountsTest {
                         YamlAgitator.missingFields("name, account, balance, sender, target, sendingTime, from, to, currency, amount, reference".split(", *")))
                 .exceptionHandlerFunction(out -> (log, msg, thrown) -> out.jvmError(thrown == null ? msg : (msg + " " + thrown)))
                 .exceptionHandlerFunctionAndLog(true)
-                .inputFunction(s -> new Jinjava().render(s, Collections.emptyMap()))
+                .inputFunction(s -> s.contains("{{") ? new Jinjava().render(s, Collections.emptyMap()) : s)
                 .get();
     }
 
