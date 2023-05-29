@@ -313,12 +313,112 @@ onTransfer: {
   }
 }
 ...
-# Starting from account number 10, we create 10 new accounts
+# This operation creates an account for Alice with account number 101013.
 ---
-createAccountFailed: {
+onCreateAccount: {
   sender: vault,
   target: gw1,
   sendingTime: 2023-01-21T11:00:19,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:00,
+    name: alice,
+    account: 101013,
+    currency: EUR,
+    balance: 15.0
+  }
+}
+...
+# This operation creates an account for Bob with account number 101025.
+---
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:20,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:01,
+    name: bob,
+    account: 101025,
+    currency: EUR,
+    balance: 1E3
+  }
+}
+...
+# This operation represents a transfer of 10 EUR from Alice to Bob.
+---
+onTransfer: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:21,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:01:00,
+    from: 101013,
+    to: 101025,
+    currency: EUR,
+    amount: 10.0,
+    reference: Dog food
+  }
+}
+...
+# This operation attempts to make a transfer from a non-existent account to Bob.
+# This operation will fail due to the 'from' account not existing.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:22,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:02:00,
+    from: 1,
+    to: 101025,
+    currency: EUR,
+    amount: 10.0,
+    reference: Junk food
+  },
+  reason: from account doesn't exist
+}
+...
+# This operation attempts to transfer 10 EUR from Alice to a non-existent account.
+# This operation will fail due to the 'to' account not existing.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:23,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:03:00,
+    from: 101013,
+    to: 9999,
+    currency: EUR,
+    amount: 10.0,
+    reference: Cat food
+  },
+  reason: insufficient funds
+}
+...
+# This operation requests a checkpoint.
+# Checkpoints are typically used to dump or save the state of the system at a certain point in time.
+# In this case, it will dump all the accounts.
+---
+startCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T11:00:00
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:24,
   createAccount: {
     sender: gw1,
     target: vault,
@@ -326,16 +426,14 @@ createAccountFailed: {
     name: user10,
     account: 10,
     currency: EUR,
-    balance: 1E3
-  },
-  reason: account already exists
+    balance: 900.0
+  }
 }
 ...
----
-createAccountFailed: {
+onCreateAccount: {
   sender: vault,
   target: gw1,
-  sendingTime: 2023-01-21T11:00:20,
+  sendingTime: 2023-01-21T11:00:25,
   createAccount: {
     sender: gw1,
     target: vault,
@@ -344,15 +442,13 @@ createAccountFailed: {
     account: 11,
     currency: EUR,
     balance: 1E3
-  },
-  reason: account already exists
+  }
 }
 ...
----
-createAccountFailed: {
+onCreateAccount: {
   sender: vault,
   target: gw1,
-  sendingTime: 2023-01-21T11:00:21,
+  sendingTime: 2023-01-21T11:00:26,
   createAccount: {
     sender: gw1,
     target: vault,
@@ -361,15 +457,13 @@ createAccountFailed: {
     account: 12,
     currency: EUR,
     balance: 1E3
-  },
-  reason: account already exists
+  }
 }
 ...
----
-createAccountFailed: {
+onCreateAccount: {
   sender: vault,
   target: gw1,
-  sendingTime: 2023-01-21T11:00:22,
+  sendingTime: 2023-01-21T11:00:27,
   createAccount: {
     sender: gw1,
     target: vault,
@@ -378,15 +472,13 @@ createAccountFailed: {
     account: 13,
     currency: EUR,
     balance: 1E3
-  },
-  reason: account already exists
+  }
 }
 ...
----
-createAccountFailed: {
+onCreateAccount: {
   sender: vault,
   target: gw1,
-  sendingTime: 2023-01-21T11:00:23,
+  sendingTime: 2023-01-21T11:00:28,
   createAccount: {
     sender: gw1,
     target: vault,
@@ -395,15 +487,13 @@ createAccountFailed: {
     account: 14,
     currency: EUR,
     balance: 1E3
-  },
-  reason: account already exists
+  }
 }
 ...
----
-createAccountFailed: {
+onCreateAccount: {
   sender: vault,
   target: gw1,
-  sendingTime: 2023-01-21T11:00:24,
+  sendingTime: 2023-01-21T11:00:29,
   createAccount: {
     sender: gw1,
     target: vault,
@@ -412,15 +502,13 @@ createAccountFailed: {
     account: 15,
     currency: EUR,
     balance: 1E3
-  },
-  reason: account already exists
+  }
 }
 ...
----
-createAccountFailed: {
+onCreateAccount: {
   sender: vault,
   target: gw1,
-  sendingTime: 2023-01-21T11:00:25,
+  sendingTime: 2023-01-21T11:00:30,
   createAccount: {
     sender: gw1,
     target: vault,
@@ -429,15 +517,13 @@ createAccountFailed: {
     account: 16,
     currency: EUR,
     balance: 1E3
-  },
-  reason: account already exists
+  }
 }
 ...
----
-createAccountFailed: {
+onCreateAccount: {
   sender: vault,
   target: gw1,
-  sendingTime: 2023-01-21T11:00:26,
+  sendingTime: 2023-01-21T11:00:31,
   createAccount: {
     sender: gw1,
     target: vault,
@@ -446,15 +532,13 @@ createAccountFailed: {
     account: 17,
     currency: EUR,
     balance: 1E3
-  },
-  reason: account already exists
+  }
 }
 ...
----
-createAccountFailed: {
+onCreateAccount: {
   sender: vault,
   target: gw1,
-  sendingTime: 2023-01-21T11:00:27,
+  sendingTime: 2023-01-21T11:00:32,
   createAccount: {
     sender: gw1,
     target: vault,
@@ -463,15 +547,13 @@ createAccountFailed: {
     account: 18,
     currency: EUR,
     balance: 1E3
-  },
-  reason: account already exists
+  }
 }
 ...
----
-createAccountFailed: {
+onCreateAccount: {
   sender: vault,
   target: gw1,
-  sendingTime: 2023-01-21T11:00:28,
+  sendingTime: 2023-01-21T11:00:33,
   createAccount: {
     sender: gw1,
     target: vault,
@@ -479,162 +561,43 @@ createAccountFailed: {
     name: user19,
     account: 19,
     currency: EUR,
-    balance: 1E3
-  },
-  reason: account already exists
-}
-...
-# Starting from account number 10, we initiate 10 transfers to the next account
----
-onTransfer: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:29,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:10:00,
-    from: 10,
-    to: 11,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 10 to 11
+    balance: 1100.0
   }
 }
 ...
----
-onTransfer: {
+onCreateAccount: {
   sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:30,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:11:00,
-    from: 11,
-    to: 12,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 11 to 12
-  }
-}
-...
----
-onTransfer: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:31,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:12:00,
-    from: 12,
-    to: 13,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 12 to 13
-  }
-}
-...
----
-onTransfer: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:32,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:13:00,
-    from: 13,
-    to: 14,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 13 to 14
-  }
-}
-...
----
-onTransfer: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:33,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:14:00,
-    from: 14,
-    to: 15,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 14 to 15
-  }
-}
-...
----
-onTransfer: {
-  sender: vault,
-  target: gw2,
+  target: gw1,
   sendingTime: 2023-01-21T11:00:34,
-  transfer: {
-    sender: gw2,
+  createAccount: {
+    sender: gw1,
     target: vault,
-    sendingTime: 2023-01-21T11:15:00,
-    from: 15,
-    to: 16,
+    sendingTime: 2023-01-20T10:00:00,
+    name: alice,
+    account: 101013,
     currency: EUR,
-    amount: 100.0,
-    reference: Transfer 15 to 16
+    balance: 5.0
   }
 }
 ...
----
-onTransfer: {
+onCreateAccount: {
   sender: vault,
-  target: gw2,
+  target: gw1,
   sendingTime: 2023-01-21T11:00:35,
-  transfer: {
-    sender: gw2,
+  createAccount: {
+    sender: gw1,
     target: vault,
-    sendingTime: 2023-01-21T11:16:00,
-    from: 16,
-    to: 17,
+    sendingTime: 2023-01-20T10:00:01,
+    name: bob,
+    account: 101025,
     currency: EUR,
-    amount: 100.0,
-    reference: Transfer 16 to 17
+    balance: 1010.0
   }
 }
 ...
----
-onTransfer: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:36,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:17:00,
-    from: 17,
-    to: 18,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 17 to 18
-  }
-}
-...
----
-onTransfer: {
-  sender: vault,
-  target: gw2,
-  sendingTime: 2023-01-21T11:00:37,
-  transfer: {
-    sender: gw2,
-    target: vault,
-    sendingTime: 2023-01-21T11:18:00,
-    from: 18,
-    to: 19,
-    currency: EUR,
-    amount: 100.0,
-    reference: Transfer 18 to 19
-  }
+endCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T11:00:00
 }
 ...

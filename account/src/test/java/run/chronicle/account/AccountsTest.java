@@ -18,6 +18,7 @@
 
 package run.chronicle.account;
 
+import com.hubspot.jinjava.Jinjava;
 import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
 import net.openhft.chronicle.wire.converter.Base85;
@@ -31,6 +32,7 @@ import org.junit.runners.Parameterized;
 import run.chronicle.account.api.AccountManagerOut;
 import run.chronicle.account.impl.AccountManagerImpl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -53,7 +55,8 @@ public class AccountsTest {
             "account/simple," +
             "account/mixed," +
             "account/waterfall," +
-            "account/gpt-gen";
+            "account/gpt-gen," +
+            "account/with-jinja";
     static final long VAULT = Base85.INSTANCE.parse("vault");
 
     // The name of the test, and the tester that will run the test.
@@ -80,6 +83,7 @@ public class AccountsTest {
                         YamlAgitator.missingFields("name, account, balance, sender, target, sendingTime, from, to, currency, amount, reference".split(", *")))
                 .exceptionHandlerFunction(out -> (log, msg, thrown) -> out.jvmError(thrown == null ? msg : (msg + " " + thrown)))
                 .exceptionHandlerFunctionAndLog(true)
+                .inputFunction(s -> new Jinjava().render(s, Collections.emptyMap()))
                 .get();
     }
 
@@ -94,8 +98,8 @@ public class AccountsTest {
     @Test
     public void runTester() {
         // Sets the system clock to a specific time for the purpose of testing.
-        SystemTimeProvider.CLOCK = new SetTimeProvider("2023-01-20T10:10:00")
-                .autoIncrement(1, TimeUnit.MILLISECONDS);
+        SystemTimeProvider.CLOCK = new SetTimeProvider("2023-01-21T11:00:00")
+                .autoIncrement(1, TimeUnit.SECONDS);
         // Asserts that the expected output matches the actual output.
         assertEquals(tester.expected(), tester.actual());
     }
