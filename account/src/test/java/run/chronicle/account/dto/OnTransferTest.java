@@ -1,11 +1,12 @@
 package run.chronicle.account.dto;
 
+import net.openhft.chronicle.core.io.InvalidMarshallableException;
 import net.openhft.chronicle.wire.Marshallable;
 import net.openhft.chronicle.wire.converter.Base85;
 import net.openhft.chronicle.wire.converter.NanoTime;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static run.chronicle.account.dto.TransferTest.getTransfer;
 
 public class OnTransferTest {
@@ -41,6 +42,18 @@ public class OnTransferTest {
     @Test
     public void testFromString() {
         OnTransfer tok = Marshallable.fromString(EXPECTED);
+        assertFalse(tok.usesSelfDescribingMessage());
         assertEquals(TransferTest.getTransfer(), tok.transfer());
+    }
+
+    @Test(expected = InvalidMarshallableException.class)
+    public void missingTransfer() {
+        OnTransfer tok = Marshallable.fromString("" +
+                "!run.chronicle.account.dto.OnTransfer {\n" +
+                "  sender: target,\n" +
+                "  target: sender,\n" +
+                "  sendingTime: 2001-02-03T04:05:06.777888999,\n" +
+                "}\n");
+        fail(tok.toString());
     }
 }

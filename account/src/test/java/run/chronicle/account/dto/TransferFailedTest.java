@@ -1,11 +1,13 @@
 package run.chronicle.account.dto;
 
+import net.openhft.chronicle.core.io.InvalidMarshallableException;
 import net.openhft.chronicle.wire.Marshallable;
 import net.openhft.chronicle.wire.converter.Base85;
 import net.openhft.chronicle.wire.converter.NanoTime;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class TransferFailedTest {
 
@@ -44,5 +46,38 @@ public class TransferFailedTest {
         TransferFailed tf = Marshallable.fromString(EXPECTED);
         assertEquals(TransferTest.getTransfer(), tf.transfer());
         assertEquals("reasons", tf.reason());
+    }
+
+
+    @Test(expected = InvalidMarshallableException.class)
+    public void missingTransfer() {
+        OnTransfer tok = Marshallable.fromString("" +
+                "!run.chronicle.account.dto.TransferFailed {\n" +
+                "  sender: target,\n" +
+                "  target: sender,\n" +
+                "  sendingTime: 2001-02-03T04:05:06.777888999," +
+                "  reason: None\n" +
+                "}\n");
+        fail(tok.toString());
+    }
+    @Test(expected = InvalidMarshallableException.class)
+    public void missingReason() {
+        OnTransfer tok = Marshallable.fromString("" +
+                "!run.chronicle.account.dto.TransferFailed {\n" +
+                "  sender: target,\n" +
+                "  target: sender,\n" +
+                "  sendingTime: 2001-02-03T04:05:06.777888999,\n" +
+                "  transfer: {\n" +
+                "    sender: sender,\n" +
+                "    target: target,\n" +
+                "    sendingTime: 2001-02-03T04:05:06.007008009,\n" +
+                "    from: 12345,\n" +
+                "    to: 67890,\n" +
+                "    currency: CURR,\n" +
+                "    amount: 1.0,\n" +
+                "    reference: reference\n" +
+                "  },\n" +
+                "}\n");
+        fail(tok.toString());
     }
 }

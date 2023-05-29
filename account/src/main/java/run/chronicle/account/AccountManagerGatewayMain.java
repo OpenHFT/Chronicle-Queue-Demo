@@ -31,6 +31,7 @@ public class AccountManagerGatewayMain extends ChronicleGatewayMain {
     public static void main(String... args) throws IOException, InvalidMarshallableException {
         // The main() method in ChronicleGatewayMain expects a factory method for creating the gateway
         // and a URL as arguments. If no command-line arguments are given, an empty string is used as the URL.
-        main(AccountManagerGatewayMain.class, AccountManagerGatewayMain::new, args.length == 0 ? "" : args[0]);
+        main(AccountManagerGatewayMain.class, AccountManagerGatewayMain::new, args.length == 0 ? "" : args[0])
+                .run();
     }
 }

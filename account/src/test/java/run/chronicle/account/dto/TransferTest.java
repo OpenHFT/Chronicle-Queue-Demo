@@ -6,6 +6,7 @@ import net.openhft.chronicle.wire.converter.NanoTime;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class TransferTest {
     static Transfer getTransfer() {
@@ -22,6 +23,7 @@ public class TransferTest {
 
     @Test
     public void testToString() {
+        Transfer transfer = getTransfer();
         assertEquals("" +
                         "!run.chronicle.account.dto.Transfer {\n" +
                         "  sender: sender,\n" +
@@ -33,6 +35,8 @@ public class TransferTest {
                         "  amount: 1.0,\n" +
                         "  reference: reference\n" +
                         "}\n",
-                getTransfer().toString());
+                transfer.toString());
+        assertFalse(transfer.usesSelfDescribingMessage());
+
     }
 }

@@ -1,0 +1,8 @@
+# This is a transfer operation where Alice (represented by account 101013) sends 10 EUR to Bob (represented by account 101025)
+# missing reference: Dog food,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: reference must be set"
+...
+# This is another transfer operation where Alice (represented by account 101013) sends 10 USD to Bob (represented by account 101025).
+# missing reference: Dog food,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: reference must be set"
+...

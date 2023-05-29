@@ -20,6 +20,7 @@ public class CreateAccountTest {
 
     @Test
     public void testToString() {
+        CreateAccount createAccount = getCreateAccount();
         assertEquals("" +
                         "!run.chronicle.account.dto.CreateAccount {\n" +
                         "  sender: sender,\n" +
@@ -30,6 +31,9 @@ public class CreateAccountTest {
                         "  currency: CURR,\n" +
                         "  balance: 1.0\n" +
                         "}\n",
-                getCreateAccount().toString());
+                createAccount.toString());
+        assertEquals(NanoTime.INSTANCE.parse("2001-02-03T04:05:06.007008009"),
+                createAccount.sendingTime());
+        assertEquals("name", createAccount.name());
     }
 }
