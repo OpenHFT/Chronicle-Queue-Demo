@@ -5,6 +5,7 @@ import net.openhft.chronicle.bytes.MethodReader;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.OS;
 import net.openhft.chronicle.core.io.Closeable;
+import net.openhft.chronicle.core.io.ClosedIORuntimeException;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.jlbh.JLBH;
 import net.openhft.chronicle.jlbh.JLBHOptions;
@@ -144,13 +145,12 @@ public class AccountManagerBenchmarkMain {
             // Start the benchmark.
             jlbh.start();
 
+            // Cleanup: Close the service and shutdown the ExecutorService.
+            Closeable.closeQuietly(service);
+            Jvm.pause(100);
+            es.shutdownNow();
+            es.awaitTermination(1, TimeUnit.SECONDS);
         }
-
-        // Cleanup: Close the service and shutdown the ExecutorService.
-        Closeable.closeQuietly(service);
-        Jvm.pause(100);
-        es.shutdownNow();
-        es.awaitTermination(1, TimeUnit.SECONDS);
 
         // Delete the queues after finishing. This is done to clean up any data that was created during the run.
         deleteQueues();
@@ -160,6 +160,7 @@ public class AccountManagerBenchmarkMain {
         return () -> {
             try {
                 runnable.run();
+            } catch (ClosedIORuntimeException ignored) {
             } catch (Throwable t) {
                 Jvm.warn().on(runnable.getClass(), t);
             }
