@@ -1,0 +1,7 @@
+# This operation creates 10 accounts.
+# missing balance: 100
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: balance must be set"
+...
+# This operation creates 10 transfers between the accounts.
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: sendingTime must be set"
+...

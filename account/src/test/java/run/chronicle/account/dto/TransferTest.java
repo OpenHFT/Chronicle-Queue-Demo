@@ -8,7 +8,14 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+/**
+ * This class TransferTest is a test class that tests the Transfer class.
+ */
 public class TransferTest {
+    /**
+     * This method creates a Transfer object with the following values:
+     * @return a Transfer object
+     */
     static Transfer getTransfer() {
         return new Transfer()
                 .sender(Base85.INSTANCE.parse("sender"))
@@ -21,6 +28,9 @@ public class TransferTest {
                 .reference(Bytes.from("reference"));
     }
 
+    /**
+     * This test checks that the toString method of the Transfer class
+     */
     @Test
     public void testToString() {
         Transfer transfer = getTransfer();

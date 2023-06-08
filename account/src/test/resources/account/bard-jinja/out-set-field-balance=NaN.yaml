@@ -1,0 +1,184 @@
+# This operation creates 10 accounts.
+# override balance: 100 to balance: NaN
+---
+createAccountFailed: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:00,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:10,
+    name: account_10,
+    account: 10,
+    currency: EUR,
+    balance: NaN
+  },
+  reason: invalid balance
+}
+...
+# override balance: 100 to balance: NaN
+---
+createAccountFailed: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:01,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:11,
+    name: account_11,
+    account: 11,
+    currency: EUR,
+    balance: NaN
+  },
+  reason: invalid balance
+}
+...
+# override balance: 100 to balance: NaN
+---
+createAccountFailed: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:02,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:12,
+    name: account_12,
+    account: 12,
+    currency: EUR,
+    balance: NaN
+  },
+  reason: invalid balance
+}
+...
+# override balance: 100 to balance: NaN
+---
+createAccountFailed: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:03,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:13,
+    name: account_13,
+    account: 13,
+    currency: EUR,
+    balance: NaN
+  },
+  reason: invalid balance
+}
+...
+# override balance: 100 to balance: NaN
+---
+createAccountFailed: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:04,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:14,
+    name: account_14,
+    account: 14,
+    currency: EUR,
+    balance: NaN
+  },
+  reason: invalid balance
+}
+...
+# override balance: 100 to balance: NaN
+---
+createAccountFailed: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:05,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:15,
+    name: account_15,
+    account: 15,
+    currency: EUR,
+    balance: NaN
+  },
+  reason: invalid balance
+}
+...
+# override balance: 100 to balance: NaN
+---
+createAccountFailed: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:06,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:16,
+    name: account_16,
+    account: 16,
+    currency: EUR,
+    balance: NaN
+  },
+  reason: invalid balance
+}
+...
+# override balance: 100 to balance: NaN
+---
+createAccountFailed: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:07,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:17,
+    name: account_17,
+    account: 17,
+    currency: EUR,
+    balance: NaN
+  },
+  reason: invalid balance
+}
+...
+# override balance: 100 to balance: NaN
+---
+createAccountFailed: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:08,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:18,
+    name: account_18,
+    account: 18,
+    currency: EUR,
+    balance: NaN
+  },
+  reason: invalid balance
+}
+...
+# override balance: 100 to balance: NaN
+---
+createAccountFailed: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:09,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:19,
+    name: account_19,
+    account: 19,
+    currency: EUR,
+    balance: NaN
+  },
+  reason: invalid balance
+}
+...
+# This operation creates 10 transfers between the accounts.
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: sendingTime must be set"
+...

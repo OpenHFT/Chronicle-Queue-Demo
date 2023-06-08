@@ -55,8 +55,11 @@ public class AccountsTest {
             "account/simple," +
             "account/mixed," +
             "account/waterfall," +
+            "account/copilot," +
             "account/gpt-gen," +
-            "account/with-jinja";
+            "account/gpt-jinja," +
+            "account/bard-gen," +
+            "account/bard-jinja";
     static final long VAULT = Base85.INSTANCE.parse("vault");
 
     // The name of the test, and the tester that will run the test.
@@ -83,7 +86,7 @@ public class AccountsTest {
                         YamlAgitator.missingFields("name, account, balance, sender, target, sendingTime, from, to, currency, amount, reference".split(", *")))
                 .exceptionHandlerFunction(out -> (log, msg, thrown) -> out.jvmError(thrown == null ? msg : (msg + " " + thrown)))
                 .exceptionHandlerFunctionAndLog(true)
-                .inputFunction(s -> s.contains("{{") ? new Jinjava().render(s, Collections.emptyMap()) : s)
+                .inputFunction(s -> s.contains("{{")||s.contains("{#") ? new Jinjava().render(s, Collections.emptyMap()) : s)
                 .get();
     }
 

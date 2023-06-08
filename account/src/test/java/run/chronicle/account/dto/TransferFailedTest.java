@@ -48,9 +48,15 @@ public class TransferFailedTest {
         assertEquals("reasons", tf.reason());
     }
 
-
+    /**
+     * This test verifies the scenario where a required field in TransferFailed object is missing.
+     * It is expected that when the {@link Marshallable#fromString(String)} method is used to parse a String
+     * that represents a TransferFailed object missing a required field, an InvalidMarshallableException will be thrown.
+     *
+     * @throws InvalidMarshallableException if a required field in the marshalled String is missing.
+     */
     @Test(expected = InvalidMarshallableException.class)
-    public void missingTransfer() {
+    public void missingFieldInTransferFailed() {
         OnTransfer tok = Marshallable.fromString("" +
                 "!run.chronicle.account.dto.TransferFailed {\n" +
                 "  sender: target,\n" +
@@ -58,10 +64,18 @@ public class TransferFailedTest {
                 "  sendingTime: 2001-02-03T04:05:06.777888999," +
                 "  reason: None\n" +
                 "}\n");
+
         fail(tok.toString());
     }
+
+    /**
+     * Tests that an exception is thrown when the `reason` field is missing from a `TransferFailed` DTO.
+     *
+     * @throws InvalidMarshallableException if the `TransferFailed` DTO is not valid
+     */
     @Test(expected = InvalidMarshallableException.class)
-    public void missingReason() {
+    public void missingReasonFieldInTransferFailed() {
+        // Create a `TransferFailed` DTO without the `reason` field.
         OnTransfer tok = Marshallable.fromString("" +
                 "!run.chronicle.account.dto.TransferFailed {\n" +
                 "  sender: target,\n" +
@@ -78,6 +92,8 @@ public class TransferFailedTest {
                 "    reference: reference\n" +
                 "  },\n" +
                 "}\n");
+
+        // Fail if the `TransferFailed` DTO is valid.
         fail(tok.toString());
     }
 }
