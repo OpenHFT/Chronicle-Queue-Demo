@@ -1,8 +1,0 @@
-# This is a transfer operation where Alice (represented by account 101013) sends 10 EUR to Bob (represented by account 101025)
-# missing sendingTime: 2023-01-20T10:01:00,
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: sendingTime must be set"
-...
-# This is another transfer operation where Alice (represented by account 101013) sends 10 USD to Bob (represented by account 101025).
-# missing sendingTime: 2023-01-20T10:02:00,
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: sendingTime must be set"
-...
