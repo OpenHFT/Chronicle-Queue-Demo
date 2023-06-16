@@ -42,7 +42,7 @@ public class CancelAll extends AbstractEvent<CancelOrderRequest> {
     }
 
     @Override
-    public void writeMarshallable(BytesOut out) {
+    public void writeMarshallable(BytesOut<?> out) {
         super.writeMarshallable(out);
         if (PREGENERATED_MARSHALLABLE) {
             out.writeStopBit(MASHALLABLE_VERSION);
@@ -51,7 +51,7 @@ public class CancelAll extends AbstractEvent<CancelOrderRequest> {
     }
 
     @Override
-    public void readMarshallable(BytesIn in) {
+    public void readMarshallable(BytesIn<?> in) {
         super.readMarshallable(in);
         if (PREGENERATED_MARSHALLABLE) {
             int version = (int) in.readStopBit();

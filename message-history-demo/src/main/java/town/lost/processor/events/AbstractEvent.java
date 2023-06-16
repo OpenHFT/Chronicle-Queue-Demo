@@ -3,6 +3,7 @@ package town.lost.processor.events;
 import net.openhft.chronicle.wire.SelfDescribingMarshallable;
 import net.openhft.chronicle.wire.converter.NanoTime;
 
+@SuppressWarnings("unchecked")
 public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMarshallable {
     private String eventSource;
 

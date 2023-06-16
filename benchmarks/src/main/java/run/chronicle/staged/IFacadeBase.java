@@ -2,6 +2,7 @@ package run.chronicle.staged;
 
 import net.openhft.chronicle.bytes.Byteable;
 
+@SuppressWarnings("rawtypes")
 interface IFacadeBase extends Byteable {
     short getValue0();
 

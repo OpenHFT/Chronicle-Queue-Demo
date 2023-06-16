@@ -89,7 +89,7 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
     }
 
     @Override
-    public void writeMarshallable(BytesOut out) {
+    public void writeMarshallable(BytesOut<?> out) {
         super.writeMarshallable(out);
         if (PREGENERATED_MARSHALLABLE) {
             out.writeStopBit(MASHALLABLE_VERSION);
@@ -104,7 +104,7 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
     }
 
     @Override
-    public void readMarshallable(BytesIn in) {
+    public void readMarshallable(BytesIn<?> in) {
         super.readMarshallable(in);
         if (PREGENERATED_MARSHALLABLE) {
             int version = (int) in.readStopBit();
@@ -113,9 +113,9 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
                 transactTime = in.readLong();
                 orderQty = in.readDouble();
                 price = in.readDouble();
-                side = (BuySell) in.readObject(BuySell.class);
-                ordType = (OrderType) in.readObject(OrderType.class);
-                clOrdID = (String) in.readObject(String.class);
+                side = in.readObject(BuySell.class);
+                ordType = in.readObject(OrderType.class);
+                clOrdID = in.readObject(String.class);
             }
         }
     }

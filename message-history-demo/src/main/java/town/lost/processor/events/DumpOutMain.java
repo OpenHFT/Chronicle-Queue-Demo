@@ -53,6 +53,6 @@ public class DumpOutMain {
 
 }
 
-class DummyAbstractEvent extends AbstractEvent {
+class DummyAbstractEvent extends AbstractEvent<DummyAbstractEvent> {
 
 }
