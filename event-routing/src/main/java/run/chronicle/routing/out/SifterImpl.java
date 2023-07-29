@@ -6,15 +6,43 @@ import run.chronicle.routing.out.api.SifterIn;
 import run.chronicle.routing.out.api.SifterOut;
 import run.chronicle.routing.out.api.Triple;
 
+/**
+ * The SifterImpl class is an implementation of the SifterIn interface.
+ * This class implements the logic for processing a Value object.
+ * The Value object is processed based on whether its val property is an even number or divisible by 3.
+ *
+ * @since 2023-07-29
+ */
 public class SifterImpl implements SifterIn {
+
+    // The SifterOut object for outputting the processed values
     private final SifterOut so;
+
+    // Even object to process even values
     private final Even even = new Even();
+
+    // Triple object to process values divisible by 3
     private final Triple triple = new Triple();
 
+    /**
+     * Constructor for the SifterImpl class.
+     * This initializes the SifterOut object used for outputting the processed values.
+     *
+     * @param so A SifterOut object to be used for outputting the processed values
+     */
     public SifterImpl(SifterOut so) {
         this.so = so;
     }
 
+    /**
+     * Implementation of the value method from the SifterIn interface.
+     * This method processes a Value object.
+     * If the val property of the Value object is an even number, it is processed as an Even object.
+     * If the val property of the Value object is divisible by 3, it is processed as a Triple object.
+     * Regardless of the above conditions, the Value object is always output using the SifterOut object.
+     *
+     * @param value A Value object to be processed
+     */
     @Override
     public void value(Value value) {
         if (value.val() % 2 == 0)

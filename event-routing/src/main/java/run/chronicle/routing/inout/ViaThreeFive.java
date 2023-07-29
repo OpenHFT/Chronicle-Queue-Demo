@@ -8,13 +8,26 @@ import run.chronicle.routing.inout.api.ViaOut;
 /**
  * Takes messages from multiple sources and routes to multiple sources
  */
+
 public class ViaThreeFive implements ViaIn<ValueMessage, ValueMessage>, ValueMessage {
+
+    // The instance of ViaOut interface which represents the output destination for messages
     final ViaOut<ValueMessage, ValueMessage> out;
+
+    // The name of this instance of ViaThreeFive. Can be used for identification or routing purposes
     String name;
 
+    /**
+     * This is the constructor for ViaThreeFive class.
+     * It initializes the 'out' instance variable with the provided ViaOut instance.
+     *
+     * @param out A ViaOut instance that will be used as the output destination for messages
+     */
     public ViaThreeFive(ViaOut<ValueMessage, ValueMessage> out) {
         this.out = out;
     }
+
+    // Implementation of ViaIn and ValueMessage methods should be here
 
     @Override
     public ValueMessage via(String name) {
