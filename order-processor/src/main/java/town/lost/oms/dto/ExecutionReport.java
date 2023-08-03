@@ -59,6 +59,7 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     private String clOrdID = "";
     // Optional text message about the order execution.
     private String text = null;
+
     /**
      * Returns the client order ID.
      *

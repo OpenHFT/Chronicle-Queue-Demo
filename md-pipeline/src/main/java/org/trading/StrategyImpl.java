@@ -13,8 +13,6 @@ import org.trading.dto.NewOrderSingle;
 /**
  * This is the StrategyImpl class, implementing the {@link AggregatorOut} interface.
  * It encapsulates the strategy logic and communicates with the Order Management System (OMS) input interface.
- *
- * @since 2023-07-30
  */
 public class StrategyImpl implements AggregatorOut {
     private final OMSIn out; // The output interface for OMS
@@ -41,8 +39,6 @@ public class StrategyImpl implements AggregatorOut {
     public static void main(String[] args) {
         Runner.run("agg-out", "strat-out", OMSIn.class, StrategyImpl::new);
     }
-
-    // Other methods implementing the AggregatorOut interface would be defined here
 
     @Override
     public void marketDataSnapshot(MarketDataSnapshot mds) {

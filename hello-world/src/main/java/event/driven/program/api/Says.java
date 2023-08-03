@@ -4,8 +4,6 @@ package event.driven.program.api;
  * This is a Says interface.
  * It defines a contract for classes that need to handle speaking or outputting words.
  * Implementations of this interface are responsible for determining how the words are said or output.
- *
- * @since 2023-07-30
  */
 public interface Says {
 

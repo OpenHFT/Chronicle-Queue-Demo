@@ -10,8 +10,6 @@ import org.trading.dto.MarketDataSnapshot;
  * This is the {@code AggregatorOut} interface, which defines a contract for handling outgoing market data snapshots (MDS).
  *
  * Implementing classes should provide a concrete implementation for processing or forwarding the market data snapshots.
- *
- * @since 2023-07-30
  */
 public interface AggregatorOut {
 

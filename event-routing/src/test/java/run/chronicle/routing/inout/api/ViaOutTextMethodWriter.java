@@ -31,66 +31,68 @@ public final class ViaOutTextMethodWriter implements ViaOut<ValueMessage, ValueM
     }
 
     /**
- * This method acquires a writing document from the output Supplier and performs various operations on it.
- * If any error occurs during the process, the method will rollback and rethrow the exception.
- * @return Returns the current instance after performing the operations.
- */
-public ValueMessage out() {
-    // Acquire a writing document from the output Supplier
-    try (final WriteDocumentContext dc = (WriteDocumentContext) this.out.get().acquireWritingDocument(false)) {
-        try {
-            // Set the chainedElement flag to true
-            dc.chainedElement(true);
-
-            // If the output record history is enabled, write the history to the document
-            if (out.get().recordHistory()) MessageHistory.writeHistory(dc);
-
-            // Write an event named "out" to the wire of the document
-            final ValueOut valueOut = dc.wire().writeEventName("out");
-
-            // Write an empty text to the value out
-            valueOut.text("");
-        } catch (Throwable t) {
-            // If any error occurs, rollback the document and rethrow the exception
-            dc.rollbackOnClose();
-            throw Jvm.rethrow(t);
-        }
-    }
-
-    // Return the current instance
-    return this;
-}
-
-
-    /**
- * This method acquires a writing document from the output Supplier and performs various operations on it.
- * If any error occurs during the process, the method will rollback and rethrow the exception.
- * @param arg0 The text to be written to the ValueOut
- * @return Returns the current instance after performing the operations.
- */
-public ValueMessage via(final String arg0) {
+     * This method acquires a writing document from the output Supplier and performs various operations on it.
+     * If any error occurs during the process, the method will rollback and rethrow the exception.
+     *
+     * @return Returns the current instance after performing the operations.
+     */
+    public ValueMessage out() {
         // Acquire a writing document from the output Supplier
         try (final WriteDocumentContext dc = (WriteDocumentContext) this.out.get().acquireWritingDocument(false)) {
             try {
                 // Set the chainedElement flag to true
                 dc.chainedElement(true);
 
-            // If the output record history is enabled, write the history to the document
+                // If the output record history is enabled, write the history to the document
                 if (out.get().recordHistory()) MessageHistory.writeHistory(dc);
 
-            // Write an event named "via" to the wire of the document
-                final ValueOut valueOut = dc.wire().writeEventName("via");
+                // Write an event named "out" to the wire of the document
+                final ValueOut valueOut = dc.wire().writeEventName("out");
 
-            // Write the given text to the value out
-                valueOut.text(arg0);
+                // Write an empty text to the value out
+                valueOut.text("");
             } catch (Throwable t) {
-            // If any error occurs, rollback the document and rethrow the exception
+                // If any error occurs, rollback the document and rethrow the exception
                 dc.rollbackOnClose();
                 throw Jvm.rethrow(t);
             }
         }
 
-    // Return the current instance
+        // Return the current instance
+        return this;
+    }
+
+
+    /**
+     * This method acquires a writing document from the output Supplier and performs various operations on it.
+     * If any error occurs during the process, the method will rollback and rethrow the exception.
+     *
+     * @param arg0 The text to be written to the ValueOut
+     * @return Returns the current instance after performing the operations.
+     */
+    public ValueMessage via(final String arg0) {
+        // Acquire a writing document from the output Supplier
+        try (final WriteDocumentContext dc = (WriteDocumentContext) this.out.get().acquireWritingDocument(false)) {
+            try {
+                // Set the chainedElement flag to true
+                dc.chainedElement(true);
+
+                // If the output record history is enabled, write the history to the document
+                if (out.get().recordHistory()) MessageHistory.writeHistory(dc);
+
+                // Write an event named "via" to the wire of the document
+                final ValueOut valueOut = dc.wire().writeEventName("via");
+
+                // Write the given text to the value out
+                valueOut.text(arg0);
+            } catch (Throwable t) {
+                // If any error occurs, rollback the document and rethrow the exception
+                dc.rollbackOnClose();
+                throw Jvm.rethrow(t);
+            }
+        }
+
+        // Return the current instance
         return this;
     }
 

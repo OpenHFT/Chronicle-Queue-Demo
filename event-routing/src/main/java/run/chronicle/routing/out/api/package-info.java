@@ -14,7 +14,5 @@
  *
  * The goal of this package is to provide a flexible and extensible means of routing and processing messages
  * in the output part of the system.
- *
- * @since 2023-07-29
  */
 package run.chronicle.routing.out.api;

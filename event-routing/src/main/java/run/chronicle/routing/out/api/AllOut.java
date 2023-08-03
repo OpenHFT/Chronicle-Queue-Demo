@@ -7,8 +7,6 @@ import run.chronicle.routing.inout.api.Value;
  * It provides a contract for any class that wants to send a value message using the 'value' method.
  * The purpose of this interface is to encapsulate the process of sending a value in a message.
  * The value being sent is an instance of the Value class from the run.chronicle.routing.inout.api package.
- *
- * @since 2023-07-29
  */
 public interface AllOut {
 
@@ -20,4 +18,3 @@ public interface AllOut {
      */
     void value(Value value);
 }
-

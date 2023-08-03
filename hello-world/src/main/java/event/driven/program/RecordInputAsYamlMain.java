@@ -9,8 +9,6 @@ import java.io.IOException;
  * This is a RecordInputAsYamlMain class.
  * It reads lines of text from the standard input and forwards them to a YAML-formatted logger, which writes the interactions to the console.
  * This class leverages the {@link Wires} utility class to create a proxy that records method calls in YAML format.
- *
- * @since 2023-07-30
  */
 public class RecordInputAsYamlMain {
     /**

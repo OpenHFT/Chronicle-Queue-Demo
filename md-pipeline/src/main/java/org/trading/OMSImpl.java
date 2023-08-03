@@ -11,8 +11,6 @@ import org.trading.dto.NewOrderSingle;
 /**
  * This is the OMSImpl class, which implements the OMSIn interface.
  * It represents the core functionality of an Order Management System (OMS) and provides the methods for interacting with the OMS.
- *
- * @since 2023-07-30
  */
 public class OMSImpl implements OMSIn {
 

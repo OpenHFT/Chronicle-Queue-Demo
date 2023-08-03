@@ -4,8 +4,6 @@ package run.chronicle.routing.out.api;
  * This is an EvenIn interface.
  * It provides a contract for classes that need to process an Even object.
  * The purpose of this interface is to encapsulate the operation on an Even object.
- *
- * @since 2023-07-29
  */
 public interface EvenIn {
 

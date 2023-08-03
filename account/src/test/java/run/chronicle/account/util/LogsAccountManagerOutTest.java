@@ -28,6 +28,7 @@ public class LogsAccountManagerOutTest {
         out.startCheckpoint(new CheckPoint());
         out.transferFailed(new TransferFailed());
         String collect = recorded.keySet().stream()
+                .filter(e -> e.clazz().getPackage().equals(LogsAccountManagerOutTest.class.getPackage()))
                 .map(Object::toString)
                 .collect(Collectors.joining("\n"));
         assertEquals("" +

@@ -7,8 +7,6 @@ import java.io.IOException;
 /**
  * This is a RecordInputToConsoleMain class.
  * It reads lines of text from the standard input and forwards them to the {@link SaysOutput} class, which prints them to the console.
- *
- * @since 2023-07-30
  */
 public class RecordInputToConsoleMain {
     /**

@@ -9,8 +9,6 @@ import java.util.function.Function;
 
 /**
  * This is the Runner class, responsible for setting up and running a microservice that listens and outputs to specific queues.
- *
- * @since 2023-07-30
  */
 public class Runner {
 

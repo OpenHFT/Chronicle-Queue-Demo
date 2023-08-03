@@ -6,8 +6,6 @@ package run.chronicle.routing.inout.api;
  *
  * @param <V> The type of object returned by the 'via' method.
  * @param <O> The type of object returned by the 'out' method.
- *
- * @since 2023-07-29
  */
 public interface ViaOut<V, O> {
 
@@ -26,4 +24,3 @@ public interface ViaOut<V, O> {
      */
     O out();
 }
-

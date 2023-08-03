@@ -6,8 +6,6 @@ import net.openhft.chronicle.wire.SelfDescribingMarshallable;
  * This is the Even class extending SelfDescribingMarshallable.
  * It encapsulates a long value providing methods for setting and retrieving this value.
  * The class is designed to follow the builder pattern with the 'val' method returning the current instance.
- *
- * @since 2023-07-29
  */
 public class Even extends SelfDescribingMarshallable {
 

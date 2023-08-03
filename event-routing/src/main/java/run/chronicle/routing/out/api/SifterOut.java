@@ -4,8 +4,6 @@ package run.chronicle.routing.out.api;
  * This is a SifterOut interface.
  * It provides a contract for classes that need to manage the output to various destinations.
  * It has methods for obtaining output routes for 'All', 'Even', and 'Triple' type messages.
- *
- * @since 2023-07-29
  */
 public interface SifterOut {
 
@@ -33,4 +31,3 @@ public interface SifterOut {
      */
     TripleIn triples();
 }
-

@@ -13,8 +13,6 @@ import net.openhft.chronicle.wire.converter.NanoTime;
  * This is a NewOrderSingle class extending SelfDescribingMarshallable.
  * It represents a new order in the trading system, encapsulating details
  * such as the symbol, transaction time, order quantity, price, side of the transaction, and client order ID.
- *
- * @since 2023-07-30
  */
 public class NewOrderSingle extends SelfDescribingMarshallable {
     @Base85

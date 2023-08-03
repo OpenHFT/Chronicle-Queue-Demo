@@ -7,8 +7,6 @@ package org.trading.dto;
 /**
  * This is a BuySell enumeration representing the two possible sides of a trading order: Buy or Sell.
  * Each side is associated with a direction, with Buy being -1 and Sell being +1.
- *
- * @since 2023-07-30
  */
 public enum BuySell {
     // Buy side of the trade, represented with a direction of -1

@@ -13,8 +13,6 @@ import net.openhft.chronicle.wire.converter.NanoTime;
  * This is a MarketDataIncrement class extending SelfDescribingMarshallable.
  * It represents an incremental update to market data and encapsulates information
  * such as symbol, transaction time, quantity, rate, and side of the transaction.
- *
- * @since 2023-07-30
  */
 public class MarketDataIncrement extends SelfDescribingMarshallable {
 

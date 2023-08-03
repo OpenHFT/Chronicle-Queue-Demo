@@ -8,7 +8,6 @@ import run.chronicle.routing.inout.api.ViaOut;
 /**
  * Takes messages from multiple sources and routes to multiple sources
  */
-
 public class ViaThreeFive implements ViaIn<ValueMessage, ValueMessage>, ValueMessage {
 
     // The instance of ViaOut interface which represents the output destination for messages
@@ -26,8 +25,6 @@ public class ViaThreeFive implements ViaIn<ValueMessage, ValueMessage>, ValueMes
     public ViaThreeFive(ViaOut<ValueMessage, ValueMessage> out) {
         this.out = out;
     }
-
-    // Implementation of ViaIn and ValueMessage methods should be here
 
     @Override
     public ValueMessage via(String name) {

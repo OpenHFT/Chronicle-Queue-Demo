@@ -6,8 +6,6 @@ import java.io.IOException;
  * This is a DirectWithExclamationMain class.
  * It reads lines of text from the standard input, adds an exclamation mark to the end of each line, and then prints the result to the console.
  * This class leverages the {@link AddsExclamation} and {@link SaysOutput} implementations to achieve this functionality.
- *
- * @since 2023-07-30
  */
 public class DirectWithExclamationMain {
     /**
@@ -25,4 +23,3 @@ public class DirectWithExclamationMain {
         SaysInput.input(new AddsExclamation(new SaysOutput()));
     }
 }
-

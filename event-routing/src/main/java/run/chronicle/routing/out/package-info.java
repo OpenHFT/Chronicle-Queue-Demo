@@ -9,7 +9,5 @@
  *
  * The aim of this package is to provide classes and logic for output operations. This includes taking
  * the processed input data, and routing it to the appropriate channels for further use.
- *
- * @since 2023-07-29
  */
 package run.chronicle.routing.out;

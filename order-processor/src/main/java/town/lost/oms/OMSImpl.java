@@ -102,4 +102,3 @@ public class OMSImpl implements OMSIn {
         out.orderCancelReject(ocr);
     }
 }
-

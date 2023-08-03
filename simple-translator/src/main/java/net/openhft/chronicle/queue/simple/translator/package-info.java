@@ -17,7 +17,5 @@
  *     it to the English queue.</li>
  * </ul>
  * </p>
- *
- * @since 1.0
  */
 package net.openhft.chronicle.queue.simple.translator;

@@ -10,8 +10,6 @@ import run.chronicle.routing.out.api.Triple;
  * The SifterImpl class is an implementation of the SifterIn interface.
  * This class implements the logic for processing a Value object.
  * The Value object is processed based on whether its val property is an even number or divisible by 3.
- *
- * @since 2023-07-29
  */
 public class SifterImpl implements SifterIn {
 

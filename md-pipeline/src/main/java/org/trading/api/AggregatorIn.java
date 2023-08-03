@@ -10,8 +10,6 @@ import org.trading.dto.MarketDataIncrement;
  * This is the {@code AggregatorIn} interface, which defines a contract for handling incoming market data increments (MDI).
  *
  * Implementing classes should provide a concrete implementation for processing the market data increments.
- *
- * @since 2023-07-30
  */
 public interface AggregatorIn {
 

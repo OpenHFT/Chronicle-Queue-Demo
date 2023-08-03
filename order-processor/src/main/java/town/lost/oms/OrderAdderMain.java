@@ -95,4 +95,3 @@ public class OrderAdderMain {
         return Base85.INSTANCE.parse(s);
     }
 }
-

@@ -12,8 +12,6 @@ import net.openhft.chronicle.wire.converter.NanoTime;
  * This is a MarketDataSnapshot class extending SelfDescribingMarshallable.
  * It represents a snapshot of market data for a given symbol, encapsulating information
  * such as the symbol, transaction time, bid and ask prices.
- *
- * @since 2023-07-30
  */
 public class MarketDataSnapshot extends SelfDescribingMarshallable {
     @Base85

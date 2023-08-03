@@ -19,4 +19,3 @@ public class PrintQueueMain {
         DumpMain.dump("queue-fr");
     }
 }
-

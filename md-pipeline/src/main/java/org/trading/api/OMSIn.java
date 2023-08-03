@@ -10,8 +10,6 @@ import org.trading.dto.NewOrderSingle;
  * This is the {@code OMSIn} interface, defining a contract for receiving and handling new single orders within the Order Management System (OMS).
  *
  * Implementing classes should provide a concrete implementation for processing or forwarding the new single order messages.
- *
- * @since 2023-07-30
  */
 public interface OMSIn {
 

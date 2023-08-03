@@ -7,8 +7,6 @@ import java.io.IOException;
 /**
  * This is a ReplayOutputMain class.
  * It reads the content of a specified YAML file and replays it using the {@link SaysOutput} class, printing the interactions to the console.
- *
- * @since 2023-07-30
  */
 public class ReplayOutputMain {
     /**
@@ -25,4 +23,3 @@ public class ReplayOutputMain {
         Wires.replay(args[0], new SaysOutput());
     }
 }
-

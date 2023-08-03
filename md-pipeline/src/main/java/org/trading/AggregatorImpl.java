@@ -17,8 +17,6 @@ import java.util.Map;
  * This is an implementation of the AggregatorIn interface, known as AggregatorImpl.
  * It maintains a map of market data snapshots and interfaces with an AggregatorOut object
  * to process and handle aggregated market data.
- *
- * @since 2023-07-30
  */
 public class AggregatorImpl implements AggregatorIn {
 
@@ -47,9 +45,6 @@ public class AggregatorImpl implements AggregatorIn {
     public static void main(String[] args) {
         Runner.run("agg-in", "agg-out", AggregatorOut.class, AggregatorImpl::new);
     }
-
-    // Further methods related to the AggregatorIn interface may be defined here
-
 
     @Override
     public void mdi(MarketDataIncrement mdi) {

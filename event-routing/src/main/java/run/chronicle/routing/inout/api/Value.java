@@ -5,8 +5,6 @@ import net.openhft.chronicle.wire.SelfDescribingMarshallable;
 /**
  * This is a Value class extending SelfDescribingMarshallable.
  * It wraps a long value and provides methods for setting and retrieving this value.
- *
- * @since 2023-07-29
  */
 public class Value extends SelfDescribingMarshallable {
 

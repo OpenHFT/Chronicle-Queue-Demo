@@ -6,8 +6,6 @@ package run.chronicle.routing.inout.api;
  *
  * @param <V> The type of object returned by the 'via' method.
  * @param <I> The type of object returned by the 'in' method.
- *
- * @since 2023-07-29
  */
 public interface ViaIn<V, I> {
 

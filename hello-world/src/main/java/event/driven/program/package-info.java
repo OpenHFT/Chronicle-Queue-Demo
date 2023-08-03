@@ -5,7 +5,5 @@
  *
  * <p>Classes in this package may define specific events, listeners, and mechanisms to handle events
  * within an application. Implementations can vary widely depending on the requirements of the system.</p>
- *
- * @since 2023-07-30
  */
 package event.driven.program;

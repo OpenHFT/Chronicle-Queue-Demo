@@ -22,8 +22,6 @@ import java.util.Random;
  * This class, ExchangeSimulatorImpl, simulates an exchange by generating market data and sending it to an aggregator.
  * It utilizes the ChronicleQueue to manage data and demonstrates how market data increments are created, processed,
  * and sent through the system. It continues to send market data until the user decides to exit.
- *
- * @since 2023-07-30
  */
 public class ExchangeSimulatorImpl {
 

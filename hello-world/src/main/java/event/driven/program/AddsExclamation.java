@@ -5,8 +5,6 @@ import event.driven.program.api.Says;
 /**
  * This is an AddsExclamation class implementing the {@link Says} interface.
  * It decorates a given {@link Says} object, adding an exclamation mark to the end of each input message before delegating the call.
- *
- * @since 2023-07-30
  */
 public class AddsExclamation implements Says {
     // The Says object to which the decorated calls will be delegated.

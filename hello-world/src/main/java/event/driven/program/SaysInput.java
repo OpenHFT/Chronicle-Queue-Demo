@@ -9,8 +9,6 @@ import java.io.InputStreamReader;
 /**
  * This is a SaysInput class.
  * It provides a static method to read text lines from the standard input and forward them to a provided {@link Says} implementation.
- *
- * @since 2023-07-30
  */
 public class SaysInput {
 
