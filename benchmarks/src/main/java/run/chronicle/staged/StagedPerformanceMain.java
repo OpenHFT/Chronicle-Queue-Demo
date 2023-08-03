@@ -96,6 +96,7 @@ public class StagedPerformanceMain {
         IOTools.deleteDirWithFiles(DIR, 3);
     }
 
+    @SuppressWarnings( "unchecked")
     public static void producer(int count, int intervalNS) {
         IFacadeAll datum = Values.newNativeReference(IFacadeAll.class);
         long datumSize = datum.maxSize();
@@ -183,6 +184,7 @@ public class StagedPerformanceMain {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static void applyFlyweight(IFacadeAll datum, long datumSize, DocumentContext dc) {
         Wire wire = dc.wire();
         String event = wire.readEvent(String.class);

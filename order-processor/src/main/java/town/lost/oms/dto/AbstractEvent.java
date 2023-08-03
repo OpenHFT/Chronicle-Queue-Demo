@@ -11,6 +11,7 @@ import net.openhft.chronicle.wire.*;
 import net.openhft.chronicle.wire.converter.Base85;
 import net.openhft.chronicle.wire.converter.NanoTime;
 
+@SuppressWarnings("unchecked")
 public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMarshallable {
     // used to control the benchmark
     public static final boolean BYTES_IN_BINARY = Jvm.getBoolean("bytesInBinary", true);
@@ -59,7 +60,7 @@ public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMar
     }
 
     @Override
-    public void writeMarshallable(BytesOut out) {
+    public void writeMarshallable(BytesOut<?> out) {
         if (PREGENERATED_MARSHALLABLE) {
             out.writeStopBit(MASHALLABLE_VERSION);
             out.writeLong(sender);
@@ -71,7 +72,7 @@ public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMar
     }
 
     @Override
-    public void readMarshallable(BytesIn in) {
+    public void readMarshallable(BytesIn<?> in) {
         if (PREGENERATED_MARSHALLABLE) {
             int version = (int) in.readStopBit();
             if (version == MASHALLABLE_VERSION) {

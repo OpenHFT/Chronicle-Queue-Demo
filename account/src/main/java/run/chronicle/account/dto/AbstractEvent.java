@@ -29,6 +29,7 @@ import net.openhft.chronicle.wire.converter.NanoTime;
  *
  * @param <E> the type of the event
  */
+@SuppressWarnings("unchecked")
 public class AbstractEvent<E extends AbstractEvent<E>>
         extends SelfDescribingMarshallable
         implements Validatable {

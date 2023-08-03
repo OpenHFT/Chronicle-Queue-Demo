@@ -66,7 +66,7 @@ public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
     }
 
     @Override
-    public void writeMarshallable(BytesOut out) {
+    public void writeMarshallable(BytesOut<?> out) {
         super.writeMarshallable(out);
         if (PREGENERATED_MARSHALLABLE) {
             out.writeStopBit(MASHALLABLE_VERSION);
@@ -77,14 +77,14 @@ public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
     }
 
     @Override
-    public void readMarshallable(BytesIn in) {
+    public void readMarshallable(BytesIn<?> in) {
         super.readMarshallable(in);
         if (PREGENERATED_MARSHALLABLE) {
             int version = (int) in.readStopBit();
             if (version == MASHALLABLE_VERSION) {
                 symbol = in.readLong();
-                clOrdID = (String) in.readObject(String.class);
-                reason = (String) in.readObject(String.class);
+                clOrdID = in.readObject(String.class);
+                reason = in.readObject(String.class);
             } else {
                 throw new IllegalStateException("Unknown version " + version);
             }

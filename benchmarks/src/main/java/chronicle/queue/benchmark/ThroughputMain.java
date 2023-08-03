@@ -129,7 +129,7 @@ public class ThroughputMain {
             wire2.addPadding(pad);
     }
 
-    @SuppressWarnings("restriction")
+    @SuppressWarnings({"restriction", "rawtypes"})
     private static long writeMessages(long address, long canWrite, int writeCount, BytesStore nbs) {
         long length = 0;
         long count = 0;

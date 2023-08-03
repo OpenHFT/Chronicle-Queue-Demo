@@ -150,7 +150,7 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     }
 
     @Override
-    public void writeMarshallable(BytesOut out) {
+    public void writeMarshallable(BytesOut<?> out) {
         super.writeMarshallable(out);
         if (PREGENERATED_MARSHALLABLE) {
             out.writeStopBit(MASHALLABLE_VERSION);
@@ -171,7 +171,7 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     }
 
     @Override
-    public void readMarshallable(BytesIn in) {
+    public void readMarshallable(BytesIn<?> in) {
         super.readMarshallable(in);
         if (PREGENERATED_MARSHALLABLE) {
             int version = (int) in.readStopBit();
@@ -185,10 +185,10 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
                 leavesQty = in.readDouble();
                 cumQty = in.readDouble();
                 avgPx = in.readDouble();
-                side = (BuySell) in.readObject(BuySell.class);
-                ordType = (OrderType) in.readObject(OrderType.class);
-                clOrdID = (String) in.readObject(String.class);
-                text = (String) in.readObject(String.class);
+                side = in.readObject(BuySell.class);
+                ordType = in.readObject(OrderType.class);
+                clOrdID = in.readObject(String.class);
+                text = in.readObject(String.class);
             } else {
                 throw new IllegalStateException("Unknown version " + version);
             }

@@ -31,7 +31,7 @@ public class Transfer extends AbstractEvent<Transfer> {
     @Base85
     private int currency; // The currency of the transfer, represented in Base85 format
     private double amount; // The amount to be transferred
-    private Bytes reference = Bytes.allocateElasticOnHeap(); // Reference to the transaction details
+    private Bytes<?> reference = Bytes.allocateElasticOnHeap(); // Reference to the transaction details
 
     /**
      * @return the sender's account number
@@ -111,7 +111,7 @@ public class Transfer extends AbstractEvent<Transfer> {
      * @param reference the reference to the transaction details
      * @return the updated object
      */
-    public Transfer reference(Bytes reference) {
+    public Transfer reference(Bytes<?> reference) {
         this.reference.clear().append(reference);
         return this;
     }

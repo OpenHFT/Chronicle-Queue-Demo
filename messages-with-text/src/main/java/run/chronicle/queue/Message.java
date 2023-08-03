@@ -6,13 +6,13 @@ import net.openhft.chronicle.wire.LongConversion;
 import net.openhft.chronicle.wire.MilliTimestampLongConverter;
 
 public class Message extends BytesInBinaryMarshallable {
-    private final Bytes text = Bytes.allocateElasticOnHeap();
+    private final Bytes<?> text = Bytes.allocateElasticOnHeap();
 
     @LongConversion(MilliTimestampLongConverter.class)
     private long timeStamp;
 
     //Getters and Setters
-    public Bytes getText() {
+    public Bytes<?> getText() {
         return text;
     }
 

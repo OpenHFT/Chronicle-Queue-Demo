@@ -41,7 +41,7 @@ public class DumpDecodedMain {
             // use EventTwo here
         }
 
-        private void printMessageHistory(String eventName, AbstractEvent event) {
+        private void printMessageHistory(String eventName, AbstractEvent<?> event) {
             MessageHistory mh = MessageHistory.get();
             System.out.println(mh + " - " + eventName + ", source: " + event.eventSource() + ", ts: " + MicroTimestampLongConverter.INSTANCE.asString(event.eventTimeStamp()));
             System.out.println(event);
