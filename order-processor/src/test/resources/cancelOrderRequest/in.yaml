@@ -1,4 +1,8 @@
 ---
+# This is a test for the CancelOrderRequest operation.
+# The client (sender) is sending a request to the Order Management System (OMS, the target)
+# to cancel an order that was previously placed. The order is identified by its unique ID (clOrdID).
+
 cancelOrderRequest: {
   sender: CLIENT,
   target: OMS,

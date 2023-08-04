@@ -1,3 +1,5 @@
+# This is a test for the CancelOrderRequest operation.
+# The client (sender) sends a request to the OMS (target) to cancel a specific order (clOrdID).
 ---
 orderCancelReject: {
   sender: OMS,
@@ -8,6 +10,8 @@ orderCancelReject: {
   reason: No such order
 }
 ...
+# This is a test for the CancelAll operation.
+# The client (sender) sends a request to the OMS (target) to cancel all orders.
 ---
 orderCancelReject: {
   sender: OMS,

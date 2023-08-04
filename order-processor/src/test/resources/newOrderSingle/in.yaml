@@ -1,4 +1,8 @@
 ---
+# This is a test for the NewOrderSingle operation.
+# The client (sender) is sending a new order to the Order Management System (OMS, the target).
+# The order details such as the trading symbol, order quantity, price, and the order type are specified.
+
 newOrderSingle: {
   sender: CLIENT,
   target: OMS,
@@ -12,3 +16,4 @@ newOrderSingle: {
   ordType: limit
 }
 ...
+

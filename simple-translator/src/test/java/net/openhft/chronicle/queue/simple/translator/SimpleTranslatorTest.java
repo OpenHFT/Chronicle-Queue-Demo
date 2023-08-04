@@ -5,19 +5,26 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
+ * Test class for SimpleTranslator.
+ *
  * Created by catherine on 26/07/2016.
  */
 public class SimpleTranslatorTest {
+
     @Test
-    public void onMessage() throws Exception {
+    public void onMessage() {
+        // Create a StringBuilder to collect the translated messages
         StringBuilder sb = new StringBuilder();
 
+        // Create a SimpleTranslator with a MessageConsumer that appends translated messages to sb
         SimpleTranslator trans = new SimpleTranslator(m -> sb.append(m).append(","));
 
+        // Translate and collect some messages
         trans.onMessage("hello apple");
         trans.onMessage("bye now");
         trans.onMessage("banana");
 
+        // Check that the collected translations match the expected translations
         assertEquals("salut pomme," +
                         "salut now," +
                         "banane,",
@@ -25,20 +32,34 @@ public class SimpleTranslatorTest {
     }
 
     @Test
-    public void onMessage2() throws Exception {
+    public void onMessage2() {
+        // Create a StringBuilder to collect the translated messages
         StringBuilder sb = new StringBuilder();
 
+        // Create a SimpleTranslator with a MessageConsumer that appends translated messages to sb
         SimpleTranslator trans = new SimpleTranslator(sb::append);
 
+        // Translate and check some messages using the doTest helper method
         doTest(trans, sb, "hello apple", "salut pomme");
         doTest(trans, sb, "bye now", "salut now");
     }
 
+    /**
+     * Helper method that tests the translation of a single message.
+     *
+     * @param trans the SimpleTranslator to use
+     * @param sb the StringBuilder to collect the translation
+     * @param in the input message
+     * @param out the expected translation
+     */
     private void doTest(SimpleTranslator trans, StringBuilder sb, String in, String out) {
+        // Reset sb to an empty state
         sb.setLength(0);
 
+        // Translate the input message
         trans.onMessage(in);
 
+        // Check that the translation matches the expected translation
         assertEquals(out, sb.toString());
     }
 }
