@@ -4,7 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.openhft</groupId>
+    <parent>
+        <groupId>net.openhft</groupId>
+        <artifactId>java-parent-pom</artifactId>
+        <version>1.24.0-SNAPSHOT</version>
+        <relativePath />
+    </parent>
+
+    <groupId>run.chronicle</groupId>
     <artifactId>chronicle-queue-demo</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>OpenHFT/${project.artifactId}</name>
@@ -31,14 +38,14 @@
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>third-party-bom</artifactId>
-                <version>3.23.1</version>
+                <version>3.24.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle-bom</artifactId>
-                <version>2.24ea65</version>
+                <version>2.24ea74</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -61,110 +68,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>java11</id>
-            <activation>
-                <jdk>[11,16]</jdk>
-            </activation>
-            <properties>
-                <!-- Required JVM args for Java 11 -> 16 -->
-                <jvm.requiredArgs>
-                    --illegal-access=permit
-                    --add-exports java.base/jdk.internal.ref=ALL-UNNAMED
-                    --add-exports java.base/jdk.internal.misc=ALL-UNNAMED
-                    --add-exports java.base/jdk.internal.util=ALL-UNNAMED
-                    --add-exports java.base/sun.nio.ch=ALL-UNNAMED
-                </jvm.requiredArgs>
-            </properties>
-        </profile>
-        <profile>
-            <id>java17</id>
-            <activation>
-                <jdk>[17,</jdk>
-            </activation>
-            <properties>
-                <maven.compiler.source>17</maven.compiler.source>
-                <maven.compiler.target>17</maven.compiler.target>
-                <!-- Required JVM args for Java 17+ -->
-                <jvm.requiredArgs>
-                    --add-exports java.base/jdk.internal.ref=ALL-UNNAMED
-                    --add-exports=java.base/sun.nio.ch=ALL-UNNAMED
-                    --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED
-                    --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
-                    --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
-                    --add-exports=java.base/jdk.internal.util=ALL-UNNAMED
-                    --add-exports=java.base/jdk.internal.misc=ALL-UNNAMED
-                    --add-exports java.base/jdk.internal.ref=ALL-UNNAMED
-                    --add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED
-                    --add-opens=java.base/java.lang=ALL-UNNAMED
-                    --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
-                    --add-opens=java.base/java.io=ALL-UNNAMED
-                    --add-opens=java.base/java.util=ALL-UNNAMED
-                </jvm.requiredArgs>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>3.1.2</version>
-                        <configuration>
-                            <argLine>${jvm.requiredArgs}</argLine>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>java8</id>
-            <activation>
-                <jdk>1.8</jdk>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.10.1</version>
-                        <configuration>
-                            <failOnWarning>true</failOnWarning>
-                            <showWarnings>true</showWarnings>
-                            <showDeprecation>true</showDeprecation>
-                            <compilerArgument>-Xlint:all</compilerArgument>
-                            <source>1.8</source>
-                            <target>1.8</target>
-                            <encoding>UTF-8</encoding>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>java9</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.10.1</version>
-                        <configuration>
-                            <failOnWarning>false</failOnWarning>
-                            <showWarnings>true</showWarnings>
-                            <showDeprecation>true</showDeprecation>
-                            <compilerArgument>-Xlint:all</compilerArgument>
-                            <source>1.8</source>
-                            <target>1.8</target>
-                            <encoding>UTF-8</encoding>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
 </project>
