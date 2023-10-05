@@ -8,7 +8,7 @@ This is a tutorial demonstrating the usage of Chronicle Queue with simple demo p
 
 image::Two-hop-latency.PNG[]
 
-You can find the source code for the order processor example [here](https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/order-processor).
+You can find the source code for the order processor example https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/order-processor[here].
 
 == Downloading and Running Sample Programs
 
@@ -20,7 +20,7 @@ This is under `Development` and you need to click `skip` so it says to `install`
 
 image::gitpack.png[]
 
-Open IntelliJ or your favorite [Integrated Development Environment (IDE)](https://en.wikipedia.org/wiki/Integrated_development_environment). If you haven't installed an IDE, we recommend [IntelliJ](https://www.jetbrains.com/idea/download/#section=windows), which we'll use for this tutorial.
+Open IntelliJ or your favorite https://en.wikipedia.org/wiki/Integrated_development_environment[Integrated Development Environment (IDE)]. If you haven't installed an IDE, we recommend https://www.jetbrains.com/idea/download/#section=windows[IntelliJ], which we'll use for this tutorial.
 
 In IntelliJ, select `Get from VCS` to clone the Chronicle Queue Sample code.
 
@@ -39,6 +39,6 @@ If you close the project, you can reopen it by going to `File -> Open`. You'll f
 
 image::directory.PNG[]
 
-Now you're ready to run the example programs! You can start with [Simple Input](https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/simple-input).
+Now you're ready to run the example programs! You can start with https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/simple-input[Simple Input].
 
-The second example is [Simple Translator](https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/simple-translator).
+The second example is https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/simple-translator[Simple Translator].
