@@ -34,7 +34,6 @@ public class Main {
     static final int threads = Integer.getInteger("threads", 1);
 
     static final boolean fullWrite = Jvm.getBoolean("fullWrite");
-    static final boolean SAMPLING = Jvm.getBoolean("sampling");
     static final int iterations = Integer.getInteger("iterations", 30 * throughput);
     static final BufferMode BUFFER_MODE = getBufferMode();
 

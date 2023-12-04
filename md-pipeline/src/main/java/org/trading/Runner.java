@@ -21,7 +21,7 @@ public class Runner {
 
             // Create a Chronicle Wire method writer such that when the service calls a method on
             // the "out" method writer, the method call is serialised and written to the out queue
-            T mw = out.acquireAppender().methodWriter(mwClass);
+            T mw = out.createAppender().methodWriter(mwClass);
             Object service = serviceVendor.apply(mw);
 
             // Create a method reader to read in the in queue for any and all methods implemented by the service

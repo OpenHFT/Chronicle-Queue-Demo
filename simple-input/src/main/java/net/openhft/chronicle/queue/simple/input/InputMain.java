@@ -13,7 +13,7 @@ public class InputMain {
     public static void main(String[] args) {
         String path = "queue";
         SingleChronicleQueue queue = SingleChronicleQueueBuilder.binary(path).build();
-        ExcerptAppender appender = queue.acquireAppender();
+        ExcerptAppender appender = queue.createAppender();
         Scanner read = new Scanner(System.in);
         while (true) {
             System.out.println("type something");

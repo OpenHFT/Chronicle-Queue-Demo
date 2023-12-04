@@ -14,7 +14,7 @@ public class InputMain {
 
         String path = "queue";
         SingleChronicleQueue queue = SingleChronicleQueueBuilder.binary(path).build();
-        ExcerptAppender appender = queue.acquireAppender();
+        ExcerptAppender appender = queue.createAppender();
 
         try (DocumentContext dc = appender.writingDocument()) {
             GenericRecord user = avro.getGenericRecord();

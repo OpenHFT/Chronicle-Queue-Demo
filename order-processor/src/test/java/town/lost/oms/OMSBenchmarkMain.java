@@ -89,7 +89,7 @@ public class OMSBenchmarkMain {
             // processing thread
             Thread processor = new Thread(() -> {
                 try (AffinityLock ignored = AffinityLock.acquireCore()) {
-                    OMSOut out = output.acquireAppender().methodWriter(OMSOut.class);
+                    OMSOut out = output.createAppender().methodWriter(OMSOut.class);
                     OMSImpl oms = new OMSImpl(out);
                     MethodReader in = input.createTailer("test").methodReader(oms);
                     Pauser pauser = Pauser.busy();
@@ -176,7 +176,7 @@ public class OMSBenchmarkMain {
                     .symbol(BASE85.parse("AUDUSD"))
                     .ordType(OrderType.limit)
                     .side(BuySell.buy);
-            in = input.acquireAppender().methodWriter(OMSIn.class);
+            in = input.createAppender().methodWriter(OMSIn.class);
         }
 
         @Override

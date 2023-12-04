@@ -20,7 +20,7 @@ public class InputMain {
         SingleChronicleQueue queue_en = SingleChronicleQueueBuilder.binary(path_en).build();
 
         // Create a MessageConsumer that will append messages to the queue
-        MessageConsumer messageConsumer = queue_en.acquireAppender().methodWriter(MessageConsumer.class);
+        MessageConsumer messageConsumer = queue_en.createAppender().methodWriter(MessageConsumer.class);
 
         // Create a Scanner to read input from the console
         Scanner read = new Scanner(System.in);

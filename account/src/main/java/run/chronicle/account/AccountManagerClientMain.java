@@ -42,7 +42,7 @@ public class AccountManagerClientMain {
             ChronicleChannel channel = context.newChannelSupplier(new PipeHandler().publish("account-in").subscribe("account-out")).get();
 
             // Log the hostname and port of the connected channel...
-            Jvm.startup().on(AccountManagerClientMain.class, "Channel connected to: " + channel.channelCfg().hostname() + "[" + channel.channelCfg().port() + "]");
+            Jvm.startup().on(AccountManagerClientMain.class, "Channel connected to: " + channel.channelCfg().hostPorts());
 
             // Create an instance of AccountManagerIn, which allows us to make calls to the server...
             final AccountManagerIn accountManagerIn = channel.methodWriter(AccountManagerIn.class);
