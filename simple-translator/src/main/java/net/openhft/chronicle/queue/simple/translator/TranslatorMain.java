@@ -20,7 +20,7 @@ public class TranslatorMain {
         SingleChronicleQueue queuefr = SingleChronicleQueueBuilder.binary(pathfr).build();
 
         // Create a MessageConsumer that will append messages to the French queue
-        MessageConsumer messageConsumer = queuefr.acquireAppender().methodWriter(MessageConsumer.class);
+        MessageConsumer messageConsumer = queuefr.createAppender().methodWriter(MessageConsumer.class);
 
         // Create a SimpleTranslator that will translate messages to French
         MessageConsumer simpleTranslator = new SimpleTranslator(messageConsumer);

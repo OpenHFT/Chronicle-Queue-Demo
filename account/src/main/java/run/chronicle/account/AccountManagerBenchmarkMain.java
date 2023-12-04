@@ -107,7 +107,7 @@ public class AccountManagerBenchmarkMain {
                     new PipeHandler().publish("account-in").subscribe("account-out")).get();
 
             // Log the connection details.
-            Jvm.startup().on(AccountManagerClientMain.class, "Channel connected to: " + channel.channelCfg().hostname() + "[" + channel.channelCfg().port() + "]");
+            Jvm.startup().on(AccountManagerClientMain.class, "Channel connected to: " + channel.channelCfg().hostPorts());
 
             // Create an AccountManagerIn instance to interact with the service.
             final AccountManagerIn accountManagerIn = channel.methodWriter(AccountManagerIn.class);

@@ -6,7 +6,7 @@ package town.lost.oms;
 
 import net.openhft.chronicle.bytes.MethodReader;
 import net.openhft.chronicle.core.Jvm;
-import net.openhft.chronicle.core.Mocker;
+import net.openhft.chronicle.core.util.Mocker;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
 import net.openhft.chronicle.queue.rollcycles.TestRollCycles;

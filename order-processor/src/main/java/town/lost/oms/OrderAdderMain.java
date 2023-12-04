@@ -4,10 +4,11 @@
 
 package town.lost.oms;
 
-import net.openhft.chronicle.core.Mocker;
 import net.openhft.chronicle.core.pool.ClassAliasPool;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
+import net.openhft.chronicle.core.util.Mocker;
 import net.openhft.chronicle.queue.ChronicleQueue;
+import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
 import net.openhft.chronicle.queue.rollcycles.TestRollCycles;
 import net.openhft.chronicle.wire.converter.Base85;
@@ -37,10 +38,11 @@ public class OrderAdderMain {
         // Establish connection with the queue
         try (ChronicleQueue q = SingleChronicleQueueBuilder.binary("in")
                 .rollCycle(TestRollCycles.TEST8_DAILY)
-                .build()) {
+                .build();
+             ExcerptAppender appender = q.createAppender()) {
 
             // Acquire the appender and write methods for OMSIn
-            OMSIn in = q.acquireAppender().methodWriter(OMSIn.class);
+            OMSIn in = appender.methodWriter(OMSIn.class);
 
             // Create a logging mock for OMSIn
             OMSIn in2 = Mocker.logging(OMSIn.class, "in - ", System.out);

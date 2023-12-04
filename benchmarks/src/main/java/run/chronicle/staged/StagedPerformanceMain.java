@@ -102,10 +102,10 @@ public class StagedPerformanceMain {
         long datumSize = datum.maxSize();
         assert datumSize >= 500 && datumSize % 8 == 0;
         long start = System.nanoTime();
-        try (ExcerptAppender appender = q0.acquireAppender()) {
+        try (ExcerptAppender appender = q0.createAppender()) {
 
             Thread pretoucher = new Thread(() -> {
-                ExcerptAppender appender0 = q0.acquireAppender();
+                ExcerptAppender appender0 = q0.createAppender();
                 Thread thread = Thread.currentThread();
                 while (!thread.isInterrupted()) {
                     appender0.pretouch();

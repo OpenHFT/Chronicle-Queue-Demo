@@ -7,6 +7,7 @@ package org.trading;
 import net.openhft.chronicle.core.pool.ClassAliasPool;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
 import net.openhft.chronicle.queue.ChronicleQueue;
+import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
 import org.trading.api.AggregatorIn;
 import org.trading.dto.BuySell;
@@ -37,9 +38,10 @@ public class ExchangeSimulatorImpl {
         ClassAliasPool.CLASS_ALIASES.addAlias(NewOrderSingle.class);
 
         // Building the ChronicleQueue for the "agg-in" channel
-        try (ChronicleQueue q = SingleChronicleQueueBuilder.binary("agg-in").build()) {
+        try (ChronicleQueue q = SingleChronicleQueueBuilder.binary("agg-in").build();
+            ExcerptAppender appender = q.createAppender()) {
             // Acquiring the method writer for the AggregatorIn interface
-            AggregatorIn in = q.acquireAppender().methodWriter(AggregatorIn.class);
+            AggregatorIn in = appender.methodWriter(AggregatorIn.class);
 
             // Initializing market data increment with a starting value
             double mid = 23418.80;

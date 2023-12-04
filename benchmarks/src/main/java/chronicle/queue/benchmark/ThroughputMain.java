@@ -53,7 +53,7 @@ public class ThroughputMain {
                     .blockSize(blockSize)
                     .build()) {
 
-                ExcerptAppender appender = q.acquireAppender();
+                ExcerptAppender appender = q.createAppender();
                 long lastIndex = -1;
                 do {
                     int defaultIndexSpacing = q.rollCycle().defaultIndexSpacing();

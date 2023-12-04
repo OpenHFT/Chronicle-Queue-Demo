@@ -23,7 +23,6 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.IOTools;
-import net.openhft.chronicle.core.threads.StackSampler;
 import net.openhft.chronicle.core.util.Histogram;
 import net.openhft.chronicle.core.util.Time;
 import net.openhft.chronicle.queue.BufferMode;
@@ -34,7 +33,6 @@ import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.LinkedHashMap;
@@ -118,8 +116,6 @@ import static chronicle.queue.benchmark.Main.*;
  */
 public class LatencyDistributionMain {
     private static final int INTLOG_INTERVAL = 20_000_000;
-    @Nullable
-    final StackSampler sampler = SAMPLING ? new StackSampler() : null;
 
     public static void main(String[] args) throws InterruptedException {
         assert false : "test runs slower with assertions on";
@@ -163,7 +159,7 @@ public class LatencyDistributionMain {
         Histogram histogramIn = new Histogram();
         Histogram histogramWr = new Histogram();
         Thread pretoucher = new Thread(() -> {
-            ExcerptAppender appender = queue.acquireAppender();
+            ExcerptAppender appender = queue.createAppender();
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     appender.pretouch();
@@ -177,7 +173,7 @@ public class LatencyDistributionMain {
         pretoucher.setDaemon(true);
         pretoucher.start();
 
-        ExcerptAppender appender = queue.acquireAppender();
+        ExcerptAppender appender = queue.createAppender();
         // two queues as most like in a different process.
         ExcerptTailer tailer = queue2.createTailer();
 
@@ -240,9 +236,6 @@ public class LatencyDistributionMain {
                         next = System.nanoTime(); // if we failed to come out of the spin loop on time, reset next.
                     }
 
-                    if (SAMPLING) {
-                        sampler.thread(Thread.currentThread());
-                    }
                     long start = System.nanoTime();
                     try (@NotNull DocumentContext dc = appender.writingDocument(false)) {
                         Wire wire = dc.wire();
@@ -254,17 +247,7 @@ public class LatencyDistributionMain {
                     }
                     long time = System.nanoTime() - start;
                     histogramWr.sample(start - next);
-                    if (SAMPLING && time > 1e3 && i > 0) {
-                        StackTraceElement[] stack = sampler.getAndReset();
-                        if (stack != null) {
-                            if (!stack[0].getClassName().equals(name) &&
-                                    !stack[0].getClassName().equals("java.lang.Thread")) {
-                                StringBuilder sb = new StringBuilder();
-                                Jvm.trimStackTrace(sb, stack);
-                                stackCount.compute(sb.toString(), (k, v) -> v == null ? 1 : v + 1);
-                            }
-                        }
-                    }
+
                     next += interval;
                     if (i % INTLOG_INTERVAL == 0) System.out.println("wrote " + i);
                 }
