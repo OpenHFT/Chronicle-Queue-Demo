@@ -13,7 +13,7 @@ public class PublisherMain {
         try (ChronicleQueue queue = ChronicleQueue.singleBuilder("in").sourceId(1).build()) {
             Events build = queue.methodWriterBuilder(Events.class).build();
             long start = System.nanoTime();
-            double interval = 1e9 / RATE;
+            long interval = (long) (1e9 / RATE);
             EventTwo two = new EventTwo();
 
             for (int i = 0; i < EVENTS; i++) {

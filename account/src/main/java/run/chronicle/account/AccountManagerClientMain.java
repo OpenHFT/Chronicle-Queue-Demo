@@ -7,7 +7,6 @@ import net.openhft.chronicle.core.time.SystemTimeProvider;
 import net.openhft.chronicle.queue.channel.PipeHandler;
 import net.openhft.chronicle.wire.Base85LongConverter;
 import net.openhft.chronicle.wire.LongConverter;
-import net.openhft.chronicle.wire.channel.ChronicleChannel;
 import net.openhft.chronicle.wire.channel.ChronicleContext;
 import net.openhft.chronicle.wire.channel.ChronicleGatewayMain;
 import run.chronicle.account.api.AccountManagerIn;
@@ -19,6 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * This class acts as the main entry point for the AccountManagerClient.
  * It creates a client which connects to a Chronicle server and performs various actions.
  */
+@SuppressWarnings("deprecation")
 public class AccountManagerClientMain {
     private static final String URL = System.getProperty("url", "tcp://localhost:" + ChronicleGatewayMain.PORT);
 
@@ -39,7 +39,7 @@ public class AccountManagerClientMain {
         // Create a new ChronicleContext using a URL and client name...
         // Obtain a ChronicleChannel...
         try (ChronicleContext context = ChronicleContext.newContext(URL).name(CLIENT)) {
-            ChronicleChannel channel = context.newChannelSupplier(new PipeHandler().publish("account-in").subscribe("account-out")).get();
+            net.openhft.chronicle.wire.channel.ChronicleChannel channel = context.newChannelSupplier(new PipeHandler().publish("account-in").subscribe("account-out")).get();
 
             // Log the hostname and port of the connected channel...
             Jvm.startup().on(AccountManagerClientMain.class, "Channel connected to: " + channel.channelCfg().hostPorts());

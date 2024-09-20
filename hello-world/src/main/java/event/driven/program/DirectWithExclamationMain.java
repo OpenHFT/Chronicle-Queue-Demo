@@ -11,7 +11,7 @@ public class DirectWithExclamationMain {
     /**
      * This method creates a new {@link AddsExclamation} object that wraps a {@link SaysOutput} object.
      * It will add an exclamation mark to the end of each input message and then print the result to the console.
-     * This behavior is orchestrated by the {@link SaysInput} class, which reads the input and forwards it to the given {@link Says} implementation.
+     * This behavior is orchestrated by the {@link SaysInput} class, which reads the input and forwards it to the given {@link SaysInput} implementation.
      *
      * @param args Command-line arguments, not used in this implementation.
      * @throws IOException If an I/O error occurs while reading from the standard input.

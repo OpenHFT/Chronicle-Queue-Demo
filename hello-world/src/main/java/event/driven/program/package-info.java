@@ -4,6 +4,6 @@
  * such as user actions, sensor outputs, or messages from other programs or threads.
  *
  * <p>Classes in this package may define specific events, listeners, and mechanisms to handle events
- * within an application. Implementations can vary widely depending on the requirements of the system.</p>
+ * within an application. Implementations can vary widely depending on the requirements of the system.
  */
 package event.driven.program;

@@ -16,6 +16,6 @@
  *     <li>{@link net.openhft.chronicle.queue.simple.translator.InputMain} - The main class that takes user input and writes
  *     it to the English queue.</li>
  * </ul>
- * </p>
+ * 
  */
 package net.openhft.chronicle.queue.simple.translator;

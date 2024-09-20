@@ -11,7 +11,6 @@ import net.openhft.chronicle.jlbh.JLBH;
 import net.openhft.chronicle.jlbh.JLBHOptions;
 import net.openhft.chronicle.jlbh.JLBHTask;
 import net.openhft.chronicle.queue.channel.PipeHandler;
-import net.openhft.chronicle.wire.channel.ChronicleChannel;
 import net.openhft.chronicle.wire.channel.ChronicleContext;
 import net.openhft.chronicle.wire.channel.impl.internal.Handler;
 import run.chronicle.account.api.AccountManagerIn;
@@ -57,6 +56,7 @@ Percentile   run1         run2         run3         run4         run5      % Var
 90.0:           37.95        35.26        38.34        35.52        35.14         5.72
 99.0:         1198.08       250.62      1243.14       469.50       477.70        72.53
  */
+@SuppressWarnings("deprecation")
 public class AccountManagerBenchmarkMain {
     public static final int THROUGHPUT = Integer.getInteger("throughput", OS.isLinux() ? 100_000 : 10_000);
     public static final int RUN_TIME = Integer.getInteger("runTime", 30);
@@ -88,7 +88,7 @@ public class AccountManagerBenchmarkMain {
         AccountManagerServiceMain service = null;
 
         // Check if the host part of the URL is empty. If it is, that means we are running the service locally.
-        if (ChronicleContext.urlFor(URL).getHost().isEmpty()) {
+        if (net.openhft.chronicle.wire.channel.ChronicleContext.urlFor(URL).getHost().isEmpty()) {
             service = new AccountManagerServiceMain();
             // Submit the service to run in the ExecutorService.
             // The 'wrap' method is used to ensure any Throwable are logged instead of added to the discarded Future silently
@@ -102,8 +102,8 @@ public class AccountManagerBenchmarkMain {
         // Use a ChronicleContext to connect to the service.
         // ChronicleContext is a part of the Chronicle network library
         // which provides high performance, low latency networking capabilities.
-        try (ChronicleContext context = ChronicleContext.newContext(URL)) {
-            ChronicleChannel channel = context.newChannelSupplier(
+        try (ChronicleContext context = net.openhft.chronicle.wire.channel.ChronicleContext.newContext(URL)) {
+            net.openhft.chronicle.wire.channel.ChronicleChannel channel = context.newChannelSupplier(
                     new PipeHandler().publish("account-in").subscribe("account-out")).get();
 
             // Log the connection details.

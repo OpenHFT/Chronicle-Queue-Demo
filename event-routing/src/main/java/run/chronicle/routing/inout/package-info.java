@@ -5,7 +5,7 @@
  * The main class in the package is:
  *
  * - ViaThreeFive: A class that takes messages from multiple sources and routes them to multiple sources. 
- *   This class implements the ViaIn<ValueMessage, ValueMessage> and ValueMessage interfaces, 
+ *   This class implements the ViaIn&lt;ValueMessage, ValueMessage&gt; and ValueMessage interfaces,
  *   providing functionality for a named routing path and the handling of ValueMessage objects.
  *
  * The goal of this package is to provide an efficient and extensible framework for managing the flow of 

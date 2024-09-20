@@ -6,9 +6,6 @@ package town.lost.oms;
 
 import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
-import net.openhft.chronicle.wire.utils.YamlAgitator;
-import net.openhft.chronicle.wire.utils.YamlTester;
-import net.openhft.chronicle.wire.utils.YamlTesterParametersBuilder;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +23,7 @@ import static org.junit.Assert.assertEquals;
  * The OMSImplTest runs tests for each method in OMSImpl class.
  * The test data is read from specified files and the actual output is compared against expected output.
  */
+@SuppressWarnings("deprecation")
 @RunWith(Parameterized.class)
 public class OMSImplTest {
     // Defines the paths to the tests to run.
@@ -38,10 +36,10 @@ public class OMSImplTest {
 
     // The name of the test, and the tester that will run the test.
     final String name;
-    final YamlTester tester;
+    final net.openhft.chronicle.wire.utils.YamlTester tester;
 
     // Constructor that sets the name and tester.
-    public OMSImplTest(String name, YamlTester tester) {
+    public OMSImplTest(String name, net.openhft.chronicle.wire.utils.YamlTester tester) {
         this.name = name;
         this.tester = tester;
     }
@@ -52,12 +50,12 @@ public class OMSImplTest {
         // Returns a list of test parameters to run the tests with.
         // Each test will be run with an instance of AccountManagerImpl,
         // and will be subjected to various agitations to ensure robustness.
-        return new YamlTesterParametersBuilder<>(out -> new OMSImpl(out), OMSOut.class, paths)
+        return new net.openhft.chronicle.wire.utils.YamlTesterParametersBuilder<>(out -> new OMSImpl(out), OMSOut.class, paths)
                 .agitators(
-                        YamlAgitator.messageMissing(),
-                        YamlAgitator.duplicateMessage(),
-                        YamlAgitator.overrideFields("sendingTime: '', symbol: '', side: '', orderQty: NaN, orderQty: -1, price: NaN, price: -1, clOrdId: '', ordType: ''".split(", *")),
-                        YamlAgitator.missingFields("sender, target, sendingTime, symbol, transactTime, account, orderQty, price, side, clOrdID, ordType, timeInForce, currency".split(", *")))
+                        net.openhft.chronicle.wire.utils.YamlAgitator.messageMissing(),
+                        net.openhft.chronicle.wire.utils.YamlAgitator.duplicateMessage(),
+                        net.openhft.chronicle.wire.utils.YamlAgitator.overrideFields("sendingTime: '', symbol: '', side: '', orderQty: NaN, orderQty: -1, price: NaN, price: -1, clOrdId: '', ordType: ''".split(", *")),
+                        net.openhft.chronicle.wire.utils.YamlAgitator.missingFields("sender, target, sendingTime, symbol, transactTime, account, orderQty, price, side, clOrdID, ordType, timeInForce, currency".split(", *")))
                 .exceptionHandlerFunction(out -> (log, msg, thrown) -> out.jvmError(thrown == null ? msg : (msg + " " + thrown)))
                 .exceptionHandlerFunctionAndLog(true)
                 .get();
