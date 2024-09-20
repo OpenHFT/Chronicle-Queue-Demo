@@ -137,7 +137,7 @@ onCreateAccount: {
     account: 101013,
     currency: EUR,
     balance: 800.0,
-    overdraft: 0.0
+    overdraft: 100.0
   }
 }
 ...
@@ -153,7 +153,7 @@ onCreateAccount: {
     account: 101025,
     currency: EUR,
     balance: 700.0,
-    overdraft: 0.0
+    overdraft: 100.0
   }
 }
 ...
@@ -169,7 +169,7 @@ onCreateAccount: {
     account: 101037,
     currency: USD,
     balance: 2E3,
-    overdraft: 0.0
+    overdraft: 100.0
   }
 }
 ...
@@ -185,7 +185,7 @@ onCreateAccount: {
     account: 101049,
     currency: GBP,
     balance: 1500.0,
-    overdraft: 0.0
+    overdraft: 100.0
   }
 }
 ...
@@ -313,7 +313,7 @@ onCreateAccount: {
     account: 101013,
     currency: EUR,
     balance: 0.0,
-    overdraft: 0.0
+    overdraft: 100.0
   }
 }
 ...
@@ -329,7 +329,7 @@ onCreateAccount: {
     account: 101025,
     currency: EUR,
     balance: 1500.0,
-    overdraft: 0.0
+    overdraft: 100.0
   }
 }
 ...
@@ -345,7 +345,7 @@ onCreateAccount: {
     account: 101037,
     currency: USD,
     balance: 2E3,
-    overdraft: 0.0
+    overdraft: 100.0
   }
 }
 ...
@@ -361,7 +361,7 @@ onCreateAccount: {
     account: 101049,
     currency: GBP,
     balance: 1500.0,
-    overdraft: 0.0
+    overdraft: 100.0
   }
 }
 ...
