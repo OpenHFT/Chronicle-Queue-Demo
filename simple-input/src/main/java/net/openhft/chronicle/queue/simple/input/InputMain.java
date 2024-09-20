@@ -16,7 +16,7 @@ public class InputMain {
         try (ChronicleQueue queue = ChronicleQueue.single(path);
              Scanner scanner = new Scanner(System.in)) {
 
-            ExcerptAppender appender = queue.acquireAppender();
+            ExcerptAppender appender = queue.createAppender();
             System.out.println("Starting InputMain. Type your input (empty line to exit).");
 
             while (true) {
