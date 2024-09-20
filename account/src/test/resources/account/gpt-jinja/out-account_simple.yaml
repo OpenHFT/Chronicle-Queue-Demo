@@ -11,7 +11,8 @@ onCreateAccount: {
     name: user10,
     account: 10,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -27,7 +28,8 @@ onCreateAccount: {
     name: user11,
     account: 11,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -43,7 +45,8 @@ onCreateAccount: {
     name: user12,
     account: 12,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -59,7 +62,8 @@ onCreateAccount: {
     name: user13,
     account: 13,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -75,7 +79,8 @@ onCreateAccount: {
     name: user14,
     account: 14,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -91,7 +96,8 @@ onCreateAccount: {
     name: user15,
     account: 15,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -107,7 +113,8 @@ onCreateAccount: {
     name: user16,
     account: 16,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -123,7 +130,8 @@ onCreateAccount: {
     name: user17,
     account: 17,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -139,7 +147,8 @@ onCreateAccount: {
     name: user18,
     account: 18,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -155,7 +164,8 @@ onCreateAccount: {
     name: user19,
     account: 19,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -326,7 +336,8 @@ onCreateAccount: {
     name: alice,
     account: 101013,
     currency: EUR,
-    balance: 15.0
+    balance: 15.0,
+    overdraft: 10.0
   }
 }
 ...
@@ -343,7 +354,8 @@ onCreateAccount: {
     name: bob,
     account: 101025,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 100.0
   }
 }
 ...
@@ -402,7 +414,7 @@ transferFailed: {
     amount: 10.0,
     reference: Cat food
   },
-  reason: insufficient funds
+  reason: to account doesn't exist
 }
 ...
 # This operation requests a checkpoint.
@@ -426,7 +438,8 @@ onCreateAccount: {
     name: user10,
     account: 10,
     currency: EUR,
-    balance: 900.0
+    balance: 900.0,
+    overdraft: 0.0
   }
 }
 ...
@@ -441,7 +454,8 @@ onCreateAccount: {
     name: user11,
     account: 11,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -456,7 +470,8 @@ onCreateAccount: {
     name: user12,
     account: 12,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -471,7 +486,8 @@ onCreateAccount: {
     name: user13,
     account: 13,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -486,7 +502,8 @@ onCreateAccount: {
     name: user14,
     account: 14,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -501,7 +518,8 @@ onCreateAccount: {
     name: user15,
     account: 15,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -516,7 +534,8 @@ onCreateAccount: {
     name: user16,
     account: 16,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -531,7 +550,8 @@ onCreateAccount: {
     name: user17,
     account: 17,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -546,7 +566,8 @@ onCreateAccount: {
     name: user18,
     account: 18,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -561,7 +582,8 @@ onCreateAccount: {
     name: user19,
     account: 19,
     currency: EUR,
-    balance: 1100.0
+    balance: 1100.0,
+    overdraft: 0.0
   }
 }
 ...
@@ -576,7 +598,8 @@ onCreateAccount: {
     name: alice,
     account: 101013,
     currency: EUR,
-    balance: 5.0
+    balance: 5.0,
+    overdraft: 10.0
   }
 }
 ...
@@ -591,7 +614,8 @@ onCreateAccount: {
     name: bob,
     account: 101025,
     currency: EUR,
-    balance: 1010.0
+    balance: 1010.0,
+    overdraft: 100.0
   }
 }
 ...

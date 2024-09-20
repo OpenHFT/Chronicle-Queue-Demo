@@ -21,7 +21,7 @@ package run.chronicle.account;
 import com.hubspot.jinjava.Jinjava;
 import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
-import net.openhft.chronicle.wire.converter.Base85;
+import net.openhft.chronicle.wire.converter.ShortText;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +51,7 @@ public class AccountsTest {
     // Defines the paths to the tests to run.
     static final String paths = "" +
             "account/simple," +
+            "account/simple-gen," +
             "account/mixed," +
             "account/waterfall," +
             "account/copilot," +
@@ -58,7 +59,7 @@ public class AccountsTest {
             "account/gpt-jinja," +
             "account/bard-gen," +
             "account/bard-jinja";
-    static final long VAULT = Base85.INSTANCE.parse("vault");
+    static final long VAULT = ShortText.INSTANCE.parse("vault");
 
     // The name of the test, and the tester that will run the test.
     final String name;

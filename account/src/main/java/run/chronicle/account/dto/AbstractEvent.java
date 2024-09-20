@@ -21,29 +21,34 @@ package run.chronicle.account.dto;
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 import net.openhft.chronicle.core.io.Validatable;
 import net.openhft.chronicle.wire.SelfDescribingMarshallable;
-import net.openhft.chronicle.wire.converter.Base85;
+import net.openhft.chronicle.wire.converter.ShortText;
 import net.openhft.chronicle.wire.converter.NanoTime;
 
 /**
- * The AbstractEvent class is a {@link SelfDescribingMarshallable} that is {@link Validatable}.
+ * The {@code AbstractEvent} class serves as a base for event objects,
+ * extending {@link SelfDescribingMarshallable} and implementing {@link Validatable}.
+ * It provides common properties like sender, target, and sending time,
+ * along with fluent setter methods for easy chaining.
  *
- * @param <E> the type of the event
+ * @param <E> the type of the event extending {@code AbstractEvent}
  */
 @SuppressWarnings("unchecked")
-public class AbstractEvent<E extends AbstractEvent<E>>
+public abstract class AbstractEvent<E extends AbstractEvent<E>>
         extends SelfDescribingMarshallable
         implements Validatable {
-    @Base85
-    private long sender;  // sender represented in Base85
+    @ShortText
+    private long sender;  // sender represented in ShortText
 
-    @Base85
-    private long target;  // target represented in Base85
+    @ShortText
+    private long target;  // target represented in ShortText
 
     @NanoTime
-    private long sendingTime;  // sendingTime represented in nanoseconds
+    private long sendingTime;  // sendingTime represented as a unique timestamp in nanoseconds
 
     /**
-     * @return the sender
+     * Retrieves the sender identifier.
+     *
+     * @return the sender identifier
      */
     public long sender() {
         return sender;
@@ -61,7 +66,9 @@ public class AbstractEvent<E extends AbstractEvent<E>>
     }
 
     /**
-     * @return the target
+     * Retrieves the target identifier.
+     *
+     * @return the target identifier
      */
     public long target() {
         return target;
@@ -79,7 +86,9 @@ public class AbstractEvent<E extends AbstractEvent<E>>
     }
 
     /**
-     * @return the sending time
+     * Retrieves the sending time.
+     *
+     * @return the sending time in nanoseconds
      */
     public long sendingTime() {
         return sendingTime;

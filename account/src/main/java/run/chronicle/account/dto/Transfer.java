@@ -20,7 +20,7 @@ package run.chronicle.account.dto;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
-import net.openhft.chronicle.wire.converter.Base85;
+import net.openhft.chronicle.wire.converter.ShortText;
 /**
  * The Transfer class extends AbstractEvent and represents a transfer event in the banking system.
  * It encapsulates all necessary details of a transfer, including the account numbers of both sender and receiver, the currency, the amount, and a reference to the transaction details. Like the previous classes,
@@ -28,8 +28,8 @@ import net.openhft.chronicle.wire.converter.Base85;
  */
 public class Transfer extends AbstractEvent<Transfer> {
     private long from, to; // The account numbers for the transfer
-    @Base85
-    private int currency; // The currency of the transfer, represented in Base85 format
+    @ShortText
+    private int currency; // The currency of the transfer, represented in ShortText format
     private double amount; // The amount to be transferred
     private Bytes<?> reference = Bytes.allocateElasticOnHeap(); // Reference to the transaction details
 

@@ -7,7 +7,8 @@ createAccount: {
   name: alice,
   account: 101013,
   currency: EUR,
-  balance: 15
+  balance: 15,
+  overdraft: 10
 }
 ...
 ---
@@ -19,7 +20,8 @@ createAccount: {
   name: bob,
   account: 101025,
   currency: EUR,
-  balance: 1000
+  balance: 1000,
+  overdraft: 100
 }
 ...
 ---

@@ -19,7 +19,7 @@
 package run.chronicle.account.dto;
 
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
-import net.openhft.chronicle.wire.converter.Base85;
+import net.openhft.chronicle.wire.converter.ShortText;
 
 /**
  * Represents a specific kind of event: the creation of an account.
@@ -29,9 +29,10 @@ import net.openhft.chronicle.wire.converter.Base85;
 public class CreateAccount extends AbstractEvent<CreateAccount> {
     private String name; // Name associated with the account
     private long account; // Account identifier
-    @Base85
-    private int currency; // Currency for the account, represented in Base85
+    @ShortText
+    private int currency; // Currency for the account, represented in ShortText
     private double balance; // Balance of the account
+    private double overdraft; // Overdraft limit of the account
 
     /**
      * @return the account identifier
@@ -106,6 +107,24 @@ public class CreateAccount extends AbstractEvent<CreateAccount> {
     }
 
     /**
+     * @return the overdraft limit
+     */
+    public double overdraft() {
+        return overdraft;
+    }
+
+    /**
+     * Sets the overdraft limit and returns the updated object.
+     *
+     * @param overdraft the overdraft limit to set
+     * @return the updated object
+     */
+    public CreateAccount overdraft(double overdraft) {
+        this.overdraft = overdraft;
+        return this;
+    }
+
+    /**
      * The validate method is used to verify that all necessary properties have been set.
      *
      * @throws InvalidMarshallableException If any of these properties is not set
@@ -119,7 +138,9 @@ public class CreateAccount extends AbstractEvent<CreateAccount> {
             throw new InvalidMarshallableException("account must be set"); // Ensure account is set
         if (currency == 0)
             throw new InvalidMarshallableException("currency must be set"); // Ensure currency is set
-        if (balance == 0)
-            throw new InvalidMarshallableException("balance must be set"); // Ensure balance is set
+        if (balance < 0)
+            throw new InvalidMarshallableException("balance must be positive or zero"); // Ensure balance is >= 0
+        if (overdraft < 0)
+            throw new InvalidMarshallableException("overdraft must be positive or zero"); // Ensure overdraft is >= 0
     }
 }

@@ -1,8 +1,0 @@
-# This is a transfer operation where Alice (represented by account 101013) sends 10 EUR to Bob (represented by account 101025)
-# override currency: EUR to currency:
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
-...
-# This is another transfer operation where Alice (represented by account 101013) sends 10 USD to Bob (represented by account 101025).
-# override currency: USD to currency:
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
-...

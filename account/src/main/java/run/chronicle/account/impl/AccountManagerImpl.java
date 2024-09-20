@@ -140,7 +140,7 @@ public class AccountManagerImpl
 
         // Check if the balance of the "from" account is sufficient to perform the transfer
         // If it isn't, a failure message is sent with the reason "insufficient funds" and the method returns
-        if (fromAccount.balance() < amount) {
+        if (fromAccount.balance() + fromAccount.overdraft() < amount) {
             sendTransferFailed(transfer, "insufficient funds");
             return;
         }

@@ -2,13 +2,43 @@
 # The 'sender' is 'gw1' and the 'target' is 'vault'.
 # The 'currency' for Charlie's account is EUR and the initial account 'balance' is 5000.
 # missing balance: 5000
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: balance must be set"
+---
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:00,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:05:00,
+    name: charlie,
+    account: 101045,
+    currency: EUR,
+    balance: 0.0,
+    overdraft: 0.0
+  }
+}
 ...
 # This operation creates an account for Dania with account number 101055.
 # The 'sender' is 'gw1' and the 'target' is 'vault'.
 # The 'currency' for Dania's account is EUR and the initial account 'balance' is 3500.
 # missing balance: 3500
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: balance must be set"
+---
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:01,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:05:01,
+    name: Dania,
+    account: 101055,
+    currency: EUR,
+    balance: 0.0,
+    overdraft: 0.0
+  }
+}
 ...
 # This operation represents a transfer of 500 EUR from Charlie to Dania.
 # The 'sender' is 'gw2' and the 'target' is 'vault'.
@@ -16,7 +46,7 @@ jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: balance m
 transferFailed: {
   sender: vault,
   target: gw2,
-  sendingTime: 2023-01-21T11:00:00,
+  sendingTime: 2023-01-21T11:00:02,
   transfer: {
     sender: gw2,
     target: vault,
@@ -27,7 +57,7 @@ transferFailed: {
     amount: 500.0,
     reference: Grocery Shopping
   },
-  reason: from account doesn't exist
+  reason: insufficient funds
 }
 ...
 # This operation attempts to make a transfer from a non-existent account to Charlie.
@@ -36,7 +66,7 @@ transferFailed: {
 transferFailed: {
   sender: vault,
   target: gw2,
-  sendingTime: 2023-01-21T11:00:01,
+  sendingTime: 2023-01-21T11:00:03,
   transfer: {
     sender: gw2,
     target: vault,
@@ -56,7 +86,7 @@ transferFailed: {
 transferFailed: {
   sender: vault,
   target: gw2,
-  sendingTime: 2023-01-21T11:00:02,
+  sendingTime: 2023-01-21T11:00:04,
   transfer: {
     sender: gw2,
     target: vault,
@@ -67,7 +97,7 @@ transferFailed: {
     amount: 1E3,
     reference: Charity Donation
   },
-  reason: from account doesn't exist
+  reason: insufficient funds
 }
 ...
 # This operation requests a checkpoint.
@@ -77,6 +107,38 @@ startCheckpoint: {
   sender: gw2,
   target: vault,
   sendingTime: 2023-01-20T11:05:00
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:05,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:05:00,
+    name: charlie,
+    account: 101045,
+    currency: EUR,
+    balance: 0.0,
+    overdraft: 0.0
+  }
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:06,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:05:01,
+    name: Dania,
+    account: 101055,
+    currency: EUR,
+    balance: 0.0,
+    overdraft: 0.0
+  }
 }
 ...
 endCheckpoint: {

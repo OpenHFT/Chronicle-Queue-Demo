@@ -5,7 +5,7 @@ import net.openhft.chronicle.bytes.MethodReader;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
 import net.openhft.chronicle.queue.channel.PipeHandler;
-import net.openhft.chronicle.wire.Base85LongConverter;
+import net.openhft.chronicle.wire.ShortTextLongConverter;
 import net.openhft.chronicle.wire.LongConverter;
 import net.openhft.chronicle.wire.channel.ChronicleContext;
 import net.openhft.chronicle.wire.channel.ChronicleGatewayMain;
@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class AccountManagerClientMain {
     private static final String URL = System.getProperty("url", "tcp://localhost:" + ChronicleGatewayMain.PORT);
 
-    private static final LongConverter BASE85 = Base85LongConverter.INSTANCE;
+    private static final LongConverter BASE85 = ShortTextLongConverter.INSTANCE;
     private static final long TARGET = BASE85.parse("service");
     private static final int EUR = (int) BASE85.parse("EUR");
     private static final String CLIENT = "client";

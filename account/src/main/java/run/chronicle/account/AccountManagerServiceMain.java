@@ -5,7 +5,7 @@ import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.SimpleCloseable;
 import net.openhft.chronicle.queue.channel.PipeHandler;
 import net.openhft.chronicle.threads.Pauser;
-import net.openhft.chronicle.wire.Base85LongConverter;
+import net.openhft.chronicle.wire.ShortTextLongConverter;
 import net.openhft.chronicle.wire.channel.ChronicleContext;
 import run.chronicle.account.api.AccountManagerOut;
 import run.chronicle.account.impl.AccountManagerImpl;
@@ -15,7 +15,7 @@ import run.chronicle.account.impl.AccountManagerImpl;
  */
 @SuppressWarnings("deprecation")
 public class AccountManagerServiceMain extends SimpleCloseable implements Runnable {
-    private static final Base85LongConverter BASE85 = Base85LongConverter.INSTANCE;
+    private static final ShortTextLongConverter BASE85 = ShortTextLongConverter.INSTANCE;
     private static final String SERVICE_URL = System.getProperty("serviceUrl", "internal://");
 
     /**
