@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Chronicle Software Ltd
+ * Copyright (c) 2016-2024 Chronicle Software Ltd
  */
 
 package town.lost.oms.api;
@@ -12,9 +12,14 @@ import town.lost.oms.dto.OrderCancelReject;
  * The {@code OMSOut} interface defines the output operations that an Order Management System (OMS) can perform.
  * <p>
  * It includes methods to handle execution reports and order cancel rejections.
+ * <p>It extends the {@link ErrorListener} interface to handle any JVM errors that may occur during processing.
  * Each method receives an instance of a data transfer object that represents the details of the operation.
+ *
+ * @see ExecutionReport
+ * @see OrderCancelReject
+ * @see ErrorListener
  */
-public interface OMSOut {
+public interface OMSOut extends ErrorListener{
 
     /**
      * Handles an execution report.

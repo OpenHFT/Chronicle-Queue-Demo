@@ -1,0 +1,36 @@
+---
+# Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
+newOrderSingle: {
+  sender: CLIENT1,
+  target: OMS1,
+  sendingTime: 2023-10-20T14:25:37.134475Z,
+  symbol: AAPL,
+  transactTime: 2023-10-20T14:25:37.134475Z,
+  account: ACC-12345,
+  orderQty: 1000,
+  price: 150.25,
+  side: buy,
+  clOrdID: ABC1234567,
+  ordType: LIMIT,
+  timeInForce: DAY,
+  currency: USD
+}
+...
+---
+# Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
+newOrderSingle: {
+  sender: CLIENT2,
+  target: OMS1,
+  sendingTime: 2023-10-20T14:27:15.987654Z,
+  symbol: GOOGL,
+  transactTime: 2023-10-20T14:27:15.987654Z,
+  account: ACC-67890,
+  orderQty: 500,
+  price: 2750.50,
+  side: sell,
+  clOrdID: XYZ7654321,
+  ordType: MARKET,
+  timeInForce: DAY,
+  currency: USD
+}
+...

@@ -1,40 +1,43 @@
 /*
- * Copyright (c) 2016-2019 Chronicle Software Ltd
+ * Copyright (c) 2016-2024 Chronicle Software Ltd
  */
 
 package town.lost.oms.dto;
+
 /**
  * Enumeration for the direction of a trade order.
  *
  * <p>It contains two values: BUY and SELL, which represents the direction of the order. BUY (+1) means the order is to
- * purchase, while SELL (-1) implies the order is to sell.</p>
+ * purchase, while SELL (-1) implies the order is to sell.
  *
- * <p>This enumeration can be used to create trading orders, like so:</p>
+ * <p>This enumeration can be used to create trading orders, like so:
  *
- * <pre>
+ * <pre>{@code
  * NewOrderSingle nos = new NewOrderSingle()
  *    .sender(toLong("sender"))
  *    .target(toLong("target"))
  *    .transactTime(now())
  *    .sendingTime(now())
  *    .orderQty(1)
- *    .ordType(OrderType.market)
- *    .side(BuySell.buy)
+ *    .ordType(OrderType.MARKET)
+ *    .side(Side.BUY)
  *    .symbol(toLong("EURUSD"));
- * </pre>
+ * }</pre>
  *
- * <p>Note that the direction is indicated by the {@link BuySell} used in the 'side' field of the order.</p>
+ * <p>Note that the direction is indicated by the {@link Side} used in the 'side' field of the order.
  */
-public enum BuySell {
+public enum Side {
     /**
      * Buy order direction, represented by an integer value of +1.
+     * Indicates an order to purchase.
      */
-    buy(+1),
+    BUY(+1),
 
     /**
      * Sell order direction, represented by an integer value of -1.
+     * Indicates an order to sell.
      */
-    sell(-1);
+    SELL(-1);
 
     /**
      * The direction of the order.
@@ -46,7 +49,16 @@ public enum BuySell {
      *
      * @param direction the direction of the order (+1 for buy, -1 for sell)
      */
-    BuySell(int direction) {
+    Side(int direction) {
         this.direction = direction;
     }
-}
+
+    /**
+     * Gets the direction indicator of the order.
+     *
+     * @return the direction indicator as an integer
+     */
+    public int direction() {
+        return direction;
+    }
+    }

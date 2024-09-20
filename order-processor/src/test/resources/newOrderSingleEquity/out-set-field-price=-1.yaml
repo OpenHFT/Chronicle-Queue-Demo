@@ -1,0 +1,8 @@
+# Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
+# override price: 150.25 to price: -1
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: price is invalid"
+...
+# Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
+# override price: 2750.50 to price: -1
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: price is invalid"
+...

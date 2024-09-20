@@ -1,0 +1,8 @@
+# Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
+# missing timeInForce: DAY,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: timeInForce is required"
+...
+# Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
+# missing timeInForce: DAY,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: timeInForce is required"
+...

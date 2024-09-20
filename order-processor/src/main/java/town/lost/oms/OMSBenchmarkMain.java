@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Chronicle Software Ltd
+ * Copyright (c) 2016-2024 Chronicle Software Ltd
  */
 
 package town.lost.oms;
@@ -8,16 +8,19 @@ import net.openhft.affinity.AffinityLock;
 import net.openhft.chronicle.bytes.MethodReader;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.OS;
+import net.openhft.chronicle.core.io.BackgroundResourceReleaser;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.jlbh.JLBH;
 import net.openhft.chronicle.jlbh.JLBHOptions;
 import net.openhft.chronicle.jlbh.JLBHTask;
 import net.openhft.chronicle.queue.ChronicleQueue;
-import net.openhft.chronicle.threads.Pauser;
-import net.openhft.chronicle.wire.Base85LongConverter;
+import net.openhft.chronicle.threads.DiskSpaceMonitor;
+import net.openhft.chronicle.wire.ShortTextLongConverter;
 import town.lost.oms.api.OMSIn;
 import town.lost.oms.api.OMSOut;
 import town.lost.oms.dto.*;
+
+import static town.lost.oms.OrderAdderMain.now;
 // isolcpus=5,6,7 set in grub.cfg
 // sudo cpupower frequency-set -g performance -d 4.5g
 
@@ -52,31 +55,18 @@ Percentile   run1         run2         run3         run4         run5      % Var
 99.999:         29.15        27.94        26.40        25.76       402.94        90.71
 worst:         214.27        51.78       537.60        50.24      1255.42        94.12
 ----------------------------------------------------------------------------------------------------
-
-// -Dthroughput=100000 -DrunTime=30 on a i9-10980HK windows laptop
--------------------------------- SUMMARY (end to end) us -------------------------------------------
-Percentile   run1         run2         run3         run4         run5      % Variation
-50.0:            3.10         3.10         3.10         3.10         3.10         0.00
-90.0:            3.40         3.30         3.30         3.30         3.30         0.00
-99.0:            4.90         5.00         5.10         5.61         5.00         7.50
-99.7:           47.04       113.54       165.12       299.52       118.14        52.20
-99.9:          163.07      1579.01      2879.49      5218.30      1624.06        60.58
-99.97:         326.14      6823.94      7610.37      8019.97      7380.99        10.46
-99.99:        3403.78     11747.33     10076.16      9650.18     11059.20        12.65
-99.997:       5136.38     13451.26     11255.81     11386.88     12795.90        11.51
-worst:        5873.66     14336.00     12009.47     12107.78     13516.80        11.44
-----------------------------------------------------------------------------------------------------
  */
 public class OMSBenchmarkMain {
-    public static final int THROUGHPUT = Integer.getInteger("throughput", 100_000);
-    public static final int RUN_TIME = Integer.getInteger("runTime", 10);
-    public static final Base85LongConverter BASE85 = Base85LongConverter.INSTANCE;
-    public static final String PATH = System.getProperty("path", OS.TMP);
-    public static final boolean ACCOUNT_FOR_COORDINATED_OMISSION = Jvm.getBoolean("accountForCoordinatedOmission");
-
     static {
         System.setProperty("pauser.minProcessors", "2");
+        System.setProperty("disableValidate", "true");
     }
+
+    public static final int THROUGHPUT = Integer.getInteger("throughput", 100_000);
+    public static final int RUN_TIME = Integer.getInteger("runTime", 10);
+    public static final ShortTextLongConverter ShortText = ShortTextLongConverter.INSTANCE;
+    public static final String PATH = System.getProperty("path", OS.TMP);
+    public static final boolean ACCOUNT_FOR_COORDINATED_OMISSION = Jvm.getBoolean("accountForCoordinatedOmission");
 
     @SuppressWarnings("try")
     public static void main(String[] args) {
@@ -92,12 +82,8 @@ public class OMSBenchmarkMain {
                     OMSOut out = output.createAppender().methodWriter(OMSOut.class);
                     OMSImpl oms = new OMSImpl(out);
                     MethodReader in = input.createTailer("test").methodReader(oms);
-                    Pauser pauser = Pauser.busy();
                     while (!Thread.currentThread().isInterrupted()) {
-                        if (in.readOne())
-                            pauser.reset();
-                        else
-                            pauser.pause();
+                        in.readOne();
                     }
                 }
             }, "processor");
@@ -111,6 +97,7 @@ public class OMSBenchmarkMain {
                     .runs(5)
                     .recordOSJitter(false)
                     .accountForCoordinatedOmission(ACCOUNT_FOR_COORDINATED_OMISSION)
+                    .acquireLock(AffinityLock::acquireCore)
                     .jlbhTask(new MyJLBHTask(input)));
 
             Thread last = new Thread(() -> {
@@ -123,6 +110,10 @@ public class OMSBenchmarkMain {
 
                         @Override
                         public void orderCancelReject(OrderCancelReject ocr) {
+                        }
+
+                        @Override
+                        public void jvmError(String msg) {
                         }
                     });
                     while (!Thread.currentThread().isInterrupted())
@@ -142,6 +133,9 @@ public class OMSBenchmarkMain {
         printProperties();
         Jvm.pause(1000);
         IOTools.deleteDirWithFiles(tmpDir);
+        // for a clean shutdown
+        BackgroundResourceReleaser.stop();
+        DiskSpaceMonitor.INSTANCE.close();
     }
 
     static ChronicleQueue single(String tmpDir, String x) {
@@ -168,14 +162,14 @@ public class OMSBenchmarkMain {
 
         public MyJLBHTask(ChronicleQueue input) {
             nos = new NewOrderSingle()
-                    .sender(BASE85.parse("client"))
-                    .target(BASE85.parse("OMS"))
+                    .sender(ShortText.parse("client"))
+                    .target(ShortText.parse("OMS"))
                     .clOrdID("clOrdId")
                     .orderQty(1e6)
                     .price(1.6)
-                    .symbol(BASE85.parse("AUDUSD"))
-                    .ordType(OrderType.limit)
-                    .side(BuySell.buy);
+                    .symbol(ShortText.parse("AUDUSD"))
+                    .ordType(OrderType.LIMIT)
+                    .side(Side.SELL);
             in = input.createAppender().methodWriter(OMSIn.class);
         }
 
@@ -186,7 +180,8 @@ public class OMSBenchmarkMain {
 
         @Override
         public void run(long startTimeNS) {
-            in.newOrderSingle(nos.sendingTime(startTimeNS));
+            nos.sendingTime(startTimeNS).transactTime(now());
+            in.newOrderSingle(nos);
         }
     }
 }

@@ -1,13 +1,23 @@
 /*
- * Copyright (c) 2016-2019 Chronicle Software Ltd
+ * Copyright (c) 2016-2024 Chronicle Software Ltd
  */
 
 package town.lost.oms;
 
 import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
+import net.openhft.chronicle.wire.utils.YamlAgitator;
 import net.openhft.chronicle.wire.utils.YamlTester;
+import net.openhft.chronicle.wire.utils.YamlTesterParametersBuilder;
+import org.junit.After;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import town.lost.oms.api.OMSOut;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,55 +26,57 @@ import static org.junit.Assert.assertEquals;
  * The OMSImplTest runs tests for each method in OMSImpl class.
  * The test data is read from specified files and the actual output is compared against expected output.
  */
+@RunWith(Parameterized.class)
 public class OMSImplTest {
+    // Defines the paths to the tests to run.
+    static final List<String> paths = Arrays.asList(new String[]{
+            "newOrderSingle",
+            "newOrderSingleEquity",
+            "cancelOrderRequest",
+            "cancelAll"
+    });
 
-    /**
-     * Method to run a test.
-     * This method sets up the time, runs the test, and asserts the expected and actual output are equal.
-     *
-     * @param path the path to the file containing the test data
-     */
-    public static void runTest(String path) {
-        try {
-            // Setup time
-            SystemTimeProvider.CLOCK = new SetTimeProvider("2019-12-03T09:54:37.345678")
-                    .advanceMicros(1);
+    // The name of the test, and the tester that will run the test.
+    final String name;
+    final YamlTester tester;
 
-            // Run test
-            YamlTester yt = YamlTester.runTest(OMSImpl.class, path);
-
-            // Assert expected and actual output are equal
-            assertEquals(yt.expected(), yt.actual());
-        } finally {
-            // Reset clock
-            SystemTimeProvider.CLOCK = SystemTimeProvider.INSTANCE;
-        }
+    // Constructor that sets the name and tester.
+    public OMSImplTest(String name, YamlTester tester) {
+        this.name = name;
+        this.tester = tester;
     }
 
-    /**
-     * Test case for new order single.
-     */
-    @Test
-    public void newOrderSingle() {
-        // Run test for new order single
-        runTest("newOrderSingle");
+    // Defines the parameters for the parameterized test runner.
+    @Parameterized.Parameters(name = "{0}")
+    public static List<Object[]> parameters() {
+        // Returns a list of test parameters to run the tests with.
+        // Each test will be run with an instance of AccountManagerImpl,
+        // and will be subjected to various agitations to ensure robustness.
+        return new YamlTesterParametersBuilder<>(out -> new OMSImpl(out), OMSOut.class, paths)
+                .agitators(
+                        YamlAgitator.messageMissing(),
+                        YamlAgitator.duplicateMessage(),
+                        YamlAgitator.overrideFields("sendingTime: '', symbol: '', side: '', orderQty: NaN, orderQty: -1, price: NaN, price: -1, clOrdId: '', ordType: ''".split(", *")),
+                        YamlAgitator.missingFields("sender, target, sendingTime, symbol, transactTime, account, orderQty, price, side, clOrdID, ordType, timeInForce, currency".split(", *")))
+                .exceptionHandlerFunction(out -> (log, msg, thrown) -> out.jvmError(thrown == null ? msg : (msg + " " + thrown)))
+                .exceptionHandlerFunctionAndLog(true)
+                .get();
     }
 
-    /**
-     * Test case for cancel order request.
-     */
-    @Test
-    public void cancelOrderRequest() {
-        // Run test for cancel order request
-        runTest("cancelOrderRequest");
+    // After each test, this method resets the system time provider.
+    @After
+    public void tearDown() {
+        SystemTimeProvider.CLOCK = SystemTimeProvider.INSTANCE;
     }
 
-    /**
-     * Test case for cancel all orders.
-     */
+    // This is the actual test method, which uses the provided tester
+    // to run the test and then compares the expected output to the actual output.
     @Test
-    public void cancelAll() {
-        // Run test for cancel all orders
-        runTest("cancelAll");
+    public void runTester() {
+        // Sets the system clock to a specific time for the purpose of testing.
+        SystemTimeProvider.CLOCK = new SetTimeProvider("2019-12-03T09:54:37.345679")
+                .autoIncrement(1, TimeUnit.SECONDS);
+        // Asserts that the expected output matches the actual output.
+        assertEquals(tester.expected(), tester.actual());
     }
 }

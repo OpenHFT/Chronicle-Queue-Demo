@@ -1,0 +1,8 @@
+# Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
+# override symbol: AAPL to symbol: ''
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: symbol is required"
+...
+# Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
+# override symbol: GOOGL to symbol: ''
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: symbol is required"
+...

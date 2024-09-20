@@ -15,8 +15,8 @@ executionReport: {
   leavesQty: 0.0,
   cumQty: 0.0,
   avgPx: 0.0,
-  side: buy,
-  ordType: limit,
+  side: BUY,
+  ordType: LIMIT,
   clOrdID: dkj4378fwh,
   text: Not ready
 }

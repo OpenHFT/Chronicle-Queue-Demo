@@ -1,0 +1,8 @@
+# Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
+# missing side: buy,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: side is required"
+...
+# Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
+# missing side: sell,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: side is required"
+...

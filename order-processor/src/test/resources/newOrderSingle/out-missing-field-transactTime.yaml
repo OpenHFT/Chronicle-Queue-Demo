@@ -1,0 +1,6 @@
+# This is a test for the NewOrderSingle operation.
+# The client (sender) is sending a new order to the Order Management System (OMS, the target).
+# The order details such as the trading symbol, order quantity, price, and the order type are specified.
+# missing transactTime: 2019-12-03T09:54:37.344751,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: transactTime is required"
+...

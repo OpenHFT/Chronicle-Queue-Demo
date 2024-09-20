@@ -1,0 +1,8 @@
+# Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
+# missing account: ACC-12345,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: account is required"
+...
+# Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
+# missing account: ACC-67890,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: account is required"
+...

@@ -1,0 +1,8 @@
+# Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
+# override orderQty: 1000 to orderQty: -1
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: orderQty is invalid"
+...
+# Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
+# override orderQty: 500 to orderQty: -1
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: orderQty is invalid"
+...

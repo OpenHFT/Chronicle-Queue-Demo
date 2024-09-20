@@ -1,0 +1,8 @@
+# Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
+# missing sendingTime: 2023-10-20T14:25:37.134475Z,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: sendingTime is required"
+...
+# Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
+# missing sendingTime: 2023-10-20T14:27:15.987654Z,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: sendingTime is required"
+...
