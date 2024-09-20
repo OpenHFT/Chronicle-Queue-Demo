@@ -24,7 +24,8 @@ public class CreateAccountFailedTest {
                 "    name: name,\n" +
                 "    account: 2,\n" +
                 "    currency: CURR,\n" +
-                "    balance: 1.0" +
+                "    balance: 1.0," +
+                "    overdraft: 3.0" +
                 "  },\n" +
                 "  reason: reasons\n" +
                 "}");

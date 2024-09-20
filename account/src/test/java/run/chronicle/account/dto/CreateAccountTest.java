@@ -14,6 +14,7 @@ public class CreateAccountTest {
                 .sendingTime(NanoTime.INSTANCE.parse("2001/02/03T04:05:06.007008009"))
                 .balance(1)
                 .account(2)
+                .overdraft(3)
                 .currency((int) ShortText.INSTANCE.parse("CURR"))
                 .name("name");
     }
@@ -29,7 +30,8 @@ public class CreateAccountTest {
                         "  name: name,\n" +
                         "  account: 2,\n" +
                         "  currency: CURR,\n" +
-                        "  balance: 1.0\n" +
+                        "  balance: 1.0,\n" +
+                        "  overdraft: 3.0\n" +
                         "}\n",
                 createAccount.toString());
         assertEquals(NanoTime.INSTANCE.parse("2001-02-03T04:05:06.007008009"),
