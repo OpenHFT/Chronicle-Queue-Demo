@@ -29,7 +29,6 @@
         <module>md-pipeline</module>
         <module>benchmarks</module>
         <module>account</module>
-        <module>echo-perf</module>
     </modules>
 
     <dependencyManagement>

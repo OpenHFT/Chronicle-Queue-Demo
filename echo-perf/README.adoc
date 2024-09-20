@@ -1,7 +1,0 @@
-= Round Trip Performance comparison of queueing options
-Peter Lawrey
-
-There are many way to queue a messaging including combinations of queues, TCP channels, sync modes, buffering options, concurrency.
-
-== Options considered
-

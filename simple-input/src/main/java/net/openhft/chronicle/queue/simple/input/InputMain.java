@@ -1,9 +1,7 @@
 package net.openhft.chronicle.queue.simple.input;
 
+import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptAppender;
-import net.openhft.chronicle.queue.impl.single.SingleChronicleQueue;
-import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
-
 import java.util.Scanner;
 
 /**
@@ -11,17 +9,26 @@ import java.util.Scanner;
  */
 public class InputMain {
     public static void main(String[] args) {
-        String path = "queue";
-        SingleChronicleQueue queue = SingleChronicleQueueBuilder.binary(path).build();
-        ExcerptAppender appender = queue.createAppender();
-        Scanner read = new Scanner(System.in);
-        while (true) {
-            System.out.println("type something");
-            String line = read.nextLine();
-            if (line.isEmpty())
-                break;
-            appender.writeText(line);
+        // Allow the queue path to be specified via command-line arguments
+        String path = (args.length > 0) ? args[0] : "queue";
+
+        // Use try-with-resources for proper resource management
+        try (ChronicleQueue queue = ChronicleQueue.single(path);
+             Scanner scanner = new Scanner(System.in)) {
+
+            ExcerptAppender appender = queue.acquireAppender();
+            System.out.println("Starting InputMain. Type your input (empty line to exit).");
+
+            while (true) {
+                System.out.print("Input> ");
+                String line = scanner.nextLine();
+                if (line.isEmpty()) {
+                    break;
+                }
+                appender.writeText(line);
+                System.out.println("Written to queue: " + line);
+            }
+            System.out.println("... bye.");
         }
-        System.out.println("... bye.");
     }
 }

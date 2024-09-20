@@ -5,7 +5,9 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Test class for SimpleTranslator.
+ * Test class for {@link SimpleTranslator}.
+ *
+ * <p>Ensures that messages are correctly translated from English to French.</p>
  *
  * Created by catherine on 26/07/2016.
  */
@@ -40,8 +42,8 @@ public class SimpleTranslatorTest {
         SimpleTranslator trans = new SimpleTranslator(sb::append);
 
         // Translate and check some messages using the doTest helper method
-        doTest(trans, sb, "hello apple", "salut pomme");
-        doTest(trans, sb, "bye now", "salut now");
+        performTranslationTest(trans, sb, "hello apple", "salut pomme");
+        performTranslationTest(trans, sb, "bye now", "salut now");
     }
 
     /**
@@ -52,7 +54,7 @@ public class SimpleTranslatorTest {
      * @param in the input message
      * @param out the expected translation
      */
-    private void doTest(SimpleTranslator trans, StringBuilder sb, String in, String out) {
+    private void performTranslationTest(SimpleTranslator trans, StringBuilder sb, String in, String out) {
         // Reset sb to an empty state
         sb.setLength(0);
 

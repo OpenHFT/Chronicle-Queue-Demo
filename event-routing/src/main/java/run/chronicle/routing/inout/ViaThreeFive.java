@@ -6,7 +6,11 @@ import run.chronicle.routing.inout.api.ViaIn;
 import run.chronicle.routing.inout.api.ViaOut;
 
 /**
- * Takes messages from multiple sources and routes to multiple sources
+ * Routes {@link Value} messages from multiple sources to multiple destinations based on specific criteria.
+ *
+ * <p>This class implements {@link ViaIn} and {@link ValueMessage} to process incoming {@code Value} messages.
+ * It checks if the name contains the character 'e', and if so, routes the value to different
+ * destinations depending on whether the value is divisible by 3 or 5.</p>
  */
 public class ViaThreeFive implements ViaIn<ValueMessage, ValueMessage>, ValueMessage {
 
@@ -17,27 +21,44 @@ public class ViaThreeFive implements ViaIn<ValueMessage, ValueMessage>, ValueMes
     String name;
 
     /**
-     * This is the constructor for ViaThreeFive class.
-     * It initializes the 'out' instance variable with the provided ViaOut instance.
+     * Constructs a new {@code ViaThreeFive} instance with the specified output destination.
      *
-     * @param out A ViaOut instance that will be used as the output destination for messages
+     * @param out the {@link ViaOut} instance used as the output destination for messages
      */
     public ViaThreeFive(ViaOut<ValueMessage, ValueMessage> out) {
         this.out = out;
     }
 
+    /**
+     * Specifies a route or pathway identified by the given name.
+     *
+     * @param name the name of the route
+     * @return this {@code ViaThreeFive} instance for method chaining
+     */
     @Override
     public ValueMessage via(String name) {
         this.name = name;
         return this;
     }
 
+    /**
+     * Resets the routing name to an empty string.
+     *
+     * @return this {@code ViaThreeFive} instance for method chaining
+     */
     @Override
     public ValueMessage in() {
         this.name = "";
         return this;
     }
 
+    /**
+     * Processes the given {@link Value} message and routes it to appropriate destinations.
+     * If the name contains the character 'e', it checks if the value is divisible by 3 or 5
+     * and routes accordingly.
+     *
+     * @param value the {@link Value} message to process
+     */
     @Override
     public void value(Value value) {
         if (name.contains("e")) {
