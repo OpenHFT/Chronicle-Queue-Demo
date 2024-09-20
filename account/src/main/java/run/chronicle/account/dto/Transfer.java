@@ -34,6 +34,8 @@ public class Transfer extends AbstractEvent<Transfer> {
     private Bytes<?> reference = Bytes.allocateElasticOnHeap(); // Reference to the transaction details
 
     /**
+     * Retrieves the sender's account number.
+     *
      * @return the sender's account number
      */
     public long from() {
@@ -41,10 +43,10 @@ public class Transfer extends AbstractEvent<Transfer> {
     }
 
     /**
-     * Sets the sender's account number and returns the updated object.
+     * Sets the sender's account number.
      *
      * @param from the sender's account number
-     * @return the updated object
+     * @return this object for method chaining
      */
     public Transfer from(long from) {
         this.from = from;
@@ -52,6 +54,8 @@ public class Transfer extends AbstractEvent<Transfer> {
     }
 
     /**
+     * Retrieves the receiver's account number.
+     *
      * @return the receiver's account number
      */
     public long to() {
@@ -59,10 +63,10 @@ public class Transfer extends AbstractEvent<Transfer> {
     }
 
     /**
-     * Sets the receiver's account number and returns the updated object.
+     * Sets the receiver's account number.
      *
      * @param to the receiver's account number
-     * @return the updated object
+     * @return this object for method chaining
      */
     public Transfer to(long to) {
         this.to = to;
@@ -70,17 +74,19 @@ public class Transfer extends AbstractEvent<Transfer> {
     }
 
     /**
-     * @return the currency of the transfer
+     * Retrieves the currency code of the transfer.
+     *
+     * @return the currency code
      */
     public int currency() {
         return currency;
     }
 
     /**
-     * Sets the currency of the transfer and returns the updated object.
+     * Sets the currency code of the transfer.
      *
-     * @param currency the currency of the transfer
-     * @return the updated object
+     * @param currency the currency code to set (e.g., "EUR", "USD")
+     * @return this object for method chaining
      */
     public Transfer currency(int currency) {
         this.currency = currency;
@@ -88,6 +94,8 @@ public class Transfer extends AbstractEvent<Transfer> {
     }
 
     /**
+     * Retrieves the amount to be transferred.
+     *
      * @return the amount to be transferred
      */
     public double amount() {
@@ -95,10 +103,10 @@ public class Transfer extends AbstractEvent<Transfer> {
     }
 
     /**
-     * Sets the amount to be transferred and returns the updated object.
+     * Sets the amount to be transferred.
      *
-     * @param amount the amount to be transferred
-     * @return the updated object
+     * @param amount the amount to set
+     * @return this object for method chaining
      */
     public Transfer amount(double amount) {
         this.amount = amount;
@@ -106,7 +114,16 @@ public class Transfer extends AbstractEvent<Transfer> {
     }
 
     /**
-     * Sets the reference to the transaction details and returns the updated object.
+     * Retrieves the reference to the transaction details.
+     *
+     * @return the transaction reference
+     */
+    public Bytes<?> reference() {
+        return reference;
+    }
+
+    /**
+     * Sets the reference to the transaction details.
      *
      * @param reference the reference to the transaction details
      * @return the updated object
@@ -132,7 +149,7 @@ public class Transfer extends AbstractEvent<Transfer> {
             throw new InvalidMarshallableException("currency must be set"); // Ensure 'currency' is set
         if (!(amount > 0))
             throw new InvalidMarshallableException("amount must be positive"); // Ensure 'amount' is positive
-        if (reference.isEmpty())
+        if (reference == null || reference.isEmpty())
             throw new InvalidMarshallableException("reference must be set"); // Ensure 'reference' is set
     }
 
@@ -144,6 +161,7 @@ public class Transfer extends AbstractEvent<Transfer> {
      */
     @Override
     public boolean usesSelfDescribingMessage() {
+        // Use a lower-level binary format, not a self-describing message
         return false;
     }
 }

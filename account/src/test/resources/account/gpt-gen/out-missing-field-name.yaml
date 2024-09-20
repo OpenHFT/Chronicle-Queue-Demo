@@ -2,13 +2,13 @@
 # The 'sender' is 'gw1' and the 'target' is 'vault'.
 # The 'currency' for Charlie's account is EUR and the initial account 'balance' is 5000.
 # missing name: charlie,
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: name must be set"
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: name must be set and not empty"
 ...
 # This operation creates an account for Dania with account number 101055.
 # The 'sender' is 'gw1' and the 'target' is 'vault'.
 # The 'currency' for Dania's account is EUR and the initial account 'balance' is 3500.
 # missing name: Dania,
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: name must be set"
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: name must be set and not empty"
 ...
 # This operation represents a transfer of 500 EUR from Charlie to Dania.
 # The 'sender' is 'gw2' and the 'target' is 'vault'.
