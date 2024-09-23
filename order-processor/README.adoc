@@ -36,12 +36,23 @@ Here are the steps to clone the repository and open it in IntelliJ:
 
 == Running the Project
 
+[source,mermaid]
+....
+sequenceDiagram
+autonumber
+Client->>+OMS: NewOrderSingle
+Note right of Client: via Chronicle Queue, persisted
+Note right of OMS: processes event
+OMS->>-Client: ExecutionReport
+Note right of Client: via Chronicle Queue, persisted
+....
+
 To run the project, you need to compile the project and run the main classes for different features:
 
 - `OrderAdderMain`: This class simulates the creation of new orders.
 - `OrderViewerMain`: This class simulates the viewing of created orders.
 - `OrderBenchmarkMain`: This class benchmarks round trip time of writing a `NewOrderSingle` a queue, have the `OMSImpl` produce an `ExecutionReport` and read that report.
-- OMSImpl: This class handles the processing of the orders, including cancelling orders.
+- `OMSImpl`: This class handles the processing of the orders, including cancelling orders.
 
 You can run these classes directly from your IDE, or you can use `mvn compile exec:exec@id` on the command line to run the compiled classes.
 
