@@ -1,17 +1,17 @@
 /**
- * This package, run.chronicle.routing.inout.api, contains interfaces and classes that provide
- * a foundation for routing messages in and out using a Chronicle-based infrastructure.
+ * Provides interfaces and classes for routing messages in and out using a Chronicle-based infrastructure.
  *
- * This includes:
+ * <p>This package includes:</p>
+ * <ul>
+ *   <li>{@link Value}: A class that encapsulates a long value, providing methods for retrieval.</li>
+ *   <li>{@link ValueMessage}: An interface defining a contract for sending {@code Value} messages.</li>
+ *   <li>{@link ViaIn}: An interface for specifying a route ("via") and obtaining an input source ("in").</li>
+ *   <li>{@link ViaOut}: An interface for specifying a route ("via") and obtaining an output destination ("out").</li>
+ * </ul>
  *
- * - Value: A class that wraps a long value and provides methods for setting and retrieving this value.
- * - ValueMessage: An interface that provides a contract for any class that wants to send a value message.
- * - ViaIn: An interface that provides a generic contract for classes that need to specify a route ("via") and an input source ("in").
- * - ViaOut: An interface that provides a generic contract for classes that need to specify a route ("via") and an output destination ("out").
- *
- * The goal of this package is to provide a flexible and extensible means of routing messages in 
- * various formats and protocols, supporting different input/output strategies.
+ * <p>The goal of this package is to offer a flexible and extensible means of routing messages in various formats and protocols, supporting different input/output strategies.</p>
  *
  * @since 2023-07-29
  */
 package run.chronicle.routing.inout.api;
+

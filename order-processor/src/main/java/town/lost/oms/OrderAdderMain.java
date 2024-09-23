@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Chronicle Software Ltd
+ * Copyright (c) 2016-2024 Chronicle Software Ltd
  */
 
 package town.lost.oms;
@@ -11,25 +11,27 @@ import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
 import net.openhft.chronicle.queue.rollcycles.TestRollCycles;
-import net.openhft.chronicle.wire.converter.Base85;
+import net.openhft.chronicle.wire.converter.ShortText;
 import town.lost.oms.api.OMSIn;
-import town.lost.oms.dto.BuySell;
-import town.lost.oms.dto.NewOrderSingle;
-import town.lost.oms.dto.OrderType;
+import town.lost.oms.dto.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * Main class to add new orders.
+ * The {@code OrderAdderMain} class is a utility application that allows users to add new orders to the Order Management System (OMS).
+ *
+ * <p>This class connects to a Chronicle Queue and writes {@link NewOrderSingle} messages to it.
+ * Users can interactively add orders by hitting the Enter key. The application will prompt the user
+ * and continue to accept orders until any non-empty input is entered.
  */
 public class OrderAdderMain {
+
     /**
      * The entry point of the application.
      *
      * @param args the input arguments (none expected)
-     * @throws IOException if an I/O error occurs
      */
     public static void main(String[] args) throws IOException {
         // Add NewOrderSingle class to the alias pool
@@ -49,24 +51,29 @@ public class OrderAdderMain {
 
             // Create a new order single
             NewOrderSingle nos = new NewOrderSingle()
-                    .sender(toLong("sender"))
-                    .target(toLong("target"))
+                    .sender(fromShortText("sender"))
+                    .target(fromShortText("target"))
                     .transactTime(now())
                     .sendingTime(now())
+                    .account(1)
+                    .timeInForce(TimeInForce.GTC)
+                    .currency(Ccy.USD)
                     .orderQty(1)
-                    .ordType(OrderType.market)
-                    .side(BuySell.buy)
-                    .symbol(toLong("EURUSD"));
+                    .ordType(OrderType.MARKET)
+                    .side(Side.BUY)
+                    .symbol(fromShortText("EURUSD"));
 
             // Inform the user to add an order
             System.out.println("\nHit blank line to add an order, anything else to exit");
 
             // Initialize a BufferedReader to read user input
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            int counter = 0;
+            int orderCounter = 0;
             while ("".equals(br.readLine())) {
                 // For each blank line read, add a new order
-                nos.clOrdID(Long.toString(counter++));
+                nos.clOrdID(Long.toString(orderCounter++));
+
+                // Send the new order
                 in.newOrderSingle(nos);
                 in2.newOrderSingle(nos);
             }
@@ -79,21 +86,21 @@ public class OrderAdderMain {
     }
 
     /**
-     * Returns the current time in microseconds.
+     * Returns the current system time in nanoseconds.
      *
-     * @return the current time in microseconds
+     * @return the current time in nanoseconds
      */
     static long now() {
-        return SystemTimeProvider.INSTANCE.currentTimeMicros();
+        return SystemTimeProvider.INSTANCE.currentTimeNanos();
     }
 
     /**
      * Converts a string to a long using base85 encoding.
      *
      * @param s the string to convert
-     * @return the long value of the string
+     * @return the long representation of the string
      */
-    static long toLong(String s) {
-        return Base85.INSTANCE.parse(s);
+    static long fromShortText(String s) {
+        return ShortText.INSTANCE.parse(s);
     }
 }

@@ -15,12 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package run.chronicle.account.dto;
 
 
 /**
- * Requests a CheckPoint of all state be dumped
+ * The {@code CheckPoint} class represents a request to dump all the current state of the system.
+ * It extends {@link AbstractEvent} to include common event properties.
  */
 public class CheckPoint extends AbstractEvent<CheckPoint> {
 }

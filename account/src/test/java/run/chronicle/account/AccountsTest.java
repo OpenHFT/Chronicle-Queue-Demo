@@ -21,10 +21,7 @@ package run.chronicle.account;
 import com.hubspot.jinjava.Jinjava;
 import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
-import net.openhft.chronicle.wire.converter.Base85;
-import net.openhft.chronicle.wire.utils.YamlAgitator;
-import net.openhft.chronicle.wire.utils.YamlTester;
-import net.openhft.chronicle.wire.utils.YamlTesterParametersBuilder;
+import net.openhft.chronicle.wire.converter.ShortText;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,11 +45,13 @@ import static org.junit.Assert.assertEquals;
  * After each test, the system clock is reset to its default state in the tearDown method.
  */
 // This class is used to run tests for the Account system.
+@SuppressWarnings("deprecation")
 @RunWith(Parameterized.class)
 public class AccountsTest {
     // Defines the paths to the tests to run.
     static final String paths = "" +
             "account/simple," +
+            "account/simple-gen," +
             "account/mixed," +
             "account/waterfall," +
             "account/copilot," +
@@ -60,14 +59,14 @@ public class AccountsTest {
             "account/gpt-jinja," +
             "account/bard-gen," +
             "account/bard-jinja";
-    static final long VAULT = Base85.INSTANCE.parse("vault");
+    static final long VAULT = ShortText.INSTANCE.parse("vault");
 
     // The name of the test, and the tester that will run the test.
     final String name;
-    final YamlTester tester;
+    final net.openhft.chronicle.wire.utils.YamlTester tester;
 
     // Constructor that sets the name and tester.
-    public AccountsTest(String name, YamlTester tester) {
+    public AccountsTest(String name, net.openhft.chronicle.wire.utils.YamlTester tester) {
         this.name = name;
         this.tester = tester;
     }
@@ -78,12 +77,12 @@ public class AccountsTest {
         // Returns a list of test parameters to run the tests with.
         // Each test will be run with an instance of AccountManagerImpl,
         // and will be subjected to various agitations to ensure robustness.
-        return new YamlTesterParametersBuilder<>(out -> new AccountManagerImpl(out).id(VAULT), AccountManagerOut.class, paths)
+        return new net.openhft.chronicle.wire.utils.YamlTesterParametersBuilder<>(out -> new AccountManagerImpl(out).id(VAULT), AccountManagerOut.class, paths)
                 .agitators(
-                        YamlAgitator.messageMissing(),
-                        YamlAgitator.duplicateMessage(),
-                        YamlAgitator.overrideFields("currency: , amount: NaN, amount: -1, balance: NaN, balance: -1, target: no-vault".split(", *")),
-                        YamlAgitator.missingFields("name, account, balance, sender, target, sendingTime, from, to, currency, amount, reference".split(", *")))
+                        net.openhft.chronicle.wire.utils.YamlAgitator.messageMissing(),
+                        net.openhft.chronicle.wire.utils.YamlAgitator.duplicateMessage(),
+                        net.openhft.chronicle.wire.utils.YamlAgitator.overrideFields("currency: , amount: NaN, amount: -1, balance: NaN, balance: -1, target: no-vault".split(", *")),
+                        net.openhft.chronicle.wire.utils.YamlAgitator.missingFields("name, account, balance, sender, target, sendingTime, from, to, currency, amount, reference".split(", *")))
                 .exceptionHandlerFunction(out -> (log, msg, thrown) -> out.jvmError(thrown == null ? msg : (msg + " " + thrown)))
                 .exceptionHandlerFunctionAndLog(true)
                 .inputFunction(s -> s.contains("{{")||s.contains("{#") ? new Jinjava().render(s, Collections.emptyMap()) : s)

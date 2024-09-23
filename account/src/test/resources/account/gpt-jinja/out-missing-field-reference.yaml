@@ -11,7 +11,8 @@ onCreateAccount: {
     name: user10,
     account: 10,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -27,7 +28,8 @@ onCreateAccount: {
     name: user11,
     account: 11,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -43,7 +45,8 @@ onCreateAccount: {
     name: user12,
     account: 12,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -59,7 +62,8 @@ onCreateAccount: {
     name: user13,
     account: 13,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -75,7 +79,8 @@ onCreateAccount: {
     name: user14,
     account: 14,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -91,7 +96,8 @@ onCreateAccount: {
     name: user15,
     account: 15,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -107,7 +113,8 @@ onCreateAccount: {
     name: user16,
     account: 16,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -123,7 +130,8 @@ onCreateAccount: {
     name: user17,
     account: 17,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -139,7 +147,8 @@ onCreateAccount: {
     name: user18,
     account: 18,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -155,7 +164,8 @@ onCreateAccount: {
     name: user19,
     account: 19,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...

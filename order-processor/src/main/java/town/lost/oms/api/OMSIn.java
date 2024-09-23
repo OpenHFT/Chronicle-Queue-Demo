@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Chronicle Software Ltd
+ * Copyright (c) 2016-2024 Chronicle Software Ltd
  */
 
 package town.lost.oms.api;
@@ -14,11 +14,15 @@ import town.lost.oms.dto.NewOrderSingle;
  * <p>
  * It includes methods to handle new single orders, cancel order requests, and cancel all orders.
  * Each method receives an instance of a data transfer object that represents the details of the operation.
+ *
+ * @see NewOrderSingle
+ * @see CancelOrderRequest
+ * @see CancelAll
  */
 public interface OMSIn {
 
     /**
-     * Handles a new single order.
+     * Handles a new single order submission.
      *
      * @param nos The {@link NewOrderSingle} object representing the details of the new order.
      */

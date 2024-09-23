@@ -26,39 +26,45 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
                 <executions>
+                    <execution>
+                        <id>bench</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${java.home}/bin/java</executable>
+                            <commandlineArgs>${jvm.requiredArgs} -classpath %classpath town.lost.oms.OMSBenchmarkMain</commandlineArgs>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>adder</id>
                         <goals>
-                            <goal>java</goal>
+                            <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <mainClass>town.lost.oms.OrderAdderMain</mainClass>
-                            <classpathScope>compile</classpathScope>
+                            <executable>${java.home}/bin/java</executable>
+                            <commandlineArgs>${jvm.requiredArgs} -classpath %classpath town.lost.oms.OrderAdderMain</commandlineArgs>
                         </configuration>
                     </execution>
                     <execution>
                         <id>viewer</id>
                         <goals>
-                            <goal>java</goal>
+                            <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <mainClass>town.lost.oms.OrderViewerMain</mainClass>
-                            <classpathScope>compile</classpathScope>
+                            <executable>${java.home}/bin/java</executable>
+                            <commandlineArgs>${jvm.requiredArgs} -classpath %classpath town.lost.oms.OrderViewerMain</commandlineArgs>
                         </configuration>
                     </execution>
                     <execution>
                         <id>dump</id>
                         <goals>
-                            <goal>java</goal>
+                            <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <mainClass>net.openhft.chronicle.queue.DumpQueueMain</mainClass>
-                            <classpathScope>compile</classpathScope>
-                            <arguments>
-                                <argument>in</argument>
-                            </arguments>
+                            <executable>${java.home}/bin/java</executable>
+                            <commandlineArgs>${jvm.requiredArgs} -classpath %classpath net.openhft.chronicle.queue.DumpQueueMain in</commandlineArgs>
                         </configuration>
                     </execution>
                 </executions>

@@ -12,7 +12,8 @@ createAccountFailed: {
     name: alice,
     account: 101013,
     currency: EUR,
-    balance: NaN
+    balance: NaN,
+    overdraft: 10.0
   },
   reason: invalid balance
 }
@@ -31,7 +32,8 @@ createAccountFailed: {
     name: bob,
     account: 101025,
     currency: EUR,
-    balance: NaN
+    balance: NaN,
+    overdraft: 100.0
   },
   reason: invalid balance
 }

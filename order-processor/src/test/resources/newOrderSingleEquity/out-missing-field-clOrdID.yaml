@@ -1,0 +1,8 @@
+# Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
+# missing clOrdID: ABC1234567,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: clOrdID is required"
+...
+# Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
+# missing clOrdID: XYZ7654321,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: clOrdID is required"
+...

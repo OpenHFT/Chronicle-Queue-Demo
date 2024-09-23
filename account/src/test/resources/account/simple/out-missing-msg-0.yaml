@@ -12,7 +12,8 @@ onCreateAccount: {
     name: bob,
     account: 101025,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 100.0
   }
 }
 ...
@@ -96,7 +97,8 @@ onCreateAccount: {
     name: bob,
     account: 101025,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 100.0
   }
 }
 ...

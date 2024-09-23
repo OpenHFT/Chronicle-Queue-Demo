@@ -1,0 +1,8 @@
+# Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
+# missing target: OMS1,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: target is required"
+...
+# Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
+# missing target: OMS1,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: target is required"
+...

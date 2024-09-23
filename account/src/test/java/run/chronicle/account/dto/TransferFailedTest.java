@@ -2,9 +2,11 @@ package run.chronicle.account.dto;
 
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 import net.openhft.chronicle.wire.Marshallable;
-import net.openhft.chronicle.wire.converter.Base85;
+import net.openhft.chronicle.wire.converter.ShortText;
 import net.openhft.chronicle.wire.converter.NanoTime;
 import org.junit.Test;
+
+import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -33,8 +35,8 @@ public class TransferFailedTest {
     public void testToString() {
         assertEquals(EXPECTED,
                 new TransferFailed()
-                        .target(Base85.INSTANCE.parse("sender"))
-                        .sender(Base85.INSTANCE.parse("target"))
+                        .target(ShortText.INSTANCE.parse("sender"))
+                        .sender(ShortText.INSTANCE.parse("target"))
                         .sendingTime(NanoTime.INSTANCE.parse("2001/02/03T04:05:06.777888999"))
                         .reason("reasons")
                         .transfer(TransferTest.getTransfer())
@@ -50,7 +52,7 @@ public class TransferFailedTest {
 
     /**
      * This test verifies the scenario where a required field in TransferFailed object is missing.
-     * It is expected that when the {@link Marshallable#fromString(String)} method is used to parse a String
+     * It is expected that when the {@link Marshallable#fromString(CharSequence)} method is used to parse a String
      * that represents a TransferFailed object missing a required field, an InvalidMarshallableException will be thrown.
      *
      * @throws InvalidMarshallableException if a required field in the marshalled String is missing.

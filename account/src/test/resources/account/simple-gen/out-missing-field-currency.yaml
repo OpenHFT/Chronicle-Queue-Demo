@@ -1,0 +1,213 @@
+# Alice transfers 200 EUR to Bob.
+# missing currency: EUR,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
+...
+# Bob transfers 50 EUR to Alice.
+# missing currency: EUR,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
+...
+# Charlie attempts to transfer 3000 USD to Diana (overdraft attempt).
+# This operation will fail due to insufficient funds.
+# missing currency: USD,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
+...
+# Diana transfers 500 GBP to Charlie.
+# missing currency: GBP,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
+...
+# Alice attempts to transfer 100 EUR to a non-existent account.
+# This operation will fail because the 'to' account does not exist.
+# missing currency: EUR,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
+...
+# Bob attempts to transfer funds with a currency mismatch.
+# This operation will fail because Bob's account is in EUR, but the transfer currency is USD.
+# missing currency: USD,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
+...
+# Charlie transfers 1000 USD to Alice.
+# This operation will fail due to currency mismatch.
+# missing currency: USD,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
+...
+# Diana requests a checkpoint.
+# This will dump all account states.
+---
+startCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T14:00:00
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:04,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T09:00:00,
+    name: alice,
+    account: 101013,
+    currency: EUR,
+    balance: 1E3,
+    overdraft: 100.0
+  }
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:05,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T09:05:00,
+    name: bob,
+    account: 101025,
+    currency: EUR,
+    balance: 500.0,
+    overdraft: 100.0
+  }
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:06,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T09:10:00,
+    name: charlie,
+    account: 101037,
+    currency: USD,
+    balance: 2E3,
+    overdraft: 100.0
+  }
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:07,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T09:15:00,
+    name: diana,
+    account: 101049,
+    currency: GBP,
+    balance: 1500.0,
+    overdraft: 100.0
+  }
+}
+...
+endCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T14:00:00
+}
+...
+# Alice attempts to transfer 800 EUR to Bob (overdraft attempt).
+# This operation will fail due to insufficient funds.
+# missing currency: EUR,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
+...
+# Bob transfers 100 EUR to Diana.
+# Currency mismatch; this should fail since Diana's account is in GBP.
+# missing currency: EUR,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
+...
+# Diana transfers 200 GBP to Bob.
+# Currency mismatch; this should fail since Bob's account is in EUR.
+# missing currency: GBP,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
+...
+# Bob converts 300 EUR to USD and transfers to Charlie.
+# Assume the system doesn't support currency conversion; this should fail.
+# missing currency: USD,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
+...
+# Charlie transfers 500 USD to Diana.
+# missing currency: USD,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: currency must be set"
+...
+# Diana requests another checkpoint.
+---
+startCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T18:00:00
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:08,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T09:00:00,
+    name: alice,
+    account: 101013,
+    currency: EUR,
+    balance: 1E3,
+    overdraft: 100.0
+  }
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:09,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T09:05:00,
+    name: bob,
+    account: 101025,
+    currency: EUR,
+    balance: 500.0,
+    overdraft: 100.0
+  }
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:10,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T09:10:00,
+    name: charlie,
+    account: 101037,
+    currency: USD,
+    balance: 2E3,
+    overdraft: 100.0
+  }
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:11,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T09:15:00,
+    name: diana,
+    account: 101049,
+    currency: GBP,
+    balance: 1500.0,
+    overdraft: 100.0
+  }
+}
+...
+endCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T18:00:00
+}
+...

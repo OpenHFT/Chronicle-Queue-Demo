@@ -5,8 +5,7 @@ import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.SimpleCloseable;
 import net.openhft.chronicle.queue.channel.PipeHandler;
 import net.openhft.chronicle.threads.Pauser;
-import net.openhft.chronicle.wire.Base85LongConverter;
-import net.openhft.chronicle.wire.channel.ChronicleChannel;
+import net.openhft.chronicle.wire.ShortTextLongConverter;
 import net.openhft.chronicle.wire.channel.ChronicleContext;
 import run.chronicle.account.api.AccountManagerOut;
 import run.chronicle.account.impl.AccountManagerImpl;
@@ -14,8 +13,9 @@ import run.chronicle.account.impl.AccountManagerImpl;
 /**
  * The main service class for the Account Manager application.
  */
+@SuppressWarnings("deprecation")
 public class AccountManagerServiceMain extends SimpleCloseable implements Runnable {
-    private static final Base85LongConverter BASE85 = Base85LongConverter.INSTANCE;
+    private static final ShortTextLongConverter BASE85 = ShortTextLongConverter.INSTANCE;
     private static final String SERVICE_URL = System.getProperty("serviceUrl", "internal://");
 
     /**
@@ -55,7 +55,7 @@ public class AccountManagerServiceMain extends SimpleCloseable implements Runnab
         // Context for interaction with the Chronicle system
         try (ChronicleContext context = ChronicleContext.newContext(SERVICE_URL)) {
             // Channel for sending and receiving messages
-            ChronicleChannel channel = context.newChannelSupplier(handler).get();
+            net.openhft.chronicle.wire.channel.ChronicleChannel channel = context.newChannelSupplier(handler).get();
 
             // Method writer for sending events
             AccountManagerOut out = channel.methodWriter(AccountManagerOut.class);

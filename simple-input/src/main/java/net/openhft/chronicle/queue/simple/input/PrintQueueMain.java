@@ -9,6 +9,9 @@ import java.io.FileNotFoundException;
  */
 public class PrintQueueMain {
     public static void main(String[] args) throws FileNotFoundException {
-        DumpMain.dump("queue");
+        // Allow the queue path to be specified via command-line arguments
+        String path = (args.length > 0) ? args[0] : "queue";
+
+        DumpMain.dump(path);
     }
 }

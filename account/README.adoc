@@ -62,7 +62,7 @@ image:img/Chronicle-Services-Diagram.png[]
 
 == Network Layouts
 
-The client and the service can be laid out in a variety of ways without changing the code
+The client and the service can be laid out in a variety of ways without changing the code.
 
 .Ballpark latencies running on a production quality server
 |===

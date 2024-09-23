@@ -1,79 +1,106 @@
 /*
- * Copyright (c) 2016-2019 Chronicle Software Ltd
+ * Copyright (c) 2016-2024 Chronicle Software Ltd
  */
 
 package town.lost.oms.dto;
 
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
-import net.openhft.chronicle.wire.Base85LongConverter;
+import net.openhft.chronicle.core.io.InvalidMarshallableException;
+import net.openhft.chronicle.wire.ShortTextLongConverter;
 import net.openhft.chronicle.wire.NanoTimestampLongConverter;
 import net.openhft.chronicle.wire.WireIn;
 import net.openhft.chronicle.wire.WireOut;
-import net.openhft.chronicle.wire.converter.Base85;
 import net.openhft.chronicle.wire.converter.NanoTime;
+import net.openhft.chronicle.wire.converter.ShortText;
+
+import static town.lost.oms.dto.ValidateUtil.*;
 
 /**
  * The {@code ExecutionReport} class represents the execution report of an order in a trading system.
  *
  * <p>This class extends the {@link AbstractEvent} class, with the type parameter being {@link ExecutionReport}.
- * This indicates that the event will be processed into an {@link ExecutionReport} that represents the execution report of an order.</p>
+ * This indicates that the event will be processed into an {@link ExecutionReport} that represents the execution report of an order.
  *
- * <p>Each {@code ExecutionReport} contains various pieces of information about the order execution,
- * including the symbol of the financial instrument, the transaction time, the quantity and price of the order,
- * the side (buy or sell), the client order ID, the order type (market or limit), the last traded price,
- * the remaining quantity, the accumulated quantity, the average price, and a text message.</p>
+ * <p>Each {@code ExecutionReport} contains various pieces of information about the order execution, including:
  *
- * <p>The symbol is encoded using Base85 and the transaction time is in nanoseconds, both to save space.
- * The client order ID is a string that identifies the order, the side indicates whether the order is to buy or sell,
- * and the order type indicates whether the order is a market order or a limit order.</p>
+ * <ul>
+ *   <li><strong>symbol</strong>: The identifier of the financial instrument.</li>
+ *   <li><strong>transactTime</strong>: The transaction time in nanoseconds.</li>
+ *   <li><strong>orderQty</strong>: The quantity of the order.</li>
+ *   <li><strong>price</strong>: The price of the order.</li>
+ *   <li><strong>orderID</strong>: The unique identifier of the order.</li>
+ *   <li><strong>lastPx</strong>: The last traded price of the order.</li>
+ *   <li><strong>leavesQty</strong>: The remaining quantity of the order.</li>
+ *   <li><strong>cumQty</strong>: The accumulated quantity of the order.</li>
+ *   <li><strong>avgPx</strong>: The average price of the order.</li>
+ *   <li><strong>side</strong>: The side of the order (buy or sell).</li>
+ *   <li><strong>ordType</strong>: The type of the order (e.g., market or limit).</li>
+ *   <li><strong>clOrdID</strong>: The client order ID.</li>
+ *   <li><strong>text</strong>: An optional text message about the order execution.</li>
+ * </ul>
+ *
+ * <p>The {@code symbol} field is encoded using {@link ShortTextLongConverter}, and {@code transactTime} and {@code orderID}
+ * use {@link NanoTimestampLongConverter} to save space.
  */
 public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     private static final int MASHALLABLE_VERSION = 1;
-    // Symbol of the financial instrument. Encoded using Base85.
-    @Base85
+    // Symbol of the financial instrument.
+    @ShortText
     private long symbol;
+
     // Transaction time in nanoseconds.
     @NanoTime
     private long transactTime;
+
     // Quantity of the order.
     private double orderQty;
+
     // Price of the order.
     private double price;
+
     // Order ID in nanoseconds.
     @NanoTime
     private long orderID;
+
     // Last traded price of the order.
     private double lastPx;
+
     // Remaining quantity of the order.
     private double leavesQty;
+
     // Accumulated quantity of the order.
     private double cumQty;
+
     // Average price of the order.
     private double avgPx;
+
     // Side of the order (buy or sell).
-    private BuySell side;
+    private Side side;
+
     // Type of the order (market or limit).
     private OrderType ordType;
+
     // Client order ID.
     private String clOrdID = "";
+
     // Optional text message about the order execution.
     private String text = null;
 
     /**
-     * Returns the client order ID.
+     * Retrieves the client order ID.
      *
-     * @return the client order ID
+     * @return the client order ID as a {@code String}
      */
     public String clOrdID() {
         return clOrdID;
     }
 
     /**
-     * Sets the client order ID and returns this ExecutionReport instance.
+     * Sets the client order ID.
      *
      * @param clOrdID the client order ID to set
-     * @return this ExecutionReport instance
+     * @return this {@code ExecutionReport} instance for method chaining
      */
     public ExecutionReport clOrdID(String clOrdID) {
         this.clOrdID = clOrdID;
@@ -81,19 +108,19 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     }
 
     /**
-     * Returns the symbol for the financial instrument.
+     * Retrieves the symbol of the financial instrument.
      *
-     * @return the symbol for the financial instrument
+     * @return the symbol as a {@code long}
      */
     public long symbol() {
         return symbol;
     }
 
     /**
-     * Sets the symbol for the financial instrument and returns this ExecutionReport instance.
+     * Sets the symbol of the financial instrument.
      *
      * @param symbol the symbol to set
-     * @return this ExecutionReport instance
+     * @return this {@code ExecutionReport} instance for method chaining
      */
     public ExecutionReport symbol(long symbol) {
         this.symbol = symbol;
@@ -101,91 +128,99 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     }
 
     /**
-     * Returns the side of the market (Buy/Sell).
+     * Retrieves the side of the order (buy or sell).
      *
-     * @return the side of the market
+     * @return the side as a {@link Side} enum value
      */
-    public BuySell side() {
+    public Side side() {
         return side;
     }
 
     /**
-     * Sets the side of the market (Buy/Sell) and returns this ExecutionReport instance.
+     * Sets the side of the order (buy or sell).
      *
-     * @param side the side of the market to set
-     * @return this ExecutionReport instance
+     * @param side the side to set
+     * @return this {@code ExecutionReport} instance for method chaining
      */
-    public ExecutionReport side(BuySell side) {
+    public ExecutionReport side(Side side) {
         this.side = side;
         return this;
     }
+
     /**
-     * Returns the transaction time.
+     * Retrieves the transaction time in nanoseconds.
      *
-     * @return the transaction time
+     * @return the transaction time as a {@code long}
      */
     public long transactTime() {
         return transactTime;
     }
+
     /**
-     * Sets the transaction time and returns this ExecutionReport instance.
+     * Sets the transaction time in nanoseconds.
      *
      * @param transactTime the transaction time to set
-     * @return this ExecutionReport instance
+     * @return this {@code ExecutionReport} instance for method chaining
      */
     public ExecutionReport transactTime(long transactTime) {
         this.transactTime = transactTime;
         return this;
     }
+
     /**
-     * Returns the order quantity.
+     * Retrieves the quantity of the order.
      *
-     * @return the order quantity
+     * @return the order quantity as a {@code double}
      */
     public double orderQty() {
         return orderQty;
     }
+
     /**
-     * Sets the order quantity and returns this ExecutionReport instance.
+     * Sets the quantity of the order.
      *
      * @param orderQty the order quantity to set
-     * @return this ExecutionReport instance
+     * @return this {@code ExecutionReport} instance for method chaining
      */
     public ExecutionReport orderQty(double orderQty) {
         this.orderQty = orderQty;
         return this;
     }
+
     /**
-     * Returns the price.
+     * Retrieves the price of the order.
      *
-     * @return the price
+     * @return the price as a {@code double}
      */
     public double price() {
         return price;
     }
+
     /**
-     * Sets the price and returns this ExecutionReport instance.
+     * Sets the price of the order.
      *
      * @param price the price to set
-     * @return this ExecutionReport instance
+     * @return this {@code ExecutionReport} instance for method chaining
      */
     public ExecutionReport price(double price) {
         this.price = price;
         return this;
     }
+
     /**
-     * Returns the order ID.
+     * Retrieves the order ID.
      *
-     * @return the order ID
+     * @return the order ID as a {@code long}
      */
     public long orderID() {
         return orderID;
     }
+
     /**
-     * Sets the order ID and returns this ExecutionReport instance.
+     * Sets the order ID.
      *
      * @param orderID the order ID to set
-     * @return this ExecutionReport instance
+     * @return this {@code ExecutionReport} instance for method chaining
      */
     public ExecutionReport orderID(long orderID) {
         this.orderID = orderID;
@@ -209,68 +244,76 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
         this.ordType = ordType;
         return this;
     }
+
     /**
-     * Returns the last price.
+     * Retrieves the last traded price of the order.
      *
-     * @return the last price
+     * @return the last traded price as a {@code double}
      */
     public double lastPx() {
         return lastPx;
     }
+
     /**
-     * Sets the last price and returns this ExecutionReport instance.
+     * Sets the last traded price of the order.
      *
      * @param lastPx the last price to set
-     * @return this ExecutionReport instance
+     * @return this {@code ExecutionReport} instance for method chaining
      */
     public ExecutionReport lastPx(double lastPx) {
         this.lastPx = lastPx;
         return this;
     }
+
     /**
-     * Returns the leaves quantity.
+     * Retrieves the remaining quantity of the order.
      *
-     * @return the leaves quantity
+     * @return the leaves quantity as a {@code double}
      */
     public double leavesQty() {
         return leavesQty;
     }
+
     /**
-     * Sets the leaves quantity and returns this ExecutionReport instance.
+     * Sets the remaining quantity of the order.
      *
      * @param leavesQty the leaves quantity to set
-     * @return this ExecutionReport instance
+     * @return this {@code ExecutionReport} instance for method chaining
      */
     public ExecutionReport leavesQty(double leavesQty) {
         this.leavesQty = leavesQty;
         return this;
     }
+
     /**
-     * Returns the cumulative quantity.
+     * Retrieves the accumulated quantity of the order.
      *
-     * @return the cumulative quantity
+     * @return the cumulative quantity as a {@code double}
      */
     public double cumQty() {
         return cumQty;
     }
+
     /**
-     * Sets the cumulative quantity and returns this ExecutionReport instance.
+     * Sets the accumulated quantity of the order.
      *
      * @param cumQty the cumulative quantity to set
-     * @return this ExecutionReport instance
+     * @return this {@code ExecutionReport} instance for method chaining
      */
     public ExecutionReport cumQty(double cumQty) {
         this.cumQty = cumQty;
         return this;
     }
+
     /**
-     * Returns the average price.
+     * Retrieves the average price of the order.
      *
-     * @return the average price
+     * @return the average price as a {@code double}
      */
     public double avgPx() {
         return avgPx;
     }
+
     /**
      * Sets the average price and returns this ExecutionReport instance.
      *
@@ -281,19 +324,21 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
         this.avgPx = avgPx;
         return this;
     }
+
     /**
-     * Returns the text of the report.
+     * Retrieves the optional text message about the order execution.
      *
-     * @return the text of the report
+     * @return the text message as a {@code String}
      */
     public String text() {
         return text;
     }
+
     /**
      * Sets the text of the report and returns this ExecutionReport instance.
      *
-     * @param text the text to set
-     * @return this ExecutionReport instance
+     * @param text the text message to set
+     * @return this {@code ExecutionReport} instance for method chaining
      */
     public ExecutionReport text(String text) {
         this.text = text;
@@ -314,7 +359,7 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
             out.writeDouble(leavesQty);
             out.writeDouble(cumQty);
             out.writeDouble(avgPx);
-            out.writeObject(BuySell.class, side);
+            out.writeObject(Side.class, side);
             out.writeObject(OrderType.class, ordType);
             out.writeObject(String.class, clOrdID);
             out.writeObject(String.class, text);
@@ -336,7 +381,7 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
                 leavesQty = in.readDouble();
                 cumQty = in.readDouble();
                 avgPx = in.readDouble();
-                side = in.readObject(BuySell.class);
+                side = in.readObject(Side.class);
                 ordType = in.readObject(OrderType.class);
                 clOrdID = in.readObject(String.class);
                 text = in.readObject(String.class);
@@ -350,7 +395,7 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     public void writeMarshallable(WireOut out) {
         super.writeMarshallable(out);
         if (PREGENERATED_MARSHALLABLE) {
-            out.write("symbol").writeLong(Base85LongConverter.INSTANCE, symbol);
+            out.write("symbol").writeLong(ShortTextLongConverter.INSTANCE, symbol);
             out.write("transactTime").writeLong(NanoTimestampLongConverter.INSTANCE, transactTime);
             out.write("orderQty").writeDouble(orderQty);
             out.write("price").writeDouble(price);
@@ -359,7 +404,7 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
             out.write("leavesQty").writeDouble(leavesQty);
             out.write("cumQty").writeDouble(cumQty);
             out.write("avgPx").writeDouble(avgPx);
-            out.write("side").object(BuySell.class, side);
+            out.write("side").object(Side.class, side);
             out.write("ordType").object(OrderType.class, ordType);
             out.write("clOrdID").object(String.class, clOrdID);
             out.write("text").object(String.class, text);
@@ -370,7 +415,7 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
     public void readMarshallable(WireIn in) {
         super.readMarshallable(in);
         if (PREGENERATED_MARSHALLABLE) {
-            symbol = in.read("symbol").readLong(Base85LongConverter.INSTANCE);
+            symbol = in.read("symbol").readLong(ShortTextLongConverter.INSTANCE);
             transactTime = in.read("transactTime").readLong(NanoTimestampLongConverter.INSTANCE);
             orderQty = in.read("orderQty").readDouble();
             price = in.read("price").readDouble();
@@ -379,10 +424,44 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
             leavesQty = in.read("leavesQty").readDouble();
             cumQty = in.read("cumQty").readDouble();
             avgPx = in.read("avgPx").readDouble();
-            side = in.read("side").object(side, BuySell.class);
+            side = in.read("side").object(side, Side.class);
             ordType = in.read("ordType").object(ordType, OrderType.class);
             clOrdID = in.read("clOrdID").object(clOrdID, String.class);
             text = in.read("text").object(text, String.class);
         }
+    }
+
+    /**
+     * Validates the fields of this {@code ExecutionReport} event.
+     *
+     * @throws InvalidMarshallableException if any required field is missing or invalid
+     */
+    @Override
+    public void validate() throws InvalidMarshallableException {
+        super.validate();
+        if (symbol == 0)
+            throw new InvalidMarshallableException("symbol is required");
+        if (transactTime == 0)
+            throw new InvalidMarshallableException("transactTime is required");
+        if (invalidQuantity(orderQty))
+            throw new InvalidMarshallableException("orderQty is invalid");
+        if (invalidPrice(price))
+            throw new InvalidMarshallableException("price is invalid");
+        if (orderID == 0)
+            throw new InvalidMarshallableException("orderID is required");
+        if (lastPx != 0 && invalidPrice(lastPx))
+            throw new InvalidMarshallableException("lastPx is invalid");
+        if (invalidQuantity(leavesQty))
+            throw new InvalidMarshallableException("leavesQty is invalid");
+        if (invalidQuantity(cumQty))
+            throw new InvalidMarshallableException("cumQty is invalid");
+        if (avgPx != 0 && invalidPrice(avgPx))
+            throw new InvalidMarshallableException("avgPx is invalid");
+        if (side == null)
+            throw new InvalidMarshallableException("side is required");
+        if (ordType == null)
+            throw new InvalidMarshallableException("ordType is required");
+        if (clOrdID == null || clOrdID.isEmpty())
+            throw new InvalidMarshallableException("clOrdID is required");
     }
 }

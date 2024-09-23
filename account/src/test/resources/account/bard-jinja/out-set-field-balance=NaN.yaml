@@ -12,7 +12,8 @@ createAccountFailed: {
     name: account_10,
     account: 10,
     currency: EUR,
-    balance: NaN
+    balance: NaN,
+    overdraft: 0.0
   },
   reason: invalid balance
 }
@@ -30,7 +31,8 @@ createAccountFailed: {
     name: account_11,
     account: 11,
     currency: EUR,
-    balance: NaN
+    balance: NaN,
+    overdraft: 0.0
   },
   reason: invalid balance
 }
@@ -48,7 +50,8 @@ createAccountFailed: {
     name: account_12,
     account: 12,
     currency: EUR,
-    balance: NaN
+    balance: NaN,
+    overdraft: 0.0
   },
   reason: invalid balance
 }
@@ -66,7 +69,8 @@ createAccountFailed: {
     name: account_13,
     account: 13,
     currency: EUR,
-    balance: NaN
+    balance: NaN,
+    overdraft: 0.0
   },
   reason: invalid balance
 }
@@ -84,7 +88,8 @@ createAccountFailed: {
     name: account_14,
     account: 14,
     currency: EUR,
-    balance: NaN
+    balance: NaN,
+    overdraft: 0.0
   },
   reason: invalid balance
 }
@@ -102,7 +107,8 @@ createAccountFailed: {
     name: account_15,
     account: 15,
     currency: EUR,
-    balance: NaN
+    balance: NaN,
+    overdraft: 0.0
   },
   reason: invalid balance
 }
@@ -120,7 +126,8 @@ createAccountFailed: {
     name: account_16,
     account: 16,
     currency: EUR,
-    balance: NaN
+    balance: NaN,
+    overdraft: 0.0
   },
   reason: invalid balance
 }
@@ -138,7 +145,8 @@ createAccountFailed: {
     name: account_17,
     account: 17,
     currency: EUR,
-    balance: NaN
+    balance: NaN,
+    overdraft: 0.0
   },
   reason: invalid balance
 }
@@ -156,7 +164,8 @@ createAccountFailed: {
     name: account_18,
     account: 18,
     currency: EUR,
-    balance: NaN
+    balance: NaN,
+    overdraft: 0.0
   },
   reason: invalid balance
 }
@@ -174,7 +183,8 @@ createAccountFailed: {
     name: account_19,
     account: 19,
     currency: EUR,
-    balance: NaN
+    balance: NaN,
+    overdraft: 0.0
   },
   reason: invalid balance
 }

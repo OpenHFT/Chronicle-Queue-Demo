@@ -1,21 +1,6 @@
 # This operation creates an account for Charlie with account number 101037.
 # override balance: 50 to balance: -1
----
-createAccountFailed: {
-  sender: vault,
-  target: gw1,
-  sendingTime: 2023-01-21T11:00:05,
-  createAccount: {
-    sender: gw1,
-    target: vault,
-    sendingTime: 2023-01-20T10:00:02,
-    name: charlie,
-    account: 101037,
-    currency: EUR,
-    balance: -1.0
-  },
-  reason: invalid balance
-}
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: balance must be positive or zero"
 ...
 # This operation attempts to make a transfer from Alice to Charlie.
 # This operation will succeed.
@@ -23,7 +8,7 @@ createAccountFailed: {
 transferFailed: {
   sender: vault,
   target: gw2,
-  sendingTime: 2023-01-21T11:00:06,
+  sendingTime: 2023-01-21T11:00:05,
   transfer: {
     sender: gw2,
     target: vault,
@@ -43,7 +28,7 @@ transferFailed: {
 transferFailed: {
   sender: vault,
   target: gw2,
-  sendingTime: 2023-01-21T11:00:07,
+  sendingTime: 2023-01-21T11:00:06,
   transfer: {
     sender: gw2,
     target: vault,
@@ -70,7 +55,7 @@ startCheckpoint: {
 onCreateAccount: {
   sender: vault,
   target: gw1,
-  sendingTime: 2023-01-21T11:00:08,
+  sendingTime: 2023-01-21T11:00:07,
   createAccount: {
     sender: gw1,
     target: vault,
@@ -78,14 +63,15 @@ onCreateAccount: {
     name: alice,
     account: 13,
     currency: EUR,
-    balance: 15.0
+    balance: 15.0,
+    overdraft: 0.0
   }
 }
 ...
 onCreateAccount: {
   sender: vault,
   target: gw1,
-  sendingTime: 2023-01-21T11:00:09,
+  sendingTime: 2023-01-21T11:00:08,
   createAccount: {
     sender: gw1,
     target: vault,
@@ -93,7 +79,8 @@ onCreateAccount: {
     name: bob,
     account: 101025,
     currency: EUR,
-    balance: 1E3
+    balance: 1E3,
+    overdraft: 0.0
   }
 }
 ...

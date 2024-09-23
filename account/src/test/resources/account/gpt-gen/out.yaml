@@ -13,7 +13,8 @@ onCreateAccount: {
     name: charlie,
     account: 101045,
     currency: EUR,
-    balance: 5E3
+    balance: 5E3,
+    overdraft: 0.0
   }
 }
 ...
@@ -32,7 +33,8 @@ onCreateAccount: {
     name: Dania,
     account: 101055,
     currency: EUR,
-    balance: 3500.0
+    balance: 3500.0,
+    overdraft: 0.0
   }
 }
 ...
@@ -115,7 +117,8 @@ onCreateAccount: {
     name: charlie,
     account: 101045,
     currency: EUR,
-    balance: 4500.0
+    balance: 4500.0,
+    overdraft: 0.0
   }
 }
 ...
@@ -130,7 +133,8 @@ onCreateAccount: {
     name: Dania,
     account: 101055,
     currency: EUR,
-    balance: 4E3
+    balance: 4E3,
+    overdraft: 0.0
   }
 }
 ...

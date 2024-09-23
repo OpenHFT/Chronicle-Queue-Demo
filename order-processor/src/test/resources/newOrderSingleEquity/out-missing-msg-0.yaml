@@ -1,0 +1,22 @@
+# Missing message 0
+# Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
+---
+executionReport: {
+  sender: OMS1,
+  target: CLIENT2,
+  sendingTime: 2023-10-20T14:27:15.987654,
+  symbol: GOOGL,
+  transactTime: 2023-10-20T14:27:15.987654,
+  orderQty: 500.0,
+  price: 2750.5,
+  orderID: 2019-12-03T09:54:37.345679,
+  lastPx: 0.0,
+  leavesQty: 0.0,
+  cumQty: 0.0,
+  avgPx: 0.0,
+  side: SELL,
+  ordType: MARKET,
+  clOrdID: XYZ7654321,
+  text: Not ready
+}
+...

@@ -1,0 +1,8 @@
+# Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
+# missing orderQty: 1000,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: orderQty is required"
+...
+# Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
+# missing orderQty: 500,
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: orderQty is required"
+...

@@ -39,10 +39,10 @@ public class CreateAccountFailed extends AbstractEvent<CreateAccountFailed> {
     }
 
     /**
-     * Sets the CreateAccount instance that failed and returns the updated object.
+     * Sets the {@link CreateAccount} instance that failed.
      *
-     * @param createAccount the CreateAccount instance that failed
-     * @return the updated object
+     * @param createAccount the failed {@code CreateAccount} instance to set
+     * @return this object for method chaining
      */
     public CreateAccountFailed createAccount(CreateAccount createAccount) {
         this.createAccount = createAccount;
@@ -50,6 +50,8 @@ public class CreateAccountFailed extends AbstractEvent<CreateAccountFailed> {
     }
 
     /**
+     * Retrieves the reason for the failure.
+     *
      * @return the reason for the failure
      */
     public String reason() {
@@ -57,10 +59,10 @@ public class CreateAccountFailed extends AbstractEvent<CreateAccountFailed> {
     }
 
     /**
-     * Sets the reason for the failure and returns the updated object.
+     * Sets the reason for the failure.
      *
-     * @param reason the reason for the failure
-     * @return the updated object
+     * @param reason the reason for the failure to set
+     * @return this object for method chaining
      */
     public CreateAccountFailed reason(String reason) {
         this.reason = reason;
@@ -68,16 +70,22 @@ public class CreateAccountFailed extends AbstractEvent<CreateAccountFailed> {
     }
 
     /**
-     * The validate method is used to verify that all necessary properties have been set.
+     * Validates that all necessary properties have been set and are valid.
      *
-     * @throws InvalidMarshallableException If any of these properties is not set
+     * @throws InvalidMarshallableException if validation fails
      */
     @Override
     public void validate() throws InvalidMarshallableException {
-        super.validate(); // Validate fields in the parent class
-        if (createAccount == null)
-            throw new InvalidMarshallableException("createAccount must be set"); // Ensure createAccount is set
-        if (reason == null)
-            throw new InvalidMarshallableException("reason must be set"); // Ensure reason is set
+        super.validate(); // Validate fields in the superclass
+
+        if (createAccount == null) {
+            throw new InvalidMarshallableException("CreateAccount must be set");
+        } else {
+            createAccount.validate(); // Validate the CreateAccount instance
+        }
+
+        if (reason == null || reason.trim().isEmpty()) {
+            throw new InvalidMarshallableException("Reason must be set and not empty");
+        }
     }
 }

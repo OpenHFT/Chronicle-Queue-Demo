@@ -1,17 +1,22 @@
 package net.openhft.chronicle.queue.simple.translator;
 
 /**
- * An interface for consuming messages.
- * Implementations of this interface should define how to process or handle a given message.
+ * Represents a consumer that processes translated messages.
+ * <p>
+ * Implementations of this interface define the strategy for handling or processing
+ * messages that have been translated from one language to another.
+ * </p>
  *
  * Created by catherine on 26/07/2016.
  */
+@FunctionalInterface
 public interface MessageConsumer {
 
     /**
-     * Handles or processes the given message.
+     * Processes the specified message.
      *
-     * @param text the message to be processed
+     * @param message the translated message to be processed; must not be {@code null}
+     * @throws IllegalArgumentException if {@code message} is {@code null}
      */
-    void onMessage(String text);
+    void onMessage(String message);
 }

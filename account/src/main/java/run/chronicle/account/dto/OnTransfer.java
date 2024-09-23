@@ -21,16 +21,20 @@ package run.chronicle.account.dto;
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 
 /**
- * The OnTransfer class extends AbstractEvent and represents an event that's triggered when a Transfer action takes place.
- * It encapsulates a reference to the Transfer instance that initiated this event.
- * This class follows the convention of using a fluent interface for setters,
- * and it includes a validate method that checks if the transfer field has been properly set.
+ * Represents an event that occurs when a {@code Transfer} action takes place.
+ * This class extends {@link AbstractEvent} and encapsulates a reference to
+ * the {@link Transfer} instance that initiated this event.
+ * <p>
+ * The class follows the Fluent Interface pattern for setter methods,
+ * allowing for method chaining.
  */
 public class OnTransfer extends AbstractEvent<OnTransfer> {
     private Transfer transfer; // The Transfer instance that triggered this event
 
     /**
-     * @return the Transfer instance that triggered this event
+     * Retrieves the {@link Transfer} instance that triggered this event.
+     *
+     * @return the {@code Transfer} instance
      */
     public Transfer transfer() {
         return transfer;
@@ -54,16 +58,20 @@ public class OnTransfer extends AbstractEvent<OnTransfer> {
      */
     @Override
     public void validate() throws InvalidMarshallableException {
-        super.validate(); // Validate fields in the parent class
-        if (transfer == null)
-            throw new InvalidMarshallableException("transfer must be set"); // Ensure transfer is set
+        super.validate(); // Validate fields in the superclass
+
+        if (transfer == null) {
+            throw new InvalidMarshallableException("Transfer must be set");
+        } else {
+            transfer.validate(); // Validate the Transfer instance
+        }
     }
 
     /**
      * Overridden to specify the message format. In this case, it uses a lower level binary format,
      * not a self-describing message.
      *
-     * @return false as it does not use a self-describing message.
+     * @return {@code false} as it does not use a self-describing message
      */
     @Override
     public boolean usesSelfDescribingMessage() {

@@ -1,6 +1,6 @@
 # This operation creates 10 accounts.
 # missing name: "account_10",
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: name must be set"
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: name must be set and not empty"
 ...
 # This operation creates 10 transfers between the accounts.
 jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: sendingTime must be set"

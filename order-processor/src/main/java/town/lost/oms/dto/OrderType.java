@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Chronicle Software Ltd
+ * Copyright (c) 2016-2024 Chronicle Software Ltd
  */
 
 package town.lost.oms.dto;
@@ -8,33 +8,48 @@ package town.lost.oms.dto;
  *
  * <p>It contains two values: MARKET and LIMIT, which represent the two main types of orders that can be placed
  * in a trading system. A MARKET order is an order to buy or sell a security at the current market price,
- * whereas a LIMIT order is an order to buy or sell a security at a specific price or better.</p>
+ * whereas a LIMIT order is an order to buy or sell a security at a specific price or better.
  *
- * <p>This enumeration can be used when creating trading orders, like so:</p>
+ * <p>This enumeration can be used when creating trading orders, like so:
  *
  * <pre>
  * NewOrderSingle nos = new NewOrderSingle()
- *    .sender(BASE85.parse("client"))
- *    .target(BASE85.parse("OMS"))
+ *    .sender(ShortText.parse("client"))
+ *    .target(ShortText.parse("OMS"))
  *    .clOrdID("clOrdId")
  *    .orderQty(1e6)
  *    .price(1.6)
- *    .symbol(BASE85.parse("AUDUSD"))
- *    .ordType(OrderType.limit)
- *    .side(BuySell.buy);
+ *    .symbol(ShortText.parse("AUDUSD"))
+ *    .ordType(OrderType.LIMIT)
+ *    .side(BuySell.BUY);
  * </pre>
  *
- * <p>Note that the order type is indicated by the {@link OrderType} used in the 'ordType' field of the order.</p>
+ * <p>Note that the order type is indicated by the {@link OrderType} used in the 'ordType' field of the order.
  */
 public enum OrderType {
     /**
      * Market order type, which means the order should be executed at the current market price.
      */
-    market,
+    MARKET,
 
     /**
      * Limit order type, which means the order should be executed at a specific price or better.
      */
-    limit
+    LIMIT,
+
+    /**
+     * Pegged order type, where the price is pegged to a benchmark price, such as the best bid or ask.
+     */
+    PEGGED,
+
+    /**
+     * Fill or Kill order type, which must be executed immediately in its entirety or cancelled.
+     */
+    FILL_OR_KILL,
+
+    /**
+     * Immediate or Cancel order type, which executes all or part immediately and cancels any unfilled portion.
+     */
+    IMMEDIATE_OR_CANCEL,
 }
 

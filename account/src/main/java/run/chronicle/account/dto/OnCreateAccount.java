@@ -31,17 +31,19 @@ public class OnCreateAccount extends AbstractEvent<OnCreateAccount> {
     private CreateAccount createAccount; // The CreateAccount instance that triggered this event
 
     /**
-     * @return the CreateAccount instance that triggered this event
+     * Retrieves the {@link CreateAccount} instance that triggered this event.
+     *
+     * @return the {@code CreateAccount} instance
      */
     public CreateAccount createAccount() {
         return createAccount;
     }
 
     /**
-     * Sets the CreateAccount instance that triggered this event and returns the updated object.
+     * Sets the {@link CreateAccount} instance that triggered this event.
      *
-     * @param createAccount the CreateAccount instance that triggered this event
-     * @return the updated object
+     * @param createAccount the {@code CreateAccount} instance to set
+     * @return this object for method chaining
      */
     public OnCreateAccount createAccount(CreateAccount createAccount) {
         this.createAccount = createAccount;
@@ -49,14 +51,18 @@ public class OnCreateAccount extends AbstractEvent<OnCreateAccount> {
     }
 
     /**
-     * The validate method is used to verify that all necessary properties have been set.
+     * Validates that all necessary properties have been set and are valid.
      *
-     * @throws InvalidMarshallableException If any of these properties is not set
+     * @throws InvalidMarshallableException if validation fails
      */
     @Override
     public void validate() throws InvalidMarshallableException {
-        super.validate(); // Validate fields in the parent class
-        if (createAccount == null)
-            throw new InvalidMarshallableException("createAccount must be set"); // Ensure createAccount is set
+        super.validate(); // Validate fields in the superclass
+
+        if (createAccount == null) {
+            throw new InvalidMarshallableException("CreateAccount must be set");
+        } else {
+            createAccount.validate(); // Validate the CreateAccount instance
+        }
     }
 }

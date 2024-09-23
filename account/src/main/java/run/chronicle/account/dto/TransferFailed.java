@@ -30,7 +30,9 @@ public class TransferFailed extends AbstractEvent<TransferFailed> {
     private String reason; // The reason for the failure
 
     /**
-     * @return the original transfer that failed
+     * Retrieves the original {@link Transfer} that failed.
+     *
+     * @return the failed {@code Transfer} instance
      */
     public Transfer transfer() {
         return transfer;
@@ -48,17 +50,19 @@ public class TransferFailed extends AbstractEvent<TransferFailed> {
     }
 
     /**
-     * @return the reason for the failure
+     * Retrieves the reason for the failure.
+     *
+     * @return the failure reason
      */
     public String reason() {
         return reason;
     }
 
     /**
-     * Sets the reason for the failure and returns the updated object.
+     * Sets the reason for the failure.
      *
-     * @param reason the reason for the failure
-     * @return the updated object
+     * @param reason the failure reason to set
+     * @return this object for method chaining
      */
     public TransferFailed reason(String reason) {
         this.reason = reason;
@@ -66,15 +70,20 @@ public class TransferFailed extends AbstractEvent<TransferFailed> {
     }
 
     /**
-     * The validate method is used to verify that all necessary properties have been set.
+     * Validates that all necessary properties have been set and are valid.
      *
-     * @throws InvalidMarshallableException If any of these properties is not set
+     * @throws InvalidMarshallableException if validation fails
      */
     @Override
     public void validate() throws InvalidMarshallableException {
-        super.validate(); // Validate fields in the parent class
-        if (transfer == null)
-            throw new InvalidMarshallableException("transfer must be set"); // Ensure 'transfer' is set
+        super.validate(); // Validate fields in the superclass
+
+        if (transfer == null) {
+            throw new InvalidMarshallableException("Transfer must be set");
+        } else {
+            transfer.validate(); // Validate the Transfer instance
+        }
+
         if (reason == null)
             throw new InvalidMarshallableException("reason must be set"); // Ensure 'reason' is set
     }

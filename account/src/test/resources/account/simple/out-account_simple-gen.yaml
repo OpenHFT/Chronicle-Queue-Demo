@@ -1,0 +1,470 @@
+# This operation creates an account for Alice with account number 101013.
+---
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:00,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:00,
+    name: alice,
+    account: 101013,
+    currency: EUR,
+    balance: 15.0,
+    overdraft: 10.0
+  }
+}
+...
+# This operation creates an account for Bob with account number 101025.
+---
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:01,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:01,
+    name: bob,
+    account: 101025,
+    currency: EUR,
+    balance: 1E3,
+    overdraft: 100.0
+  }
+}
+...
+# This operation represents a transfer of 10 EUR from Alice to Bob.
+---
+onTransfer: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:02,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:01:00,
+    from: 101013,
+    to: 101025,
+    currency: EUR,
+    amount: 10.0,
+    reference: Dog food
+  }
+}
+...
+# This operation attempts to make a transfer from a non-existent account to Bob.
+# This operation will fail due to the 'from' account not existing.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:03,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:02:00,
+    from: 1,
+    to: 101025,
+    currency: EUR,
+    amount: 10.0,
+    reference: Junk food
+  },
+  reason: from account doesn't exist
+}
+...
+# This operation attempts to transfer 10 EUR from Alice to a non-existent account.
+# This operation will fail due to the 'to' account not existing.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:04,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:03:00,
+    from: 101013,
+    to: 9999,
+    currency: EUR,
+    amount: 10.0,
+    reference: Cat food
+  },
+  reason: to account doesn't exist
+}
+...
+# This operation requests a checkpoint.
+# Checkpoints are typically used to dump or save the state of the system at a certain point in time.
+# In this case, it will dump all the accounts.
+---
+startCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T11:00:00
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:05,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:00,
+    name: alice,
+    account: 101013,
+    currency: EUR,
+    balance: 5.0,
+    overdraft: 10.0
+  }
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:06,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:01,
+    name: bob,
+    account: 101025,
+    currency: EUR,
+    balance: 1010.0,
+    overdraft: 100.0
+  }
+}
+...
+endCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T11:00:00
+}
+...
+# Alice transfers 200 EUR to Bob.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:07,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:00,
+    from: 101013,
+    to: 101025,
+    currency: EUR,
+    amount: 200.0,
+    reference: Rent payment
+  },
+  reason: insufficient funds
+}
+...
+# Bob transfers 50 EUR to Alice.
+---
+onTransfer: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:08,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:30:00,
+    from: 101025,
+    to: 101013,
+    currency: EUR,
+    amount: 50.0,
+    reference: Refund
+  }
+}
+...
+# Charlie attempts to transfer 3000 USD to Diana (overdraft attempt).
+# This operation will fail due to insufficient funds.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:09,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T11:00:00,
+    from: 101037,
+    to: 101049,
+    currency: USD,
+    amount: 3E3,
+    reference: Business investment
+  },
+  reason: from account doesn't exist
+}
+...
+# Diana transfers 500 GBP to Charlie.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:10,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T11:30:00,
+    from: 101049,
+    to: 101037,
+    currency: GBP,
+    amount: 500.0,
+    reference: Loan repayment
+  },
+  reason: from account doesn't exist
+}
+...
+# Alice attempts to transfer 100 EUR to a non-existent account.
+# This operation will fail because the 'to' account does not exist.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:11,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T12:00:00,
+    from: 101013,
+    to: 999999,
+    currency: EUR,
+    amount: 100.0,
+    reference: Gift
+  },
+  reason: insufficient funds
+}
+...
+# Bob attempts to transfer funds with a currency mismatch.
+# This operation will fail because Bob's account is in EUR, but the transfer currency is USD.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:12,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T12:30:00,
+    from: 101025,
+    to: 101037,
+    currency: USD,
+    amount: 100.0,
+    reference: Currency mismatch test
+  },
+  reason: from account currency doesn't match
+}
+...
+# Charlie transfers 1000 USD to Alice.
+# This operation will fail due to currency mismatch.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:13,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T13:00:00,
+    from: 101037,
+    to: 101013,
+    currency: USD,
+    amount: 1E3,
+    reference: Currency exchange test
+  },
+  reason: from account doesn't exist
+}
+...
+# Diana requests a checkpoint.
+# This will dump all account states.
+---
+startCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T14:00:00
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:14,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:00,
+    name: alice,
+    account: 101013,
+    currency: EUR,
+    balance: 55.0,
+    overdraft: 10.0
+  }
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:15,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:01,
+    name: bob,
+    account: 101025,
+    currency: EUR,
+    balance: 960.0,
+    overdraft: 100.0
+  }
+}
+...
+endCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T14:00:00
+}
+...
+# Alice attempts to transfer 800 EUR to Bob (overdraft attempt).
+# This operation will fail due to insufficient funds.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:16,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T15:00:00,
+    from: 101013,
+    to: 101025,
+    currency: EUR,
+    amount: 800.0,
+    reference: Large payment
+  },
+  reason: insufficient funds
+}
+...
+# Bob transfers 100 EUR to Diana.
+# Currency mismatch; this should fail since Diana's account is in GBP.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:17,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T15:30:00,
+    from: 101025,
+    to: 101049,
+    currency: EUR,
+    amount: 100.0,
+    reference: Incorrect currency
+  },
+  reason: to account doesn't exist
+}
+...
+# Diana transfers 200 GBP to Bob.
+# Currency mismatch; this should fail since Bob's account is in EUR.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:18,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T16:00:00,
+    from: 101049,
+    to: 101025,
+    currency: GBP,
+    amount: 200.0,
+    reference: Currency test
+  },
+  reason: from account doesn't exist
+}
+...
+# Bob converts 300 EUR to USD and transfers to Charlie.
+# Assume the system doesn't support currency conversion; this should fail.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:19,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T16:30:00,
+    from: 101025,
+    to: 101037,
+    currency: USD,
+    amount: 300.0,
+    reference: Currency conversion test
+  },
+  reason: from account currency doesn't match
+}
+...
+# Charlie transfers 500 USD to Diana.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:20,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T17:00:00,
+    from: 101037,
+    to: 101049,
+    currency: USD,
+    amount: 500.0,
+    reference: Payment
+  },
+  reason: from account doesn't exist
+}
+...
+# Diana requests another checkpoint.
+---
+startCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T18:00:00
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:21,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:00,
+    name: alice,
+    account: 101013,
+    currency: EUR,
+    balance: 55.0,
+    overdraft: 10.0
+  }
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:22,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:01,
+    name: bob,
+    account: 101025,
+    currency: EUR,
+    balance: 960.0,
+    overdraft: 100.0
+  }
+}
+...
+endCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T18:00:00
+}
+...

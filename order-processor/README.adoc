@@ -1,11 +1,31 @@
 = Order Processor Demo
 Peter Lawrey
 
-The Order Processor Demo showcases the implementation of services with messages based on the Financial Information Exchange (FIX) protocol. This project simulates the order processing system, including features such as creating new orders, cancelling specific orders, and cancelling all orders. The project is designed to mimic real-world financial trading systems, demonstrating how such a system can be built using Java.
+The Order Processor Demo showcases the implementation of services using messages based on the Financial Information Exchange (FIX) protocol. This project simulates an order processing system, including features such as creating new orders, cancelling specific orders, and cancelling all orders. The project is designed to mimic real-world financial trading systems, demonstrating how such a system can be built using Java.
+
+== Table of Contents
+
+* <<getting-started,Getting Started>>
+* <<prerequisites,Prerequisites>>
+* <<installation,Installation>>
+* <<running-the-project,Running the Project>>
+* <<contributing,Contributing>>
+* <<acknowledgments,Acknowledgments>>
 
 == Getting Started
 
 To get started with the Order Processor Demo, you need to clone the repository to your local machine. Once you have cloned the repository, you can open it in your IDE of choice (we recommend IntelliJ CE for this project).
+
+== Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Java Development Kit (JDK)**: Java 8 Update 202+, Java 11, Java 17, or Java 21
+- **Apache Maven**: Version 3.6.5 or higher
+- **Integrated Development Environment (IDE)**: IntelliJ IDEA Community Edition (recommended) or any other IDE
+- **Internet Access**: Required for Maven to download necessary dependencies
+
+== Installation
 
 Here are the steps to clone the repository and open it in IntelliJ:
 
@@ -14,27 +34,22 @@ Here are the steps to clone the repository and open it in IntelliJ:
 3. Navigate to the cloned repository and click 'Open'
 4. Wait for the IDE to import the project and download the necessary dependencies
 
-=== What you need to get started.
-
-- Maven 3.6.x
-- Java 8 update 180+
-- Intellij CE or another IDE
-- Access to the internet for maven to download the JARs needed
-
 == Running the Project
 
 To run the project, you need to compile the project and run the main classes for different features:
 
-- OrderAdderMain: This class simulates the creation of new orders.
-- OrderViewerMain: This class simulates the viewing of created orders.
+- `OrderAdderMain`: This class simulates the creation of new orders.
+- `OrderViewerMain`: This class simulates the viewing of created orders.
+- `OrderBenchmarkMain`: This class benchmarks round trip time of writing a `NewOrderSingle` a queue, have the `OMSImpl` produce an `ExecutionReport` and read that report.
 - OMSImpl: This class handles the processing of the orders, including cancelling orders.
 
-You can run these classes directly from your IDE, or you can use the command line to run the compiled classes.
+You can run these classes directly from your IDE, or you can use `mvn compile exec:exec@id` on the command line to run the compiled classes.
 
 == Contributing
 
 We appreciate any contributions to the Order Processor Demo. If you find any bugs or issues, please open an issue in the repository. If you want to contribute to the code, please fork the repository, make your changes, and open a pull request.
 
-== License
+== Acknowledgments
 
-The Order Processor Demo is released under the Apache 2.0 license. Please see the `LICENSE` file for more details.
+- Inspired by real-world financial trading systems.
+- Uses the FIX protocol for message exchange.

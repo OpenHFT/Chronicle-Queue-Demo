@@ -1,0 +1,8 @@
+# Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
+# override ordType: LIMIT to ordType: ''
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: ordType is required"
+...
+# Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
+# override ordType: MARKET to ordType: ''
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: ordType is required"
+...
