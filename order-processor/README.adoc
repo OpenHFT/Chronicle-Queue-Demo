@@ -41,10 +41,10 @@ Here are the steps to clone the repository and open it in IntelliJ:
 sequenceDiagram
 autonumber
 Client->>+OMS: NewOrderSingle
-Note over Client,OMS: via Chronicle Queue, persisted
+Note right of Client: via Chronicle Queue, persisted
 Note right of OMS: processes event
-OMS->>-Service: Execution Report
-Note over Client,OMS: via Chronicle Queue, persisted
+OMS->>-Client: ExecutionReport
+Note right of Client: via Chronicle Queue, persisted
 ....
 
 To run the project, you need to compile the project and run the main classes for different features:
