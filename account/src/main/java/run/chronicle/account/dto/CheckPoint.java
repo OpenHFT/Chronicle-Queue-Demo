@@ -23,7 +23,7 @@ package run.chronicle.account.dto;
  * (or "dump") of the entire current system state at a given moment in time.
  * This includes all accounts and their balances, ensuring that the state
  * can be recorded for audit, recovery, or analysis.
- *
+ * <p>
  * A valid {@code CheckPoint} event must have all these fields set; validation
  * is performed automatically when the event is processed.
  *

@@ -43,7 +43,7 @@ public class Transfer extends AbstractEvent<Transfer> {
     @ShortText
     private int currency;
     private double amount;
-    private Bytes<?> reference = Bytes.allocateElasticOnHeap();
+    private final Bytes<?> reference = Bytes.allocateElasticOnHeap();
 
     /**
      * Retrieves the sender's account number.

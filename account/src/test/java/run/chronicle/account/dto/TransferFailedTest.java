@@ -6,8 +6,6 @@ import net.openhft.chronicle.wire.converter.ShortText;
 import net.openhft.chronicle.wire.converter.NanoTime;
 import org.junit.Test;
 
-import java.io.InputStream;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -81,7 +79,7 @@ public class TransferFailedTest {
     /**
      * Tests that deserializing a {@link TransferFailed} event without the required 'transfer' field
      * throws an {@link InvalidMarshallableException}.
-     *
+     * <p>
      * Here, the 'transfer' field is missing. According to the DTO's requirements,
      * this should cause validation to fail.
      */
@@ -104,7 +102,7 @@ public class TransferFailedTest {
     /**
      * Tests that deserializing a {@link TransferFailed} event without the required 'reason' field
      * throws an {@link InvalidMarshallableException}.
-     *
+     * <p>
      * Here, the 'reason' field is missing. This should cause validation to fail.
      */
     @Test(expected = InvalidMarshallableException.class)

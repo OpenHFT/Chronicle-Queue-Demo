@@ -63,7 +63,7 @@ public class CreateAccountFailedTest {
     /**
      * Tests that attempting to deserialize a CreateAccountFailed event with no createAccount field
      * results in an InvalidMarshallableException.
-     *
+     * <p>
      * The createAccount field is mandatory, so if it's missing, the validation should fail.
      */
     @Test(expected = InvalidMarshallableException.class)
@@ -83,7 +83,7 @@ public class CreateAccountFailedTest {
     /**
      * Tests that attempting to deserialize a CreateAccountFailed event with no reason field
      * results in an InvalidMarshallableException.
-     *
+     * <p>
      * The reason field is mandatory, so if it's missing, the validation should fail.
      */
     @Test(expected = InvalidMarshallableException.class)
