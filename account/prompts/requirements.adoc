@@ -167,6 +167,7 @@ To verify these requirements:
 == Traceability
 
 Each requirement above directly corresponds to a portion of the Java implementation in `AccountManagerImpl.java`:
+
 * Account creation logic: `createAccount(CreateAccount createAccount)`
 * Transfer logic: `transfer(Transfer transfer)`
 * Checkpoint logic: `checkPoint(CheckPoint checkPoint)`
