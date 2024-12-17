@@ -57,7 +57,7 @@ checkPoint: {
 ...
 ----
 
-[mermaid]
+[source,mermaid]
 ----
 sequenceDiagram
     participant SetupFile as _setup.yaml
