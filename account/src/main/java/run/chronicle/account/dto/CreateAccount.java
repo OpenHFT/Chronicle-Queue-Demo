@@ -22,18 +22,36 @@ import net.openhft.chronicle.core.io.InvalidMarshallableException;
 import net.openhft.chronicle.wire.converter.ShortText;
 
 /**
- * Represents the event of creating a new account.
- * This class extends {@link AbstractEvent} and adds properties specific to account creation,
- * such as the account holder's name, account number, currency, balance, and overdraft limit.
- * Setters are designed using the fluent interface pattern for method chaining.
+ * Represents an event for creating a new account. This event includes all necessary details
+ * about the account to be created, such as:
+ * <ul>
+ *   <li><strong>name</strong>: The account holder's name.</li>
+ *   <li><strong>account</strong>: A unique identifier for this account.</li>
+ *   <li><strong>currency</strong>: The currency code for the account (stored as an integer code).</li>
+ *   <li><strong>balance</strong>: The initial balance of the account. Must be ≥ 0.</li>
+ *   <li><strong>overdraft</strong>: The overdraft limit for the account. Must be ≥ 0.</li>
+ * </ul>
+ *
+ * <p>This class uses a fluent interface style for setter methods, allowing for chaining:
+ * <pre>{@code
+ * CreateAccount event = new CreateAccount()
+ *     .sender(gatewayId)
+ *     .target(serviceId)
+ *     .sendingTime(SystemTimeProvider.CLOCK.currentTimeNanos())
+ *     .name("Alice")
+ *     .account(101013L)
+ *     .currency(EUR_CODE)
+ *     .balance(1000.0)
+ *     .overdraft(100.0);
+ * }</pre>
  */
 public class CreateAccount extends AbstractEvent<CreateAccount> {
-    private String name; // Name associated with the account
-    private long account; // Account identifier
+    private String name;
+    private long account;
     @ShortText
-    private int currency; // Currency for the account
-    private double balance; // Initial Balance of the account
-    private double overdraft; // Overdraft limit of the account
+    private int currency;
+    private double balance;
+    private double overdraft;
 
     /**
      * Retrieves the account identifier.
@@ -76,7 +94,8 @@ public class CreateAccount extends AbstractEvent<CreateAccount> {
     }
 
     /**
-     * Retrieves the currency code.
+     * Returns the currency code of the account.
+     * This is typically an integer code mapping to a currency (e.g., EUR, USD).
      *
      * @return the currency code
      */
@@ -85,10 +104,11 @@ public class CreateAccount extends AbstractEvent<CreateAccount> {
     }
 
     /**
-     * Sets the currency code.
+     * Sets the currency code and returns this instance.
+     * It is expected that the caller uses predefined integer codes for currencies.
      *
      * @param currency the currency code to set (e.g., "EUR", "USD")
-     * @return this object for method chaining
+     * @return this instance for method chaining
      */
     public CreateAccount currency(int currency) {
         this.currency = currency;
@@ -105,7 +125,8 @@ public class CreateAccount extends AbstractEvent<CreateAccount> {
     }
 
     /**
-     * Sets the initial balance of the account.
+     * Sets the initial balance of the account and returns this instance.
+     * The balance must be ≥ 0.
      *
      * @param balance the balance to set
      * @return this object for method chaining
@@ -125,7 +146,8 @@ public class CreateAccount extends AbstractEvent<CreateAccount> {
     }
 
     /**
-     * Sets the overdraft limit of the account.
+     * Sets the overdraft limit of the account and returns this instance.
+     * The overdraft limit must be ≥ 0.
      *
      * @param overdraft the overdraft limit to set
      * @return this object for method chaining
@@ -136,7 +158,8 @@ public class CreateAccount extends AbstractEvent<CreateAccount> {
     }
 
     /**
-     * Validates that all necessary properties have been set and are valid.
+     * Validates that all required properties (sender, target, sendingTime, name, account, currency, balance, overdraft)
+     * have been set correctly.
      *
      * @throws InvalidMarshallableException if validation fails
      */

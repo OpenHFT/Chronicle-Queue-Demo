@@ -23,11 +23,19 @@ import net.openhft.chronicle.core.io.InvalidMarshallableException;
 /**
  * The TransferFailed class is a type of AbstractEvent that represents a failed transfer operation in the system.
  * It contains the Transfer object that failed and the reason for the failure.
- * Like other classes, it also follows the Fluent Interface pattern for setters, allowing chaining of method calls.
+ * <p>Example usage:</p>
+ * <pre>{@code
+ * TransferFailed event = new TransferFailed()
+ *     .sender(vaultId)
+ *     .target(gatewayId)
+ *     .sendingTime(SystemTimeProvider.CLOCK.currentTimeNanos())
+ *     .transfer(originalTransfer)
+ *     .reason("Insufficient funds");
+ * }</pre>
  */
 public class TransferFailed extends AbstractEvent<TransferFailed> {
-    private Transfer transfer; // The original transfer that failed
-    private String reason; // The reason for the failure
+    private Transfer transfer;
+    private String reason;
 
     /**
      * Retrieves the original {@link Transfer} that failed.
@@ -70,21 +78,26 @@ public class TransferFailed extends AbstractEvent<TransferFailed> {
     }
 
     /**
-     * Validates that all necessary properties have been set and are valid.
+     * Validates that all required fields have been set and are valid. This includes:
+     * <ul>
+     *   <li>All fields from {@link AbstractEvent} (sender, target, sendingTime)</li>
+     *   <li>A non-null {@link Transfer} instance, which is itself validated</li>
+     *   <li>A non-null reason string</li>
+     * </ul>
      *
-     * @throws InvalidMarshallableException if validation fails
+     * @throws InvalidMarshallableException if any required field is missing or invalid
      */
     @Override
     public void validate() throws InvalidMarshallableException {
         super.validate(); // Validate fields in the superclass
 
         if (transfer == null) {
-            throw new InvalidMarshallableException("Transfer must be set");
-        } else {
-            transfer.validate(); // Validate the Transfer instance
+            throw new InvalidMarshallableException("Invalid TransferFailed: 'transfer' must not be null.");
         }
+        transfer.validate(); // Validate the Transfer object
 
-        if (reason == null)
-            throw new InvalidMarshallableException("reason must be set"); // Ensure 'reason' is set
+        if (reason == null) {
+            throw new InvalidMarshallableException("Invalid TransferFailed: 'reason' must not be null.");
+        }
     }
 }

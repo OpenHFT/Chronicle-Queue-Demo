@@ -30,20 +30,31 @@ import java.util.Map;
 import static net.openhft.chronicle.core.time.SystemTimeProvider.CLOCK;
 
 /**
- * AccountManagerImpl is the implementation of the AccountManagerIn interface.
- * It handles account creation, money transfers and checkpoints in the account management system.
+ * Implementation of the AccountManagerIn interface, handling:
+ * <ul>
+ *     <li>Account creation</li>
+ *     <li>Fund transfers</li>
+ *     <li>Checkpoints (state snapshots)</li>
+ * </ul>
+ *
+ * This service receives commands (events) and produces corresponding result events.
+ * It stores account states and ensures validation according to the defined requirements.
  */
 public class AccountManagerImpl
         extends SelfDescribingMarshallable
         implements AccountManagerIn {
     private transient final AccountManagerOut out;
-    // use a primitive long map
+
+    // Store accounts keyed by account number
+    // TODO Use a primitive lop to account map
     private final Map<Long, CreateAccount> accountsMap = new LinkedHashMap<>();
-    // DTOs for events out
+
+    // Event instances reused to reduce object creation
     private final OnCreateAccount onCreateAccount = new OnCreateAccount();
     private final CreateAccountFailed createAccountFailed = new CreateAccountFailed();
     private final OnTransfer onTransfer = new OnTransfer();
     private final TransferFailed transferFailed = new TransferFailed();
+
     private long id;
 
     /**
@@ -56,7 +67,7 @@ public class AccountManagerImpl
     }
 
     /**
-     * Sets the id of the AccountManagerImpl instance.
+     * Sets the unique ID for this AccountManager instance, used to match incoming commands.
      *
      * @param id A long representing the id to be set.
      * @return This AccountManagerImpl instance.
@@ -74,6 +85,8 @@ public class AccountManagerImpl
      */
     @Override
     public void createAccount(CreateAccount createAccount) throws InvalidMarshallableException {
+        // Assume createAccount.validate() has been called
+
         // Verify if the account creation request is intended for this instance by checking the target of the request against the id of this instance
         // If they don't match, a failure message is sent with the reason "target mismatch" and the method returns
         if (createAccount.target() != id) {
@@ -83,6 +96,7 @@ public class AccountManagerImpl
 
         // Verify if the initial balance for the account is greater than or equal to 0
         // If it isn't, a failure message is sent with the reason "invalid balance" and the method returns
+        // NOTE this is !(x >= 0) required to reject NaN
         if (!(createAccount.balance() >= 0)) {
             sendCreateAccountFailed(createAccount, "invalid balance");
             return;
@@ -106,14 +120,16 @@ public class AccountManagerImpl
         sendOnCreateAccount(createAccount);
     }
 
-
     /**
-     * Handles transfers between accounts.
+     * Processes a transfer command. Validates input, checks conditions (existence of accounts,
+     * matching currencies, available funds), updates state if valid, and emits success or failure events.
      *
      * @param transfer An instance of Transfer containing details of the transfer to be performed.
      */
     @Override
     public void transfer(Transfer transfer) {
+        // Assume transfer.validate() has been called
+
         // Verify if the transfer is intended for this instance by checking the target of the transfer against the id of this instance
         // If it doesn't match, a failure message is sent with the reason "target mismatch" and the method returns
         if (transfer.target() != id) {

@@ -21,15 +21,21 @@ package run.chronicle.account.dto;
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 
 /**
- * Represents an event that occurs when a {@code Transfer} action takes place.
- * This class extends {@link AbstractEvent} and encapsulates a reference to
- * the {@link Transfer} instance that initiated this event.
- * <p>
- * The class follows the Fluent Interface pattern for setter methods,
- * allowing for method chaining.
+ * Represents an event indicating that a funds transfer has taken place.
+ * This class extends {@link AbstractEvent}, adding a reference to the
+ * {@link Transfer} instance that initiated the event.
+ *
+ * <p>The class follows a fluent interface pattern for setter methods:
+ * <pre>{@code
+ * OnTransfer event = new OnTransfer()
+ *     .sender(vaultId)
+ *     .target(gatewayId)
+ *     .sendingTime(SystemTimeProvider.CLOCK.currentTimeNanos())
+ *     .transfer(transferRequest);
+ * }</pre>
  */
 public class OnTransfer extends AbstractEvent<OnTransfer> {
-    private Transfer transfer; // The Transfer instance that triggered this event
+    private Transfer transfer;
 
     /**
      * Retrieves the {@link Transfer} instance that triggered this event.
@@ -52,7 +58,9 @@ public class OnTransfer extends AbstractEvent<OnTransfer> {
     }
 
     /**
-     * The validate method is used to verify that all necessary properties have been set.
+     * Validates that all required properties have been set and are valid. This includes
+     * the fields inherited from {@link AbstractEvent} (sender, target, sendingTime) and
+     * the {@code Transfer} instance itself.
      *
      * @throws InvalidMarshallableException If any of these properties is not set
      */
@@ -61,17 +69,16 @@ public class OnTransfer extends AbstractEvent<OnTransfer> {
         super.validate(); // Validate fields in the superclass
 
         if (transfer == null) {
-            throw new InvalidMarshallableException("Transfer must be set");
-        } else {
-            transfer.validate(); // Validate the Transfer instance
+            throw new InvalidMarshallableException("Invalid OnTransfer event: 'transfer' must not be null.");
         }
+        transfer.validate();
     }
 
     /**
-     * Overridden to specify the message format. In this case, it uses a lower level binary format,
-     * not a self-describing message.
+     * Indicates that this event does not use a self-describing message format and instead
+     * relies on a more compact binary representation.
      *
-     * @return {@code false} as it does not use a self-describing message
+     * @return {@code false} as this event does not use a self-describing message format
      */
     @Override
     public boolean usesSelfDescribingMessage() {
