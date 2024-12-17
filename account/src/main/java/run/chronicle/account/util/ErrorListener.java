@@ -26,14 +26,12 @@ package run.chronicle.account.util;
  * the impact of GC or IO the monitoring system might have.
  *
  * <p>Example usage:
- * <pre>{@code
+ * <pre>
  * public class LoggingErrorListener implements ErrorListener {
- *     @Override
  *     public void jvmError(String msg) {
  *         // Log the error to monitoring system, a file, or console
  *         logger.error(msg);
  *     }
- * }
  * }</pre>
  *
  * <p>By providing different {@code ErrorListener} implementations, the system
