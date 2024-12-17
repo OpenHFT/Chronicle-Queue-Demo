@@ -1,0 +1,58 @@
+= Developer Prompt: Improving Classes for AMS
+
+:author: Peter Lawrey
+:revdate: 2024-12-16
+:revnumber: 1.0
+:doctype: book
+:toc: left
+:toclevels: 3
+
+You are given a set of requirements and an existing implementation of an Account Management Service (AMS). The AMS processes account-related commands (events) such as account creation, fund transfers, and checkpoint requests, and produces corresponding success/failure events. The code currently meets the basic functional requirements but can be improved for clarity, maintainability, and robustness.
+
+Your task is to improve selected classes in the codebase. Consider the following options and guidelines:
+
+== Guidelines
+
+1. **Adhere to the Provided Requirements**:
+The code must continue to fulfill the requirements specified in the `Account Management Service Requirements` document. Any changes should not break the contract defined there.
+
+2. **Validation and Error Handling**:
+Assume that the framework validates that DTOs (Data Transfer Objects) before use. Add a comment showing where validation would otherwise occur. If a command is missing critical fields or contains invalid values, handle it gracefully by producing failure events rather than exceptions visible to callers.
+
+3. **Time Management**:
+All events should use `SystemTimeProvider.CLOCK.currentTimeNanos()` to set their `sendingTime` fields, ensuring nanosecond-precision wall clock timestamps.
+
+4. **Logging and Comments**:
+Add meaningful comments where appropriate to explain the rationale behind certain decisions, especially if the code deviates from typical patterns. Consider using `Jvm.debug()`, `Jvm.warn()`, and `Jvm.error()` for logging. Comments should clarify non-obvious logic, error handling decisions, or performance trade-offs. Do not add comments for trivial logic.
+
+5. **Fluent Interfaces and Deep Copies**:
+Preserve the fluent interface style for DTO setters to allow method chaining. When storing new accounts, ensure that `CreateAccount` objects are deep copied before saving them to the internal map, as per the requirements.
+
+6. **Checkpoints and State Serialization**:
+During checkpoint processing, ensure that all currently known accounts are emitted as `onCreateAccount` events. Consider how to handle any edge cases (e.g., empty account lists).
+
+7. **Readability and Maintainability**:
+Consider extracting common logic (e.g., target checks, currency checks, funds checks) into separate helper methods to reduce code repetition. Make sure your class-level and method-level documentation provides a clear picture of what the code does, why, and how it aligns with the requirements.
+
+== Options to Consider
+
+* Add Javadoc to all classes and their public methods, describing the class’s role, its main responsibilities, and linking it back to the requirements.
+* Introduce private helper methods to streamline complex validation or repetitive tasks.
+* Use descriptive variable and method names to enhance clarity.
+* Check that all failure events include a meaningful `reason` field that matches the requirements.
+* Consider adding `@Override` annotations, if missing, to clarify implemented methods from interfaces.
+* Add informative comments that explain why certain validations or steps are necessary, rather than just stating what the code does.
+* Ensure that the codebase is consistent in its style and adheres to the project’s coding standards.
+* Consider how to handle edge cases and exceptional conditions, ensuring that the code behaves predictably and correctly in all scenarios.
+
+== Deliverables
+
+Improve the existing codebase by addressing the guidelines and options provided. Submit the updated classes with the changes you have made, along with a brief summary of the modifications you implemented and why you chose to make them.
+
+== Objective
+
+By following the above guidelines and considering the options, improve the existing codebase to be more robust, understandable, and aligned with the specified requirements. The resulting classes should present a clean, well-documented, and maintainable code structure that clearly communicates their purpose and logic.
+
+== Code To Improve
+
+Find the code to improve below:
