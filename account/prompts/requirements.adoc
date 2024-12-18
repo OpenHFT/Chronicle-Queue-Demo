@@ -9,13 +9,16 @@
 
 == Introduction
 
-This document specifies the functional requirements for an Account Management Service (AMS) that processes account-related commands and generates corresponding events. The AMS is designed to be driven by incoming commands (events) such as account creation, fund transfers, and checkpoint requests. It produces events to indicate success or failure and to provide state snapshots.
+This document specifies the functional requirements for an Account Management Service (AMS) that processes account-related commands and generates corresponding events.
+The AMS is designed to be driven by incoming commands (events) such as account creation, fund transfers, and checkpoint requests.
+It produces events to indicate success or failure and to provide state snapshots.
 
 == Terminology
 
 *Account*: A financial store of value characterized by an account number, owner name, currency, balance, and an optional overdraft limit.
 
-*Command*: An inbound request to the system (e.g., create an account, transfer funds, request checkpoint). Commands are modelled as Events in this system.
+*Command*: An inbound request to the system (e.g., create an account, transfer funds, request checkpoint).
+Commands are modelled as Events in this system.
 
 *Event*: An outbound notification from the system that indicates a command's state change, success, or failure.
 
@@ -176,4 +179,5 @@ Events and conditions are explicitly handled in private utility methods (e.g., `
 
 == Conclusion
 
-This document provides a high-level specification of the required functionalities and expected behaviours of the Account Management Service. Implementing these requirements should align with the Java code structure and produce consistent events for all supported operations.
+This document provides a high-level specification of the required functionalities and expected behaviours of the Account Management Service.
+Implementing these requirements should align with the Java code structure and produce consistent events for all supported operations.
