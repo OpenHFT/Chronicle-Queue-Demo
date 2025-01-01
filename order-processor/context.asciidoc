@@ -1,0 +1,3199 @@
+= Directory Content
+
+== File: pom.xml
+....
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>run.chronicle</groupId>
+        <artifactId>chronicle-queue-demo</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>order-processor</artifactId>
+    <name>OpenHFT/${project.parent.artifactId}/${project.artifactId}</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>jlbh</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bench</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${java.home}/bin/java</executable>
+                            <commandlineArgs>${jvm.requiredArgs} -classpath %classpath town.lost.oms.OMSBenchmarkMain</commandlineArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>adder</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${java.home}/bin/java</executable>
+                            <commandlineArgs>${jvm.requiredArgs} -classpath %classpath town.lost.oms.OrderAdderMain</commandlineArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>viewer</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${java.home}/bin/java</executable>
+                            <commandlineArgs>${jvm.requiredArgs} -classpath %classpath town.lost.oms.OrderViewerMain</commandlineArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>dump</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${java.home}/bin/java</executable>
+                            <commandlineArgs>${jvm.requiredArgs} -classpath %classpath net.openhft.chronicle.queue.DumpQueueMain in</commandlineArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+....
+
+Lines 70, Blanks 4, Tokens 645
+
+== File: README.adoc
+....
+= Order Processor Demo
+Peter Lawrey
+
+The Order Processor Demo showcases the implementation of services using messages based on the Financial Information Exchange (FIX) protocol. This project simulates an order processing system, including features such as creating new orders, cancelling specific orders, and cancelling all orders. The project is designed to mimic real-world financial trading systems, demonstrating how such a system can be built using Java.
+
+== Table of Contents
+
+* <<getting-started,Getting Started>>
+* <<prerequisites,Prerequisites>>
+* <<installation,Installation>>
+* <<running-the-project,Running the Project>>
+* <<contributing,Contributing>>
+* <<acknowledgments,Acknowledgments>>
+
+== Getting Started
+
+To get started with the Order Processor Demo, you need to clone the repository to your local machine. Once you have cloned the repository, you can open it in your IDE of choice (we recommend IntelliJ CE for this project).
+
+== Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Java Development Kit (JDK)**: Java 8 Update 202+, Java 11, Java 17, or Java 21
+- **Apache Maven**: Version 3.6.5 or higher
+- **Integrated Development Environment (IDE)**: IntelliJ IDEA Community Edition (recommended) or any other IDE
+- **Internet Access**: Required for Maven to download necessary dependencies
+
+== Installation
+
+Here are the steps to clone the repository and open it in IntelliJ:
+
+1. Clone the repository with `git clone <repository_url>`
+2. Open IntelliJ IDE and select 'Open'
+3. Navigate to the cloned repository and click 'Open'
+4. Wait for the IDE to import the project and download the necessary dependencies
+
+== Running the Project
+
+[source,mermaid]
+....
+sequenceDiagram
+autonumber
+Client->>+OMS: NewOrderSingle
+Note right of Client: via Chronicle Queue, persisted
+Note right of OMS: processes event
+OMS->>-Client: ExecutionReport
+Note right of Client: via Chronicle Queue, persisted
+....
+
+To run the project, you need to compile the project and run the main classes for different features:
+
+- `OrderAdderMain`: This class simulates the creation of new orders.
+- `OrderViewerMain`: This class simulates the viewing of created orders.
+- `OrderBenchmarkMain`: This class benchmarks round trip time of writing a `NewOrderSingle` a queue, have the `OMSImpl` produce an `ExecutionReport` and read that report.
+- `OMSImpl`: This class handles the processing of the orders, including cancelling orders.
+
+You can run these classes directly from your IDE, or you can use `mvn compile exec:exec@id` on the command line to run the compiled classes.
+
+== Contributing
+
+We appreciate any contributions to the Order Processor Demo. If you find any bugs or issues, please open an issue in the repository. If you want to contribute to the code, please fork the repository, make your changes, and open a pull request.
+
+== Acknowledgments
+
+- Inspired by real-world financial trading systems.
+- Uses the FIX protocol for message exchange.
+....
+
+Lines 46, Blanks 20, Tokens 663
+
+== File: src\main\java\town\lost\oms\api\ErrorListener.java
+....
+package town.lost.oms.api;
+
+/**
+ * This interface provides a method to handle JVM errors.
+ * Implementations of this interface will define how these errors are handled.
+ */
+public interface ErrorListener {
+
+    /**
+     * This method handles JVM errors.
+     * It takes a String message which provides details about the error.
+     *
+     * @param msg a String providing details about the JVM error.
+     */
+    void jvmError(String msg);
+}
+....
+
+Lines 14, Blanks 2, Tokens 93
+
+== File: src\main\java\town\lost\oms\api\OMSIn.java
+....
+/*
+ */
+
+package town.lost.oms.api;
+
+import net.openhft.chronicle.bytes.MethodId;
+import town.lost.oms.dto.CancelAll;
+import town.lost.oms.dto.CancelOrderRequest;
+import town.lost.oms.dto.NewOrderSingle;
+
+/**
+ * The {@code OMSIn} interface defines the operations that can be performed by an Order Management System (OMS).
+ * <p>
+ * It includes methods to handle new single orders, cancel order requests, and cancel all orders.
+ * Each method receives an instance of a data transfer object that represents the details of the operation.
+ *
+ * @see NewOrderSingle
+ * @see CancelOrderRequest
+ * @see CancelAll
+ */
+public interface OMSIn {
+
+    /**
+     * Handles a new single order submission.
+     *
+     * @param nos The {@link NewOrderSingle} object representing the details of the new order.
+     */
+    @MethodId(1)
+    void newOrderSingle(NewOrderSingle nos);
+
+    /**
+     * Handles a cancel order request.
+     *
+     * @param cor The {@link CancelOrderRequest} object representing the details of the cancel order request.
+     */
+    @MethodId(2)
+    void cancelOrderRequest(CancelOrderRequest cor);
+
+    /**
+     * Handles a cancel all orders request.
+     *
+     * @param cancelAll The {@link CancelAll} object representing the details of the cancel all orders request.
+     */
+    void cancelAll(CancelAll cancelAll);
+}
+....
+
+Lines 39, Blanks 6, Tokens 309
+
+== File: src\main\java\town\lost\oms\api\OMSOut.java
+....
+/*
+ */
+
+package town.lost.oms.api;
+
+import net.openhft.chronicle.bytes.MethodId;
+import town.lost.oms.dto.ExecutionReport;
+import town.lost.oms.dto.OrderCancelReject;
+
+/**
+ * The {@code OMSOut} interface defines the output operations that an Order Management System (OMS) can perform.
+ * <p>
+ * It includes methods to handle execution reports and order cancel rejections.
+ * <p>It extends the {@link ErrorListener} interface to handle any JVM errors that may occur during processing.
+ * Each method receives an instance of a data transfer object that represents the details of the operation.
+ *
+ * @see ExecutionReport
+ * @see OrderCancelReject
+ * @see ErrorListener
+ */
+public interface OMSOut extends ErrorListener{
+
+    /**
+     * Handles an execution report.
+     *
+     * @param er The {@link ExecutionReport} object representing the details of the execution report.
+     */
+    @MethodId(11)
+    void executionReport(ExecutionReport er);
+
+    /**
+     * Handles an order cancel reject.
+     *
+     * @param ocr The {@link OrderCancelReject} object representing the details of the order cancel reject.
+     */
+    @MethodId(12)
+    void orderCancelReject(OrderCancelReject ocr);
+}
+....
+
+Lines 33, Blanks 5, Tokens 267
+
+== File: src\main\java\town\lost\oms\api\package-info.java
+....
+/**
+ * Provides the API interfaces for interactions with the Order Management System (OMS) in the 'town.lost.oms' project.
+ *
+ * <p>This package includes the following interfaces:
+ *
+ * <ul>
+ *     <li>{@link town.lost.oms.api.OMSIn}, which defines the methods for inbound operations that an OMS can perform, such as handling new single orders, cancel order requests, and cancel all orders.</li>
+ *     <li>{@link town.lost.oms.api.OMSOut}, which defines the methods for outbound operations from the OMS, including handling execution reports and order cancel rejections.</li>
+ * </ul>
+ *
+ * <p>Each interface includes methods that correspond to specific actions within the OMS, facilitating communication between clients and the OMS.
+ *
+ * <p>For more details, refer to the documentation for each individual interface.
+ */
+package town.lost.oms.api;
+
+....
+
+Lines 15, Blanks 1, Tokens 187
+
+== File: src\main\java\town\lost\oms\dto\AbstractEvent.java
+....
+/*
+ */
+
+package town.lost.oms.dto;
+
+import net.openhft.chronicle.bytes.BytesIn;
+import net.openhft.chronicle.bytes.BytesOut;
+import net.openhft.chronicle.core.Jvm;
+import net.openhft.chronicle.core.io.InvalidMarshallableException;
+import net.openhft.chronicle.core.io.Validatable;
+import net.openhft.chronicle.wire.*;
+import net.openhft.chronicle.wire.converter.NanoTime;
+import net.openhft.chronicle.wire.converter.ShortText;
+
+/**
+ * The {@code AbstractEvent} class represents a generic event in the system.
+ *
+ * <p>This class provides common fields such as sender, target, and sendingTime which can be extended
+ * by more specific events. Fields sender and target are encoded as {@link ShortText} for efficient storage and transmission.
+ *
+ * <p>The class is generic, with the type parameter being a subclass of {@code AbstractEvent}. This allows
+ * methods in this class to return an instance of the subclass, enabling method chaining in the subclass.
+ *
+ * <p>The encoding of the marshalled bytes can be controlled via system properties "bytesInBinary" and "pregeneratedMarshallable".
+ */
+public class AbstractEvent<E extends AbstractEvent<E>> extends SelfDescribingMarshallable implements Validatable {
+    // Used to control the benchmark
+    public static final boolean BYTES_IN_BINARY = Jvm.getBoolean("bytesInBinary", true);
+
+    // Used to control the benchmark
+    public static final boolean PREGENERATED_MARSHALLABLE = Jvm.getBoolean("pregeneratedMarshallable", true);
+    private static final int MARSHALLABLE_VERSION = 1;
+
+    // The sender of the event
+    @ShortText
+    private long sender;
+
+    // The target of the event
+    @ShortText
+    private long target;
+
+    // The sending time of the event, in nanoseconds.
+    @NanoTime
+    private long sendingTime;
+
+    @Override
+    public boolean usesSelfDescribingMessage() {
+        return !BYTES_IN_BINARY;
+    }
+
+    /**
+     * Get the sender of the event.
+     *
+     * @return The sender's value as a long.
+     */
+    public long sender() {
+        return sender;
+    }
+
+    /**
+     * Set the sender of the event.
+     *
+     * @param sender The sender's value to set, as a long.
+     * @return This AbstractEvent instance, to facilitate method chaining.
+     */
+    @SuppressWarnings("unchecked")
+    public E sender(long sender) {
+        this.sender = sender;
+        return (E) this;
+    }
+
+    /**
+     * Get the target of the event.
+     *
+     * @return The target's value as a long.
+     */
+    public long target() {
+        return target;
+    }
+
+    /**
+     * Set the target of the event.
+     *
+     * @param target The target's value to set, as a long.
+     * @return This AbstractEvent instance, to facilitate method chaining.
+     */
+    @SuppressWarnings("unchecked")
+    public E target(long target) {
+        this.target = target;
+        return (E) this;
+    }
+
+    /**
+     * Get the sending time of the event.
+     *
+     * @return The sending time as a long.
+     */
+    public long sendingTime() {
+        return sendingTime;
+    }
+
+    /**
+     * Set the sending time of the event.
+     *
+     * @param sendingTime The sending time to set, as a long.
+     * @return This AbstractEvent instance, to facilitate method chaining.
+     */
+    @SuppressWarnings("unchecked")
+    public E sendingTime(long sendingTime) {
+        this.sendingTime = sendingTime;
+        return (E) this;
+    }
+
+    @Override
+    public void writeMarshallable(BytesOut<?> out) {
+        if (PREGENERATED_MARSHALLABLE) {
+            out.writeStopBit(MARSHALLABLE_VERSION);
+            out.writeLong(sender);
+            out.writeLong(target);
+            out.writeLong(sendingTime);
+        } else {
+            super.writeMarshallable(out);
+        }
+    }
+
+    @Override
+    public void readMarshallable(BytesIn<?> in) {
+        if (PREGENERATED_MARSHALLABLE) {
+            int version = (int) in.readStopBit();
+            if (version == MARSHALLABLE_VERSION) {
+                sender = in.readLong();
+                target = in.readLong();
+                sendingTime = in.readLong();
+            } else {
+                throw new IllegalStateException("Unknown version " + version);
+            }
+        } else {
+            super.readMarshallable(in);
+        }
+    }
+
+    @Override
+    public void writeMarshallable(WireOut out) {
+        if (PREGENERATED_MARSHALLABLE) {
+            out.write("sender").writeLong(ShortTextLongConverter.INSTANCE, sender);
+            out.write("target").writeLong(ShortTextLongConverter.INSTANCE, target);
+            out.write("sendingTime").writeLong(MicroTimestampLongConverter.INSTANCE, sendingTime);
+        } else {
+            super.writeMarshallable(out);
+        }
+    }
+
+    @Override
+    public void readMarshallable(WireIn in) {
+        if (PREGENERATED_MARSHALLABLE) {
+            sender = in.read("sender").readLong(ShortTextLongConverter.INSTANCE);
+            target = in.read("target").readLong(ShortTextLongConverter.INSTANCE);
+            sendingTime = in.read("sendingTime").readLong(MicroTimestampLongConverter.INSTANCE);
+        } else {
+            super.readMarshallable(in);
+        }
+    }
+
+    @Override
+    public void validate() throws InvalidMarshallableException {
+        if (sender == 0)
+            throw new InvalidMarshallableException("sender is required");
+        if (target == 0)
+            throw new InvalidMarshallableException("target is required");
+        if (sendingTime == 0)
+            throw new InvalidMarshallableException("sendingTime is required");
+    }
+}
+....
+
+Lines 154, Blanks 19, Tokens 1262
+
+== File: src\main\java\town\lost\oms\dto\CancelAll.java
+....
+/*
+ */
+
+package town.lost.oms.dto;
+
+import net.openhft.chronicle.bytes.BytesIn;
+import net.openhft.chronicle.bytes.BytesOut;
+import net.openhft.chronicle.core.io.InvalidMarshallableException;
+import net.openhft.chronicle.wire.ShortTextLongConverter;
+import net.openhft.chronicle.wire.WireIn;
+import net.openhft.chronicle.wire.WireOut;
+import net.openhft.chronicle.wire.converter.ShortText;
+
+/**
+ * The {@code CancelAll} class represents an event that is used to cancel all active orders for a particular symbol.
+ *
+ * <p>This class extends the {@link AbstractEvent} class with the type parameter {@link CancelAll}, indicating that
+ * it is processed as a {@code CancelAll} event.
+ *
+ * <p>This class is typically used like this:
+ *
+ * <pre>
+ * public void cancelAll(CancelAll cancelAll) {
+ *     // Iterate over active orders and cancel those matching the symbol
+ *     for (Order order : activeOrders) {
+ *         if (order.symbol() == cancelAll.symbol()) {
+ *             CancelOrderRequest request = new CancelOrderRequest()
+ *                 .sender(cancelAll.target())
+ *                 .target(cancelAll.sender())
+ *                 .symbol(order.symbol())
+ *                 .clOrdID(order.clOrdID())
+ *                 .sendingTime(cancelAll.sendingTime())
+ *                 .origClOrdID(order.origClOrdID())
+ *                 .side(order.side());
+ *             out.cancelOrderRequest(request);
+ *         }
+ *     }
+ * }
+ * }</pre>
+ *
+ * <p>Note that the {@code symbol} field is encoded using {@link ShortTextLongConverter} to minimize storage and transmission size.
+ */
+public class CancelAll extends AbstractEvent<CancelOrderRequest> {
+    private static final int MASHALLABLE_VERSION = 1;
+    // Symbol for which all orders are to be canceled.
+    @ShortText
+    private long symbol;
+
+    // Client order ID.
+    private String clOrdID = "";
+
+    /**
+     * Get the symbol for which all orders are to be canceled.
+     *
+     * @return The symbol value as a long.
+     */
+    public long symbol() {
+        return symbol;
+    }
+
+    /**
+     * Set the symbol for which all orders are to be canceled.
+     *
+     * @param symbol The symbol value to set, as a long.
+     * @return This CancelAll instance, to facilitate method chaining.
+     */
+    public CancelAll symbol(long symbol) {
+        this.symbol = symbol;
+        return this;
+    }
+
+    /**
+     * Retrieves the client order ID.
+     *
+     * @return The client order ID as a {@code String}.
+     */
+    public String clOrdID() {
+        return clOrdID;
+    }
+
+    /**
+     * Sets the client order ID and returns the {@code CancelAll} object. This method allows for method chaining.
+     *
+     * @param clOrdID The client order ID.
+     * @return The {@code CancelAll} object with the client order ID set.
+     */
+    public CancelAll clOrdID(String clOrdID) {
+        this.clOrdID = clOrdID;
+        return this;
+    }
+
+    @Override
+    public void writeMarshallable(WireOut out) {
+        super.writeMarshallable(out);
+        if (PREGENERATED_MARSHALLABLE) {
+            out.write("symbol").writeLong(ShortTextLongConverter.INSTANCE, symbol);
+            out.write("clOrdID").object(String.class, clOrdID);
+        }
+    }
+
+    @Override
+    public void readMarshallable(WireIn in) {
+        super.readMarshallable(in);
+        if (PREGENERATED_MARSHALLABLE) {
+            symbol = in.read("symbol").readLong(ShortTextLongConverter.INSTANCE);
+            clOrdID = in.read("clOrdID").object(clOrdID, String.class);
+        }
+    }
+
+    @Override
+    public void writeMarshallable(BytesOut<?> out) {
+        super.writeMarshallable(out);
+        if (PREGENERATED_MARSHALLABLE) {
+            out.writeStopBit(MASHALLABLE_VERSION);
+            out.writeLong(symbol);
+            out.writeObject(String.class, clOrdID);
+        }
+    }
+
+    @Override
+    public void readMarshallable(BytesIn<?> in) {
+        super.readMarshallable(in);
+        if (PREGENERATED_MARSHALLABLE) {
+            int version = (int) in.readStopBit();
+            if (version == MASHALLABLE_VERSION) {
+                symbol = in.readLong();
+                clOrdID = in.readObject(String.class);
+            } else {
+                throw new IllegalStateException("Unknown version " + version);
+            }
+        }
+    }
+
+    /**
+     * Validates the fields of this {@code CancelAll} event.
+     *
+     * @throws InvalidMarshallableException if any required field is missing or invalid.
+     */
+    @Override
+    public void validate() throws InvalidMarshallableException {
+        super.validate();
+        if (symbol == 0) {
+            throw new InvalidMarshallableException("symbol is required");
+        }
+        if (clOrdID == null || clOrdID.isEmpty()) {
+            throw new InvalidMarshallableException("clOrdID is required");
+        }
+    }
+}
+....
+
+Lines 136, Blanks 13, Tokens 1121
+
+== File: src\main\java\town\lost\oms\dto\CancelOrderRequest.java
+....
+/*
+ */
+
+package town.lost.oms.dto;
+
+import net.openhft.chronicle.bytes.BytesIn;
+import net.openhft.chronicle.bytes.BytesOut;
+import net.openhft.chronicle.core.io.InvalidMarshallableException;
+import net.openhft.chronicle.wire.ShortTextLongConverter;
+import net.openhft.chronicle.wire.WireIn;
+import net.openhft.chronicle.wire.WireOut;
+import net.openhft.chronicle.wire.converter.ShortText;
+
+/**
+ * The {@code CancelOrderRequest} class represents a request to cancel an order in a trading system.
+ *
+ * <p>This class extends the {@link AbstractEvent} class, with the type parameter being {@link CancelOrderRequest}.
+ * This indicates that the event will be processed into a {@link CancelOrderRequest} that represents a request to cancel an order.
+ *
+ * <p>Each {@code CancelOrderRequest} contains the symbol of the financial instrument for the order that is being requested to be cancelled and the client order ID.
+ *
+ * <ul>
+ *   <li><strong>symbol</strong>: The symbol of the financial instrument for the order.</li>
+ *   <li><strong>account</strong>: The account associated with the order.</li>
+ *   <li><strong>clOrdID</strong>: The client order ID, a unique identifier for the order.</li>
+ *   <li><strong>origClOrdID</strong>: The original client order ID of the order to be canceled.</li>
+ *   <li><strong>side</strong>: The side of the order (e.g., buy or sell).</li>
+ * </ul>
+ *
+ * <p>The {@code symbol} and {@code account} fields are encoded using {@link ShortTextLongConverter}
+ * to save space, while the client order IDs are strings for identification purposes.
+ */
+public class CancelOrderRequest extends AbstractEvent<CancelOrderRequest> {
+    private static final int MASHALLABLE_VERSION = 1;
+    // Symbol of the financial instrument for the order.
+    @ShortText
+    private long symbol;
+    @ShortText
+    private long account;
+
+    // Client order ID.
+    private String clOrdID = "";
+
+    // Original client order ID.
+    private String origClOrdID = "";
+
+    // Side of the order (e.g., buy or sell).
+    private Side side;
+
+
+    /**
+     * Retrieves the symbol of the financial instrument for the order.
+     *
+     * @return The symbol as a {@code long}.
+     */
+    public long symbol() {
+        return symbol;
+    }
+
+    /**
+     * Sets the symbol of the financial instrument for the order and returns the {@code CancelOrderRequest} object. This method allows for method chaining.
+     *
+     * @param symbol The symbol of the financial instrument for the order.
+     * @return The {@code CancelOrderRequest} object with the symbol set.
+     */
+    public CancelOrderRequest symbol(long symbol) {
+        this.symbol = symbol;
+        return this;
+    }
+
+
+    /**
+     * Retrieves the account associated with the order.
+     *
+     * @return The account as a {@code long}.
+     */
+    public long account() {
+        return account;
+    }
+
+    /**
+     * Sets the account associated with the order.
+     *
+     * @param account The account to set.
+     * @return This {@code CancelOrderRequest} instance for method chaining.
+     */
+    public CancelOrderRequest account(long account) {
+        this.account = account;
+        return this;
+    }
+
+    /**
+     * Retrieves the client order ID.
+     *
+     * @return The client order ID as a {@code String}.
+     */
+    public String clOrdID() {
+        return clOrdID;
+    }
+
+    /**
+     * Sets the client order ID and returns the {@code CancelOrderRequest} object. This method allows for method chaining.
+     *
+     * @param clOrdID The client order ID.
+     * @return The {@code CancelOrderRequest} object with the client order ID set.
+     */
+    public CancelOrderRequest clOrdID(String clOrdID) {
+        this.clOrdID = clOrdID;
+        return this;
+    }
+
+    /**
+     * Retrieves the original client order ID.
+     *
+     * @return The original client order ID as a {@code String}.
+     */
+    public String origClOrdID() {
+        return origClOrdID;
+    }
+
+    /**
+     * Sets the original client order ID.
+     *
+     * @param origClOrdID The original client order ID to set.
+     * @return This {@code CancelOrderRequest} instance for method chaining.
+     */
+    public CancelOrderRequest origClOrdID(String origClOrdID) {
+        this.origClOrdID = origClOrdID;
+        return this;
+    }
+
+    /**
+     * Retrieves the side of the order.
+     *
+     * @return The side of the order as a {@link Side} enum.
+     */
+    public Side side() {
+        return side;
+    }
+
+    /**
+     * Sets the side of the order.
+     *
+     * @param side The side to set (e.g., buy or sell).
+     * @return This {@code CancelOrderRequest} instance for method chaining.
+     */
+    public CancelOrderRequest side(Side side) {
+        this.side = side;
+        return this;
+    }
+
+    @Override
+    public void writeMarshallable(WireOut out) {
+        super.writeMarshallable(out);
+        if (PREGENERATED_MARSHALLABLE) {
+            out.write("symbol").writeLong(ShortTextLongConverter.INSTANCE, symbol);
+            out.write("account").writeLong(ShortTextLongConverter.INSTANCE, account);
+            out.write("clOrdID").object(String.class, clOrdID);
+            out.write("origClOrdID").object(String.class, origClOrdID);
+            out.write("side").object(Side.class, side);
+        }
+    }
+
+    @Override
+    public void readMarshallable(WireIn in) {
+        super.readMarshallable(in);
+        if (PREGENERATED_MARSHALLABLE) {
+            symbol = in.read("symbol").readLong(ShortTextLongConverter.INSTANCE);
+            account = in.read("account").readLong(ShortTextLongConverter.INSTANCE);
+            clOrdID = in.read("clOrdID").object(clOrdID, String.class);
+            origClOrdID = in.read("origClOrdID").object(origClOrdID, String.class);
+            side = in.read("side").object(Side.class);
+        }
+    }
+
+    @Override
+    public void writeMarshallable(BytesOut<?> out) {
+        super.writeMarshallable(out);
+        if (PREGENERATED_MARSHALLABLE) {
+            out.writeStopBit(MASHALLABLE_VERSION);
+            out.writeLong(symbol);
+            out.writeLong(account);
+            out.writeObject(String.class, clOrdID);
+            out.writeObject(String.class, origClOrdID);
+            out.writeObject(Side.class, side);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void readMarshallable(BytesIn<?> in) {
+        super.readMarshallable(in);
+        if (PREGENERATED_MARSHALLABLE) {
+            int version = (int) in.readStopBit();
+            if (version == MASHALLABLE_VERSION) {
+                symbol = in.readLong();
+                account = in.readLong();
+                clOrdID = in.readObject(String.class);
+                origClOrdID = in.readObject(String.class);
+                side = in.readObject(Side.class);
+            } else {
+                throw new IllegalStateException("Unknown version " + version);
+            }
+        }
+    }
+
+    /**
+     * Validates the fields of this {@code CancelOrderRequest}.
+     *
+     * @throws InvalidMarshallableException if any required field is missing or invalid.
+     */
+    @Override
+    public void validate() throws InvalidMarshallableException {
+        if (symbol == 0) {
+            throw new InvalidMarshallableException("symbol is required");
+        }
+        if (account == 0) {
+            throw new InvalidMarshallableException("account is required");
+        }
+        if (clOrdID == null || clOrdID.isEmpty()) {
+            throw new InvalidMarshallableException("clOrdID is required");
+        }
+        if (origClOrdID == null || origClOrdID.isEmpty()) {
+            throw new InvalidMarshallableException("origClOrdID is required");
+        }
+        if (side == null) {
+            throw new InvalidMarshallableException("side is required");
+        }
+    }
+}
+....
+
+Lines 207, Blanks 23, Tokens 1812
+
+== File: src\main\java\town\lost\oms\dto\Ccy.java
+....
+package town.lost.oms.dto;
+
+/**
+ * The {@code Ccy} enum represents international currency codes as per the ISO 4217 standard.
+ *
+ * <p>Each constant corresponds to a specific currency, identified by its three-letter code.
+ * Additional information such as the currency name, country, and symbol can be accessed through
+ * the provided methods.
+ *
+ * <p>Example usage:
+ * <pre>{@code
+ * Ccy currency = Ccy.USD;
+ * System.out.println("Currency Code: " + currency.getCode());
+ * System.out.println("Currency Name: " + currency.getCurrencyName());
+ * System.out.println("Country: " + currency.getCountry());
+ * System.out.println("Symbol: " + currency.getSymbol());
+ * }</pre>
+ *
+ * <p>This would output:
+ * <pre>
+ * Currency Code: USD
+ * Currency Name: United States Dollar
+ * Country: United States
+ * Symbol: $
+ * </pre>
+ */
+public enum Ccy {
+    /**
+     * United States Dollar.
+     */
+    USD("United States Dollar", "United States", "$"),
+    /**
+     * Euro.
+     */
+    EUR("Euro", "Eurozone", "€"),
+    /**
+     * British Pound Sterling.
+     */
+    GBP("Pound Sterling", "United Kingdom", "£"),
+    /**
+     * Japanese Yen.
+     */
+    JPY("Japanese Yen", "Japan", "¥"),
+    /**
+     * Swiss Franc.
+     */
+    CHF("Swiss Franc", "Switzerland", "CHF"),
+    /**
+     * Canadian Dollar.
+     */
+    CAD("Canadian Dollar", "Canada", "C$"),
+    /**
+     * Australian Dollar.
+     */
+    AUD("Australian Dollar", "Australia", "A$"),
+    /**
+     * New Zealand Dollar.
+     */
+    NZD("New Zealand Dollar", "New Zealand", "NZ$"),
+    /**
+     * Chinese Yuan Renminbi.
+     */
+    CNY("Chinese Yuan", "China", "¥"),
+    /**
+     * Swedish Krona.
+     */
+    SEK("Swedish Krona", "Sweden", "kr"),
+    /**
+     * Norwegian Krone.
+     */
+    NOK("Norwegian Krone", "Norway", "kr"),
+    /**
+     * Russian Ruble.
+     */
+    RUB("Russian Ruble", "Russia", "₽"),
+    /**
+     * South African Rand.
+     */
+    ZAR("South African Rand", "South Africa", "R"),
+    /**
+     * Singapore Dollar.
+     */
+    SGD("Singapore Dollar", "Singapore", "S$"),
+    /**
+     * Hong Kong Dollar.
+     */
+    HKD("Hong Kong Dollar", "Hong Kong", "HK$");
+
+    // Fields
+    private final String currencyName;
+    private final String country;
+    private final String symbol;
+
+    /**
+     * Constructs a {@code Ccy} enum constant with the specified currency name, country, and symbol.
+     *
+     * @param currencyName the full name of the currency
+     * @param country      the country or region where the currency is used
+     * @param symbol       the symbol representing the currency
+     */
+    Ccy(String currencyName, String country, String symbol) {
+        this.currencyName = currencyName;
+        this.country = country;
+        this.symbol = symbol;
+    }
+
+    /**
+     * Gets the full name of the currency.
+     *
+     * @return the currency name
+     */
+    public String getCurrencyName() {
+        return currencyName;
+    }
+
+    /**
+     * Gets the country or region where the currency is used.
+     *
+     * @return the country or region
+     */
+    public String getCountry() {
+        return country;
+    }
+
+    /**
+     * Gets the symbol representing the currency.
+     *
+     * @return the currency symbol
+     */
+    public String getSymbol() {
+        return symbol;
+    }
+
+    /**
+     * Gets the three-letter currency code as per the ISO 4217 standard.
+     *
+     * @return the currency code
+     */
+    public String getCode() {
+        return this.name();
+    }
+}
+
+....
+
+Lines 135, Blanks 8, Tokens 853
+
+== File: src\main\java\town\lost\oms\dto\ExecutionReport.java
+....
+/*
+ */
+
+package town.lost.oms.dto;
+
+import net.openhft.chronicle.bytes.BytesIn;
+import net.openhft.chronicle.bytes.BytesOut;
+import net.openhft.chronicle.core.io.InvalidMarshallableException;
+import net.openhft.chronicle.wire.ShortTextLongConverter;
+import net.openhft.chronicle.wire.NanoTimestampLongConverter;
+import net.openhft.chronicle.wire.WireIn;
+import net.openhft.chronicle.wire.WireOut;
+import net.openhft.chronicle.wire.converter.NanoTime;
+import net.openhft.chronicle.wire.converter.ShortText;
+
+import static town.lost.oms.dto.ValidateUtil.*;
+
+/**
+ * The {@code ExecutionReport} class represents the execution report of an order in a trading system.
+ *
+ * <p>This class extends the {@link AbstractEvent} class, with the type parameter being {@link ExecutionReport}.
+ * This indicates that the event will be processed into an {@link ExecutionReport} that represents the execution report of an order.
+ *
+ * <p>Each {@code ExecutionReport} contains various pieces of information about the order execution, including:
+ *
+ * <ul>
+ *   <li><strong>symbol</strong>: The identifier of the financial instrument.</li>
+ *   <li><strong>transactTime</strong>: The transaction time in nanoseconds.</li>
+ *   <li><strong>orderQty</strong>: The quantity of the order.</li>
+ *   <li><strong>price</strong>: The price of the order.</li>
+ *   <li><strong>orderID</strong>: The unique identifier of the order.</li>
+ *   <li><strong>lastPx</strong>: The last traded price of the order.</li>
+ *   <li><strong>leavesQty</strong>: The remaining quantity of the order.</li>
+ *   <li><strong>cumQty</strong>: The accumulated quantity of the order.</li>
+ *   <li><strong>avgPx</strong>: The average price of the order.</li>
+ *   <li><strong>side</strong>: The side of the order (buy or sell).</li>
+ *   <li><strong>ordType</strong>: The type of the order (e.g., market or limit).</li>
+ *   <li><strong>clOrdID</strong>: The client order ID.</li>
+ *   <li><strong>text</strong>: An optional text message about the order execution.</li>
+ * </ul>
+ *
+ * <p>The {@code symbol} field is encoded using {@link ShortTextLongConverter}, and {@code transactTime} and {@code orderID}
+ * use {@link NanoTimestampLongConverter} to save space.
+ */
+public class ExecutionReport extends AbstractEvent<ExecutionReport> {
+    private static final int MASHALLABLE_VERSION = 1;
+    // Symbol of the financial instrument.
+    @ShortText
+    private long symbol;
+
+    // Transaction time in nanoseconds.
+    @NanoTime
+    private long transactTime;
+
+    // Quantity of the order.
+    private double orderQty;
+
+    // Price of the order.
+    private double price;
+
+    // Order ID in nanoseconds.
+    @NanoTime
+    private long orderID;
+
+    // Last traded price of the order.
+    private double lastPx;
+
+    // Remaining quantity of the order.
+    private double leavesQty;
+
+    // Accumulated quantity of the order.
+    private double cumQty;
+
+    // Average price of the order.
+    private double avgPx;
+
+    // Side of the order (buy or sell).
+    private Side side;
+
+    // Type of the order (market or limit).
+    private OrderType ordType;
+
+    // Client order ID.
+    private String clOrdID = "";
+
+    // Optional text message about the order execution.
+    private String text = null;
+
+    /**
+     * Retrieves the client order ID.
+     *
+     * @return the client order ID as a {@code String}
+     */
+    public String clOrdID() {
+        return clOrdID;
+    }
+
+    /**
+     * Sets the client order ID.
+     *
+     * @param clOrdID the client order ID to set
+     * @return this {@code ExecutionReport} instance for method chaining
+     */
+    public ExecutionReport clOrdID(String clOrdID) {
+        this.clOrdID = clOrdID;
+        return this;
+    }
+
+    /**
+     * Retrieves the symbol of the financial instrument.
+     *
+     * @return the symbol as a {@code long}
+     */
+    public long symbol() {
+        return symbol;
+    }
+
+    /**
+     * Sets the symbol of the financial instrument.
+     *
+     * @param symbol the symbol to set
+     * @return this {@code ExecutionReport} instance for method chaining
+     */
+    public ExecutionReport symbol(long symbol) {
+        this.symbol = symbol;
+        return this;
+    }
+
+    /**
+     * Retrieves the side of the order (buy or sell).
+     *
+     * @return the side as a {@link Side} enum value
+     */
+    public Side side() {
+        return side;
+    }
+
+    /**
+     * Sets the side of the order (buy or sell).
+     *
+     * @param side the side to set
+     * @return this {@code ExecutionReport} instance for method chaining
+     */
+    public ExecutionReport side(Side side) {
+        this.side = side;
+        return this;
+    }
+
+    /**
+     * Retrieves the transaction time in nanoseconds.
+     *
+     * @return the transaction time as a {@code long}
+     */
+    public long transactTime() {
+        return transactTime;
+    }
+
+    /**
+     * Sets the transaction time in nanoseconds.
+     *
+     * @param transactTime the transaction time to set
+     * @return this {@code ExecutionReport} instance for method chaining
+     */
+    public ExecutionReport transactTime(long transactTime) {
+        this.transactTime = transactTime;
+        return this;
+    }
+
+    /**
+     * Retrieves the quantity of the order.
+     *
+     * @return the order quantity as a {@code double}
+     */
+    public double orderQty() {
+        return orderQty;
+    }
+
+    /**
+     * Sets the quantity of the order.
+     *
+     * @param orderQty the order quantity to set
+     * @return this {@code ExecutionReport} instance for method chaining
+     */
+    public ExecutionReport orderQty(double orderQty) {
+        this.orderQty = orderQty;
+        return this;
+    }
+
+    /**
+     * Retrieves the price of the order.
+     *
+     * @return the price as a {@code double}
+     */
+    public double price() {
+        return price;
+    }
+
+    /**
+     * Sets the price of the order.
+     *
+     * @param price the price to set
+     * @return this {@code ExecutionReport} instance for method chaining
+     */
+    public ExecutionReport price(double price) {
+        this.price = price;
+        return this;
+    }
+
+    /**
+     * Retrieves the order ID.
+     *
+     * @return the order ID as a {@code long}
+     */
+    public long orderID() {
+        return orderID;
+    }
+
+    /**
+     * Sets the order ID.
+     *
+     * @param orderID the order ID to set
+     * @return this {@code ExecutionReport} instance for method chaining
+     */
+    public ExecutionReport orderID(long orderID) {
+        this.orderID = orderID;
+        return this;
+    }
+    /**
+     * Returns the order type.
+     *
+     * @return the order type
+     */
+    public OrderType ordType() {
+        return ordType;
+    }
+    /**
+     * Sets the order type and returns this ExecutionReport instance.
+     *
+     * @param ordType the order type to set
+     * @return this ExecutionReport instance
+     */
+    public ExecutionReport ordType(OrderType ordType) {
+        this.ordType = ordType;
+        return this;
+    }
+
+    /**
+     * Retrieves the last traded price of the order.
+     *
+     * @return the last traded price as a {@code double}
+     */
+    public double lastPx() {
+        return lastPx;
+    }
+
+    /**
+     * Sets the last traded price of the order.
+     *
+     * @param lastPx the last price to set
+     * @return this {@code ExecutionReport} instance for method chaining
+     */
+    public ExecutionReport lastPx(double lastPx) {
+        this.lastPx = lastPx;
+        return this;
+    }
+
+    /**
+     * Retrieves the remaining quantity of the order.
+     *
+     * @return the leaves quantity as a {@code double}
+     */
+    public double leavesQty() {
+        return leavesQty;
+    }
+
+    /**
+     * Sets the remaining quantity of the order.
+     *
+     * @param leavesQty the leaves quantity to set
+     * @return this {@code ExecutionReport} instance for method chaining
+     */
+    public ExecutionReport leavesQty(double leavesQty) {
+        this.leavesQty = leavesQty;
+        return this;
+    }
+
+    /**
+     * Retrieves the accumulated quantity of the order.
+     *
+     * @return the cumulative quantity as a {@code double}
+     */
+    public double cumQty() {
+        return cumQty;
+    }
+
+    /**
+     * Sets the accumulated quantity of the order.
+     *
+     * @param cumQty the cumulative quantity to set
+     * @return this {@code ExecutionReport} instance for method chaining
+     */
+    public ExecutionReport cumQty(double cumQty) {
+        this.cumQty = cumQty;
+        return this;
+    }
+
+    /**
+     * Retrieves the average price of the order.
+     *
+     * @return the average price as a {@code double}
+     */
+    public double avgPx() {
+        return avgPx;
+    }
+
+    /**
+     * Sets the average price and returns this ExecutionReport instance.
+     *
+     * @param avgPx the average price to set
+     * @return this ExecutionReport instance
+     */
+    public ExecutionReport avgPx(double avgPx) {
+        this.avgPx = avgPx;
+        return this;
+    }
+
+    /**
+     * Retrieves the optional text message about the order execution.
+     *
+     * @return the text message as a {@code String}
+     */
+    public String text() {
+        return text;
+    }
+
+    /**
+     * Sets the text of the report and returns this ExecutionReport instance.
+     *
+     * @param text the text message to set
+     * @return this {@code ExecutionReport} instance for method chaining
+     */
+    public ExecutionReport text(String text) {
+        this.text = text;
+        return this;
+    }
+
+    @Override
+    public void writeMarshallable(BytesOut<?> out) {
+        super.writeMarshallable(out);
+        if (PREGENERATED_MARSHALLABLE) {
+            out.writeStopBit(MASHALLABLE_VERSION);
+            out.writeLong(symbol);
+            out.writeLong(transactTime);
+            out.writeDouble(orderQty);
+            out.writeDouble(price);
+            out.writeLong(orderID);
+            out.writeDouble(lastPx);
+            out.writeDouble(leavesQty);
+            out.writeDouble(cumQty);
+            out.writeDouble(avgPx);
+            out.writeObject(Side.class, side);
+            out.writeObject(OrderType.class, ordType);
+            out.writeObject(String.class, clOrdID);
+            out.writeObject(String.class, text);
+        }
+    }
+
+    @Override
+    public void readMarshallable(BytesIn<?> in) {
+        super.readMarshallable(in);
+        if (PREGENERATED_MARSHALLABLE) {
+            int version = (int) in.readStopBit();
+            if (version == MASHALLABLE_VERSION) {
+                symbol = in.readLong();
+                transactTime = in.readLong();
+                orderQty = in.readDouble();
+                price = in.readDouble();
+                orderID = in.readLong();
+                lastPx = in.readDouble();
+                leavesQty = in.readDouble();
+                cumQty = in.readDouble();
+                avgPx = in.readDouble();
+                side = in.readObject(Side.class);
+                ordType = in.readObject(OrderType.class);
+                clOrdID = in.readObject(String.class);
+                text = in.readObject(String.class);
+            } else {
+                throw new IllegalStateException("Unknown version " + version);
+            }
+        }
+    }
+
+    @Override
+    public void writeMarshallable(WireOut out) {
+        super.writeMarshallable(out);
+        if (PREGENERATED_MARSHALLABLE) {
+            out.write("symbol").writeLong(ShortTextLongConverter.INSTANCE, symbol);
+            out.write("transactTime").writeLong(NanoTimestampLongConverter.INSTANCE, transactTime);
+            out.write("orderQty").writeDouble(orderQty);
+            out.write("price").writeDouble(price);
+            out.write("orderID").writeLong(NanoTimestampLongConverter.INSTANCE, orderID);
+            out.write("lastPx").writeDouble(lastPx);
+            out.write("leavesQty").writeDouble(leavesQty);
+            out.write("cumQty").writeDouble(cumQty);
+            out.write("avgPx").writeDouble(avgPx);
+            out.write("side").object(Side.class, side);
+            out.write("ordType").object(OrderType.class, ordType);
+            out.write("clOrdID").object(String.class, clOrdID);
+            out.write("text").object(String.class, text);
+        }
+    }
+
+    @Override
+    public void readMarshallable(WireIn in) {
+        super.readMarshallable(in);
+        if (PREGENERATED_MARSHALLABLE) {
+            symbol = in.read("symbol").readLong(ShortTextLongConverter.INSTANCE);
+            transactTime = in.read("transactTime").readLong(NanoTimestampLongConverter.INSTANCE);
+            orderQty = in.read("orderQty").readDouble();
+            price = in.read("price").readDouble();
+            orderID = in.read("orderID").readLong(NanoTimestampLongConverter.INSTANCE);
+            lastPx = in.read("lastPx").readDouble();
+            leavesQty = in.read("leavesQty").readDouble();
+            cumQty = in.read("cumQty").readDouble();
+            avgPx = in.read("avgPx").readDouble();
+            side = in.read("side").object(side, Side.class);
+            ordType = in.read("ordType").object(ordType, OrderType.class);
+            clOrdID = in.read("clOrdID").object(clOrdID, String.class);
+            text = in.read("text").object(text, String.class);
+        }
+    }
+
+    /**
+     * Validates the fields of this {@code ExecutionReport} event.
+     *
+     * @throws InvalidMarshallableException if any required field is missing or invalid
+     */
+    @Override
+    public void validate() throws InvalidMarshallableException {
+        super.validate();
+        if (symbol == 0)
+            throw new InvalidMarshallableException("symbol is required");
+        if (transactTime == 0)
+            throw new InvalidMarshallableException("transactTime is required");
+        if (invalidQuantity(orderQty))
+            throw new InvalidMarshallableException("orderQty is invalid");
+        if (invalidPrice(price))
+            throw new InvalidMarshallableException("price is invalid");
+        if (orderID == 0)
+            throw new InvalidMarshallableException("orderID is required");
+        if (lastPx != 0 && invalidPrice(lastPx))
+            throw new InvalidMarshallableException("lastPx is invalid");
+        if (invalidQuantity(leavesQty))
+            throw new InvalidMarshallableException("leavesQty is invalid");
+        if (invalidQuantity(cumQty))
+            throw new InvalidMarshallableException("cumQty is invalid");
+        if (avgPx != 0 && invalidPrice(avgPx))
+            throw new InvalidMarshallableException("avgPx is invalid");
+        if (side == null)
+            throw new InvalidMarshallableException("side is required");
+        if (ordType == null)
+            throw new InvalidMarshallableException("ordType is required");
+        if (clOrdID == null || clOrdID.isEmpty())
+            throw new InvalidMarshallableException("clOrdID is required");
+    }
+}
+....
+
+Lines 421, Blanks 45, Tokens 3417
+
+== File: src\main\java\town\lost\oms\dto\NewOrderSingle.java
+....
+/*
+ */
+
+package town.lost.oms.dto;
+
+import net.openhft.chronicle.bytes.BytesIn;
+import net.openhft.chronicle.bytes.BytesOut;
+import net.openhft.chronicle.core.io.InvalidMarshallableException;
+import net.openhft.chronicle.wire.*;
+import net.openhft.chronicle.wire.converter.NanoTime;
+import net.openhft.chronicle.wire.converter.ShortText;
+
+import static town.lost.oms.dto.ValidateUtil.invalidPrice;
+import static town.lost.oms.dto.ValidateUtil.invalidQuantity;
+
+/**
+ * The {@code NewOrderSingle} class represents a new single order in a trading system.
+ *
+ * <p>This class extends the {@link AbstractEvent} class, with the type parameter being {@link NewOrderSingle}.
+ * This indicates that the event will be processed into a {@link NewOrderSingle} that will be sent to the order
+ * system.
+ *
+ * <p>Each {@code NewOrderSingle} contains various pieces of information about the order, including:
+ *
+ * <ul>
+ *   <li><strong>symbol</strong>: The identifier of the financial instrument.</li>
+ *   <li><strong>transactTime</strong>: The transaction time in nanoseconds.</li>
+ *   <li><strong>account</strong>: The account associated with the order.</li>
+ *   <li><strong>orderQty</strong>: The quantity of the order.</li>
+ *   <li><strong>price</strong>: The price of the order.</li>
+ *   <li><strong>side</strong>: The side of the order (buy or sell).</li>
+ *   <li><strong>clOrdID</strong>: The client order ID.</li>
+ *   <li><strong>ordType</strong>: The type of the order (e.g., market or limit).</li>
+ *   <li><strong>timeInForce</strong>: The time-in-force instruction for the order.</li>
+ *   <li><strong>currency</strong>: The currency of the order.</li>
+ * </ul>
+ *
+ * <p>The symbol is encoded using {@link ShortText} and the transaction time is in nanoseconds, both to save space.
+ * The client order ID is a string that identifies the order, the side indicates whether the order is to buy or sell,
+ * and the order type indicates whether the order is a market order or a limit order.
+ */
+public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
+    private static final int MASHALLABLE_VERSION = 1;
+    // Symbol of the financial instrument.
+    @ShortText
+    private long symbol;
+    // Transaction time in nanoseconds.
+    @NanoTime
+    private long transactTime;
+    @ShortText
+    private long account;
+
+    // Quantity of the order.
+    private double orderQty;
+
+    // Price of the order.
+    private double price;
+
+    // Side of the order (buy or sell).
+    private Side side;
+
+    // Client order ID.
+    private String clOrdID = "";
+
+    // Type of the order (market or limit).
+    private OrderType ordType;
+
+    // Time-in-force instruction for the order.
+    private TimeInForce timeInForce;
+
+    // Currency of the order.
+    private Ccy currency;
+
+    /**
+     * Get the client order ID.
+     *
+     * @return The client order ID as a string.
+     */
+    public String clOrdID() {
+        return clOrdID;
+    }
+
+    /**
+     * Sets the client order ID.
+     *
+     * @param clOrdID The client order ID to set, as a string.
+     * @return This {@code NewOrderSingle} instance, to facilitate method chaining.
+     */
+    public NewOrderSingle clOrdID(String clOrdID) {
+        this.clOrdID = clOrdID;
+        return this;
+    }
+
+    /**
+     * Get the symbol of the financial instrument.
+     *
+     * @return The symbol as a long.
+     */
+    public long symbol() {
+        return symbol;
+    }
+
+    /**
+     * Sets the symbol of the financial instrument.
+     *
+     * @param symbol The symbol to set, as a long.
+     * @return This {@code NewOrderSingle} instance, to facilitate method chaining.
+     */
+    public NewOrderSingle symbol(long symbol) {
+        this.symbol = symbol;
+        return this;
+    }
+
+    /**
+     * Get the side of the order (buy or sell).
+     *
+     * @return The side as a {@link Side} enum value.
+     */
+    public Side side() {
+        return side;
+    }
+
+    /**
+     * Sets the side of the order (buy or sell).
+     *
+     * @param side The side to set, as a {@link Side} enum value.
+     * @return This {@code NewOrderSingle} instance, to facilitate method chaining.
+     */
+    public NewOrderSingle side(Side side) {
+        this.side = side;
+        return this;
+    }
+
+    /**
+     * Get the transaction time in nanoseconds.
+     *
+     * @return The transaction time as a long.
+     */
+    public long transactTime() {
+        return transactTime;
+    }
+
+    /**
+     * Sets the transaction time in nanoseconds.
+     *
+     * @param transactTime The transaction time to set, as a long.
+     * @return This {@code NewOrderSingle} instance, to facilitate method chaining.
+     */
+    public NewOrderSingle transactTime(long transactTime) {
+        this.transactTime = transactTime;
+        return this;
+    }
+
+    /**
+     * Get the quantity of the order.
+     *
+     * @return The order quantity as a double.
+     */
+    public double orderQty() {
+        return orderQty;
+    }
+
+    /**
+     * Sets the quantity of the order.
+     *
+     * @param orderQty The order quantity to set, as a double.
+     * @return This {@code NewOrderSingle} instance, to facilitate method chaining.
+     */
+    public NewOrderSingle orderQty(double orderQty) {
+        this.orderQty = orderQty;
+        return this;
+    }
+
+    /**
+     * Get the price of the order.
+     *
+     * @return The price as a double.
+     */
+    public double price() {
+        return price;
+    }
+
+    /**
+     * Sets the price of the order.
+     *
+     * @param price The price to set, as a double.
+     * @return This {@code NewOrderSingle} instance, to facilitate method chaining.
+     */
+    public NewOrderSingle price(double price) {
+        this.price = price;
+        return this;
+    }
+
+    /**
+     * Get the type of the order (market or limit).
+     *
+     * @return The order type as an {@link OrderType} enum value.
+     */
+    public OrderType ordType() {
+        return ordType;
+    }
+
+    /**
+     * Sets the type of the order (market or limit).
+     *
+     * @param ordType The order type to set, as an {@link OrderType} enum value.
+     * @return This {@code NewOrderSingle} instance, to facilitate method chaining.
+     */
+    public NewOrderSingle ordType(OrderType ordType) {
+        this.ordType = ordType;
+        return this;
+    }
+
+    /**
+     * Retrieves the time-in-force instruction for the order.
+     *
+     * @return The time-in-force as a {@link TimeInForce} enum value.
+     */
+    public TimeInForce timeInForce() {
+        return timeInForce;
+    }
+
+    /**
+     * Sets the time-in-force instruction for the order.
+     *
+     * @param timeInForce The time-in-force to set.
+     * @return This {@code NewOrderSingle} instance for method chaining.
+     */
+    public NewOrderSingle timeInForce(TimeInForce timeInForce) {
+        this.timeInForce = timeInForce;
+        return this;
+    }
+
+    /**
+     * Retrieves the account associated with the order.
+     *
+     * @return The account as a {@code long}.
+     */
+    public long account() {
+        return account;
+    }
+
+    /**
+     * Sets the account associated with the order.
+     *
+     * @param account The account to set.
+     * @return This {@code NewOrderSingle} instance for method chaining.
+     */
+    public NewOrderSingle account(long account) {
+        this.account = account;
+        return this;
+    }
+
+    /**
+     * Retrieves the currency of the order.
+     *
+     * @return The currency as a {@link Ccy} enum value.
+     */
+    public Ccy currency() {
+        return currency;
+    }
+
+    /**
+     * Sets the currency of the order.
+     *
+     * @param currency The currency to set.
+     * @return This {@code NewOrderSingle} instance for method chaining.
+     */
+    public NewOrderSingle currency(Ccy currency) {
+        this.currency = currency;
+        return this;
+    }
+
+    @Override
+    public void writeMarshallable(BytesOut<?> out) {
+        super.writeMarshallable(out);
+        if (PREGENERATED_MARSHALLABLE) {
+            out.writeStopBit(MASHALLABLE_VERSION);
+            out.writeLong(symbol);
+            out.writeLong(transactTime);
+            out.writeLong(account);
+            out.writeDouble(orderQty);
+            out.writeDouble(price);
+            out.writeObject(Side.class, side);
+            out.writeObject(OrderType.class, ordType);
+            out.writeObject(String.class, clOrdID);
+            out.writeObject(TimeInForce.class, timeInForce);
+            out.writeObject(Ccy.class, currency);
+        }
+    }
+
+    @Override
+    public void readMarshallable(BytesIn<?> in) {
+        super.readMarshallable(in);
+        if (PREGENERATED_MARSHALLABLE) {
+            int version = (int) in.readStopBit();
+            if (version == MASHALLABLE_VERSION) {
+                symbol = in.readLong();
+                transactTime = in.readLong();
+                account = in.readLong();
+                orderQty = in.readDouble();
+                price = in.readDouble();
+                side = in.readObject(Side.class);
+                ordType = in.readObject(OrderType.class);
+                clOrdID = in.readObject(String.class);
+                timeInForce = in.readObject(TimeInForce.class);
+                currency = in.readObject(Ccy.class);
+            }
+        }
+    }
+
+    @Override
+    public void writeMarshallable(WireOut out) {
+        super.writeMarshallable(out);
+        if (PREGENERATED_MARSHALLABLE) {
+            out.write("symbol").writeLong(ShortTextLongConverter.INSTANCE, symbol);
+            out.write("transactTime").writeLong(NanoTimestampLongConverter.INSTANCE, transactTime);
+            out.write("account").writeLong(ShortTextLongConverter.INSTANCE, account);
+            out.write("orderQty").writeDouble(orderQty);
+            out.write("price").writeDouble(price);
+            out.write("side").object(Side.class, side);
+            out.write("ordType").object(OrderType.class, ordType);
+            out.write("clOrdID").object(String.class, clOrdID);
+            out.write("timeInForce").object(TimeInForce.class, timeInForce);
+            out.write("currency").object(Ccy.class, currency);
+        }
+    }
+
+    @Override
+    public void readMarshallable(WireIn in) {
+        super.readMarshallable(in);
+        if (PREGENERATED_MARSHALLABLE) {
+            symbol = in.read("symbol").readLong(ShortTextLongConverter.INSTANCE);
+            transactTime = in.read("transactTime").readLong(NanoTimestampLongConverter.INSTANCE);
+            account = in.read("account").readLong(ShortTextLongConverter.INSTANCE);
+            orderQty = in.read("orderQty").readDouble();
+            price = in.read("price").readDouble();
+            side = in.read("side").object(side, Side.class);
+            ordType = in.read("ordType").object(OrderType.class);
+            clOrdID = in.read("clOrdID").object(clOrdID, String.class);
+            timeInForce = in.read("timeInForce").object(TimeInForce.class);
+            currency = in.read("currency").object(Ccy.class);
+        }
+    }
+
+    /**
+     * Validates the fields of this {@code NewOrderSingle} event.
+     *
+     * @throws InvalidMarshallableException if any required field is missing or invalid.
+     */
+    @Override
+    public void validate() throws InvalidMarshallableException {
+        super.validate();
+        if (symbol == 0)
+            throw new InvalidMarshallableException("symbol is required");
+        if (transactTime == 0)
+            throw new InvalidMarshallableException("transactTime is required");
+        if (account == 0)
+            throw new InvalidMarshallableException("account is required");
+        if (orderQty == 0)
+            throw new InvalidMarshallableException("orderQty is required");
+        if (invalidQuantity(orderQty))
+            throw new InvalidMarshallableException("orderQty is invalid");
+        if (invalidPrice(price))
+            throw new InvalidMarshallableException("price is invalid");
+        if (side == null)
+            throw new InvalidMarshallableException("side is required");
+        if (ordType == null)
+            throw new InvalidMarshallableException("ordType is required");
+        if (clOrdID == null || clOrdID.isEmpty())
+            throw new InvalidMarshallableException("clOrdID is required");
+        if (timeInForce == null)
+            throw new InvalidMarshallableException("timeInForce is required");
+        if (currency == null)
+            throw new InvalidMarshallableException("currency is required");
+    }
+}
+....
+
+Lines 341, Blanks 36, Tokens 2886
+
+== File: src\main\java\town\lost\oms\dto\OrderCancelReject.java
+....
+/*
+ */
+
+package town.lost.oms.dto;
+
+import net.openhft.chronicle.bytes.BytesIn;
+import net.openhft.chronicle.bytes.BytesOut;
+import net.openhft.chronicle.core.io.InvalidMarshallableException;
+import net.openhft.chronicle.wire.ShortTextLongConverter;
+import net.openhft.chronicle.wire.WireIn;
+import net.openhft.chronicle.wire.WireOut;
+import net.openhft.chronicle.wire.converter.ShortText;
+
+/**
+ * The {@code OrderCancelReject} class represents an event that is used to indicate that a request to cancel an order was rejected.
+ *
+ * <p>This class extends the {@link AbstractEvent} class, with the type parameter being {@link OrderCancelReject}.
+ * This indicates that the event will be processed into a {@link OrderCancelReject} that will be sent to the order
+ * system.
+ *
+ * <p>Each {@code OrderCancelReject} event contains:
+ * <ul>
+ *   <li><strong>symbol</strong>: The identifier for the financial instrument involved in the order.</li>
+ *   <li><strong>clOrdID</strong>: The client order ID of the order that was requested to be canceled.</li>
+ *   <li><strong>reason</strong>: A string explaining why the cancellation request was rejected.</li>
+ * </ul>
+ *
+ * <p>Note that the symbol field is encoded using {@link ShortText} to minimize the space required for storage and transmission.
+ */
+public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
+    private static final int MASHALLABLE_VERSION = 1;
+    // Symbol for which the order cancellation was rejected.
+    @ShortText
+    private long symbol;
+
+    // Client order ID of the order that was requested to be canceled.
+    private String clOrdID = "";
+
+    // Reason for the rejection of the order cancellation request.
+    private String reason = "";
+
+    /**
+     * Get the client order ID of the order that was requested to be canceled.
+     *
+     * @return The client order ID as a string.
+     */
+    public String clOrdID() {
+        return clOrdID;
+    }
+
+    /**
+     * Set the client order ID of the order that was requested to be canceled.
+     *
+     * @param clOrdID The client order ID to set, as a string.
+     * @return This OrderCancelReject instance, to facilitate method chaining.
+     */
+    public OrderCancelReject clOrdID(String clOrdID) {
+        this.clOrdID = clOrdID;
+        return this;
+    }
+
+    /**
+     * Get the symbol for which the order cancellation was rejected.
+     *
+     * @return The symbol value as a {@code long}.
+     */
+    public long symbol() {
+        return symbol;
+    }
+
+    /**
+     * Set the symbol for which the order cancellation was rejected.
+     *
+     * @param symbol The symbol value to set, as a long.
+     * @return This {@code OrderCancelReject} instance, to facilitate method chaining.
+     */
+    public OrderCancelReject symbol(long symbol) {
+        this.symbol = symbol;
+        return this;
+    }
+
+    /**
+     * Get the reason for the rejection of the order cancellation request.
+     *
+     * @return The reason as a string.
+     */
+    public String reason() {
+        return reason;
+    }
+
+    /**
+     * Set the reason for the rejection of the order cancellation request.
+     *
+     * @param reason The reason to set, as a string.
+     * @return This {@code OrderCancelReject} instance, to facilitate method chaining.
+     */
+    public OrderCancelReject reason(String reason) {
+        this.reason = reason;
+        return this;
+    }
+
+    @Override
+    public void writeMarshallable(WireOut out) {
+        validate();
+        super.writeMarshallable(out);
+        if (PREGENERATED_MARSHALLABLE) {
+            out.write("symbol").writeLong(ShortTextLongConverter.INSTANCE, symbol);
+            out.write("clOrdID").object(String.class, clOrdID);
+            out.write("reason").object(String.class, reason);
+        }
+    }
+
+    @Override
+    public void readMarshallable(WireIn in) {
+        super.readMarshallable(in);
+        if (PREGENERATED_MARSHALLABLE) {
+            symbol = in.read("symbol").readLong(ShortTextLongConverter.INSTANCE);
+            clOrdID = in.read("clOrdID").object(clOrdID, String.class);
+            reason = in.read("reason").object(reason, String.class);
+        }
+    }
+
+    @Override
+    public void writeMarshallable(BytesOut<?> out) {
+        validate();
+        super.writeMarshallable(out);
+        if (PREGENERATED_MARSHALLABLE) {
+            out.writeStopBit(MASHALLABLE_VERSION);
+            out.writeLong(symbol);
+            out.writeObject(String.class, clOrdID);
+            out.writeObject(String.class, reason);
+        }
+    }
+
+    @Override
+    public void readMarshallable(BytesIn<?> in) {
+        super.readMarshallable(in);
+        if (PREGENERATED_MARSHALLABLE) {
+            int version = (int) in.readStopBit();
+            if (version == MASHALLABLE_VERSION) {
+                symbol = in.readLong();
+                clOrdID = in.readObject(String.class);
+                reason = in.readObject(String.class);
+            } else {
+                throw new IllegalStateException("Unknown version " + version);
+            }
+        }
+    }
+
+    /**
+     * Validates the fields of this {@code OrderCancelReject} event.
+     *
+     * @throws InvalidMarshallableException if any required field is missing or invalid.
+     */
+    @Override
+    public void validate() throws InvalidMarshallableException {
+        super.validate();
+        if (symbol == 0)
+            throw new InvalidMarshallableException("symbol is required");
+        if (clOrdID == null || clOrdID.isEmpty())
+            throw new InvalidMarshallableException("clOrdID is required");
+        if (reason == null || reason.isEmpty())
+            throw new InvalidMarshallableException("reason is required");
+    }
+}
+....
+
+Lines 149, Blanks 16, Tokens 1294
+
+== File: src\main\java\town\lost\oms\dto\OrderType.java
+....
+/*
+ */
+
+package town.lost.oms.dto;
+/**
+ * Enumeration for the types of orders in a trading system.
+ *
+ * <p>It contains two values: MARKET and LIMIT, which represent the two main types of orders that can be placed
+ * in a trading system. A MARKET order is an order to buy or sell a security at the current market price,
+ * whereas a LIMIT order is an order to buy or sell a security at a specific price or better.
+ *
+ * <p>This enumeration can be used when creating trading orders, like so:
+ *
+ * <pre>
+ * NewOrderSingle nos = new NewOrderSingle()
+ *    .sender(ShortText.parse("client"))
+ *    .target(ShortText.parse("OMS"))
+ *    .clOrdID("clOrdId")
+ *    .orderQty(1e6)
+ *    .price(1.6)
+ *    .symbol(ShortText.parse("AUDUSD"))
+ *    .ordType(OrderType.LIMIT)
+ *    .side(BuySell.BUY);
+ * </pre>
+ *
+ * <p>Note that the order type is indicated by the {@link OrderType} used in the 'ordType' field of the order.
+ */
+public enum OrderType {
+    /**
+     * Market order type, which means the order should be executed at the current market price.
+     */
+    MARKET,
+
+    /**
+     * Limit order type, which means the order should be executed at a specific price or better.
+     */
+    LIMIT,
+
+    /**
+     * Pegged order type, where the price is pegged to a benchmark price, such as the best bid or ask.
+     */
+    PEGGED,
+
+    /**
+     * Fill or Kill order type, which must be executed immediately in its entirety or cancelled.
+     */
+    FILL_OR_KILL,
+
+    /**
+     * Immediate or Cancel order type, which executes all or part immediately and cancels any unfilled portion.
+     */
+    IMMEDIATE_OR_CANCEL,
+}
+
+....
+
+Lines 48, Blanks 6, Tokens 409
+
+== File: src\main\java\town\lost\oms\dto\package-info.java
+....
+/**
+ * Provides the classes and interfaces necessary to create and manage Order Management System (OMS) data transfer objects (DTOs).
+ *
+ * <p>This package includes the following key components:
+ *
+ * <ul>
+ *     <li><strong>AbstractEvent</strong> and its subclasses, which represent different types of events that can occur in an OMS, such as:
+ *         <ul>
+ *             <li>{@link town.lost.oms.dto.NewOrderSingle}: Represents a new order submission.</li>
+ *             <li>{@link town.lost.oms.dto.CancelOrderRequest}: Represents a request to cancel an existing order.</li>
+ *             <li>{@link town.lost.oms.dto.ExecutionReport}: Represents the execution status of an order.</li>
+ *             <li>{@link town.lost.oms.dto.OrderCancelReject}: Indicates that an order cancellation request was rejected.</li>
+ *             <li>{@link town.lost.oms.dto.CancelAll}: Represents a request to cancel all orders for a specific symbol.</li>
+ *         </ul>
+ *     </li>
+ *     <li><strong>Enums</strong> that define constants for various order attributes:
+ *         <ul>
+ *             <li>{@link town.lost.oms.dto.Side}: Represents the side of an order (e.g., buy or sell).</li>
+ *             <li>{@link town.lost.oms.dto.OrderType}: Represents the type of an order (e.g., market, limit).</li>
+ *             <li>{@link town.lost.oms.dto.TimeInForce}: Represents the time-in-force instructions for an order.</li>
+ *             <li>{@link town.lost.oms.dto.Ccy}: Represents currency codes as per ISO 4217.</li>
+ *         </ul>
+ *     </li>
+ *     <li><strong>Utility Classes</strong>:
+ *         <ul>
+ *             <li>{@link town.lost.oms.dto.ValidateUtil}: Provides utility methods for validating order parameters such as price and quantity.</li>
+ *         </ul>
+ *     </li>
+ * </ul>
+ *
+ * <p>Each class is designed to be marshalled and unmarshalled efficiently for high-performance data transfer, leveraging serialization optimizations provided by Chronicle Wire.
+ *
+ * <p>For more details, refer to the documentation of each individual class.
+ */
+package town.lost.oms.dto;
+....
+
+Lines 35, Blanks 0, Tokens 493
+
+== File: src\main\java\town\lost\oms\dto\Side.java
+....
+/*
+ */
+
+package town.lost.oms.dto;
+
+/**
+ * Enumeration for the direction of a trade order.
+ *
+ * <p>It contains two values: BUY and SELL, which represents the direction of the order. BUY (+1) means the order is to
+ * purchase, while SELL (-1) implies the order is to sell.
+ *
+ * <p>This enumeration can be used to create trading orders, like so:
+ *
+ * <pre>{@code
+ * NewOrderSingle nos = new NewOrderSingle()
+ *    .sender(toLong("sender"))
+ *    .target(toLong("target"))
+ *    .transactTime(now())
+ *    .sendingTime(now())
+ *    .orderQty(1)
+ *    .ordType(OrderType.MARKET)
+ *    .side(Side.BUY)
+ *    .symbol(toLong("EURUSD"));
+ * }</pre>
+ *
+ * <p>Note that the direction is indicated by the {@link Side} used in the 'side' field of the order.
+ */
+public enum Side {
+    /**
+     * Buy order direction, represented by an integer value of +1.
+     * Indicates an order to purchase.
+     */
+    BUY(+1),
+
+    /**
+     * Sell order direction, represented by an integer value of -1.
+     * Indicates an order to sell.
+     */
+    SELL(-1);
+
+    /**
+     * The direction of the order.
+     */
+    public final int direction;
+
+    /**
+     * Constructs a BuySell enum with the specified direction.
+     *
+     * @param direction the direction of the order (+1 for buy, -1 for sell)
+     */
+    Side(int direction) {
+        this.direction = direction;
+    }
+
+    /**
+     * Gets the direction indicator of the order.
+     *
+     * @return the direction indicator as an integer
+     */
+    public int direction() {
+        return direction;
+    }
+    }
+....
+
+Lines 57, Blanks 6, Tokens 392
+
+== File: src\main\java\town\lost\oms\dto\TimeInForce.java
+....
+package town.lost.oms.dto;
+
+/**
+ * The {@code TimeInForce} enum represents the time conditions under which an order will be executed.
+ *
+ * <p>These conditions specify how long an order remains active in the market before it is executed or expires.
+ * This enum includes commonly used time-in-force instructions in trading systems, conforming to standard trading practices.
+ *
+ * <p>Example usage:
+ * <pre>{@code
+ * TimeInForce tif = TimeInForce.DAY;
+ * System.out.println("Time in Force: " + tif);
+ * }</pre>
+ *
+ * <p>This would output:
+ * <pre>
+ * Time in Force: DAY
+ * </pre>
+ */
+public enum TimeInForce {
+    /**
+     * Indicates that the order should be valid for the current trading day only.
+     * If not executed by the end of the trading day, the order expires.
+     */
+    DAY,
+
+    /**
+     * "Good Till Cancelled" - The order remains active until it is either executed or explicitly cancelled by the trader.
+     * It may carry over to the next trading day.
+     */
+    GTC,
+
+    /**
+     * "Immediate or Cancel" - The order attempts to execute all or part immediately.
+     * Any portion not immediately executed is cancelled.
+     */
+    IOC,
+
+    /**
+     * "Fill or Kill" - The order must be executed immediately in its entirety, or it is cancelled.
+     * Partial fills are not allowed.
+     */
+    FOK,
+
+    /**
+     * "Good Till Date" - The order remains active until a specified date unless it is executed or cancelled before then.
+     */
+    GTD,
+
+    /**
+     * "Good Till Time" - The order remains active until a specified time on the current trading day.
+     * If not executed by that time, the order expires.
+     */
+    GTT,
+
+    /**
+     * "At the Opening" - The order is to be executed at the opening of the market.
+     * If not executed at the opening, it is cancelled.
+     */
+    OPG,
+
+    /**
+     * "At the Close" - The order is to be executed at the close of the market.
+     * If not executed at the close, it is cancelled.
+     */
+    ATC,
+
+    /**
+     * "Good for Auction" - The order is valid only during the auction period.
+     */
+    GFA,
+
+    /**
+     * "Good in Session" - The order is valid only during the specified trading session.
+     */
+    GIS,
+
+    /**
+     * "Good Through Crossing" - The order is valid through the crossing session.
+     */
+    GTX,
+
+    /**
+     * "Systematic Internaliser Only" - The order is to be executed only on a systematic internaliser.
+     */
+    SIO
+}
+....
+
+Lines 75, Blanks 12, Tokens 586
+
+== File: src\main\java\town\lost\oms\dto\ValidateUtil.java
+....
+/*
+ */
+package town.lost.oms.dto;
+
+/**
+ * The {@code ValidateUtil} class provides utility methods for validating numerical values such as price and quantity.
+ *
+ * <p>This class is final and cannot be instantiated. It contains static methods that check whether a given price or quantity
+ * is valid according to predefined business rules.
+ *
+ * <p>Example usage:
+ *
+ * <pre>{@code
+ * double price = 100.0;
+ * if (ValidateUtil.invalidPrice(price)) {
+ *     throw new IllegalArgumentException("Invalid price");
+ * }
+ * }</pre>
+ */
+public final class ValidateUtil {
+
+    /**
+     * Private constructor to prevent instantiation.
+     */
+    private ValidateUtil() {
+    }
+
+    /**
+     * Checks if the provided price is invalid.
+     *
+     * <p>A price is considered invalid if it is not a finite number or if it is less than or equal to zero.
+     *
+     * @param price the price to validate
+     * @return {@code true} if the price is invalid; {@code false} otherwise
+     */
+    public static boolean invalidPrice(double price) {
+        return !Double.isFinite(price) || (price <= 0);
+    }
+
+    /**
+     * Checks if the provided quantity is invalid.
+     *
+     * <p>A quantity is considered invalid if it is not a finite number or if it is less than zero.
+     *
+     * @param quantity the quantity to validate
+     * @return {@code true} if the quantity is invalid; {@code false} otherwise
+     */
+    public static boolean invalidQuantity(double quantity) {
+        return !Double.isFinite(quantity) || (quantity < 0);
+    }
+}
+....
+
+Lines 47, Blanks 4, Tokens 352
+
+== File: src\main\java\town\lost\oms\OMSBenchmarkMain.java
+....
+/*
+ */
+
+package town.lost.oms;
+
+import net.openhft.affinity.AffinityLock;
+import net.openhft.chronicle.bytes.MethodReader;
+import net.openhft.chronicle.core.Jvm;
+import net.openhft.chronicle.core.OS;
+import net.openhft.chronicle.core.io.BackgroundResourceReleaser;
+import net.openhft.chronicle.core.io.IOTools;
+import net.openhft.chronicle.jlbh.JLBH;
+import net.openhft.chronicle.jlbh.JLBHOptions;
+import net.openhft.chronicle.jlbh.JLBHTask;
+import net.openhft.chronicle.queue.ChronicleQueue;
+import net.openhft.chronicle.threads.DiskSpaceMonitor;
+import net.openhft.chronicle.wire.ShortTextLongConverter;
+import town.lost.oms.api.OMSIn;
+import town.lost.oms.api.OMSOut;
+import town.lost.oms.dto.*;
+
+import static town.lost.oms.OrderAdderMain.now;
+// isolcpus=5,6,7 set in grub.cfg
+// sudo cpupower frequency-set -g performance -d 4.5g
+
+// -Xmx64m -XX:+UnlockCommercialFeatures -XX:+FlightRecorder -XX:StartFlightRecording=name=test,filename=test.jfr,dumponexit=true,settings=profile -XX:-UseTLAB
+/* Run on a Ryzen 9 5950X, Ubuntu 20.10
+-Xmx1g -DbyteInBinary=true -DpregeneratedMarshallable=true -Dthroughput=100000 -DrunTime=120 -Dpath=/tmp
+-------------------------------- SUMMARY (end to end) us -------------------------------------------
+Percentile   run1         run2         run3         run4         run5      % Variation
+50.0:            2.06         1.99         1.99         1.99         1.99         0.00
+90.0:            2.13         2.04         2.04         2.05         2.05         0.33
+99.0:            3.16         3.09         3.09         3.10         3.10         0.17
+99.7:            3.66         3.57         3.58         3.58         3.57         0.15
+99.9:            4.02         3.92         3.90         3.90         3.90         0.41
+99.97:           4.78         4.66         4.65         4.70         4.65         0.68
+99.99:           5.58         5.29         5.21         5.34         5.14         2.43
+99.997:          8.56         6.01         5.88         6.34         5.90         5.00
+99.999:          9.30         6.81         6.42         9.39         6.47        23.55
+worst:          50.11        74.11        10.58        13.30        11.15        80.02
+----------------------------------------------------------------------------------------------------
+
+-Xmx772m -DbyteInBinary=true -DpregeneratedMarshallable=true -Dthroughput=100000 -DrunTime=120 -Dpath=/nvme/tmp
+-------------------------------- SUMMARY (end to end) us -------------------------------------------
+Percentile   run1         run2         run3         run4         run5      % Variation
+50.0:            1.98         1.97         1.97         1.97         1.97         0.00
+90.0:            2.05         2.04         2.04         2.04         2.04         0.00
+99.0:            3.38         3.39         3.36         3.34         3.34         0.95
+99.7:            6.34         6.38         5.80         5.45         5.46        10.20
+99.9:           16.27        16.42        16.48        16.42        16.48         0.26
+99.97:          17.38        17.38        17.38        17.25        17.38         0.49
+99.99:          18.91        18.46        18.66        18.21        18.66         1.61
+99.997:         24.29        22.24        22.82        21.09        25.12        11.31
+99.999:         29.15        27.94        26.40        25.76       402.94        90.71
+worst:         214.27        51.78       537.60        50.24      1255.42        94.12
+----------------------------------------------------------------------------------------------------
+ */
+public class OMSBenchmarkMain {
+    static {
+        System.setProperty("pauser.minProcessors", "2");
+        System.setProperty("disableValidate", "true");
+    }
+
+    public static final int THROUGHPUT = Integer.getInteger("throughput", 100_000);
+    public static final int RUN_TIME = Integer.getInteger("runTime", 10);
+    public static final ShortTextLongConverter ShortText = ShortTextLongConverter.INSTANCE;
+    public static final String PATH = System.getProperty("path", OS.TMP);
+    public static final boolean ACCOUNT_FOR_COORDINATED_OMISSION = Jvm.getBoolean("accountForCoordinatedOmission");
+
+    @SuppressWarnings("try")
+    public static void main(String[] args) {
+        printProperties();
+
+        String tmpDir = PATH + "/bench-" + System.nanoTime();
+        try (ChronicleQueue input = single(tmpDir, "/input");
+             ChronicleQueue output = single(tmpDir, "/output")) {
+
+            // processing thread
+            Thread processor = new Thread(() -> {
+                try (AffinityLock ignored = AffinityLock.acquireCore()) {
+                    OMSOut out = output.createAppender().methodWriter(OMSOut.class);
+                    OMSImpl oms = new OMSImpl(out);
+                    MethodReader in = input.createTailer("test").methodReader(oms);
+                    while (!Thread.currentThread().isInterrupted()) {
+                        in.readOne();
+                    }
+                }
+            }, "processor");
+            processor.start();
+
+            JLBH jlbh = new JLBH(new JLBHOptions()
+                    .warmUpIterations(300_000)
+                    .pauseAfterWarmupMS(500)
+                    .throughput(THROUGHPUT)
+                    .iterations(THROUGHPUT * RUN_TIME)
+                    .runs(5)
+                    .recordOSJitter(false)
+                    .accountForCoordinatedOmission(ACCOUNT_FOR_COORDINATED_OMISSION)
+                    .acquireLock(AffinityLock::acquireCore)
+                    .jlbhTask(new MyJLBHTask(input)));
+
+            Thread last = new Thread(() -> {
+                try (AffinityLock ignored = AffinityLock.acquireCore()) {
+                    final MethodReader reader = output.createTailer().methodReader(new OMSOut() {
+                        @Override
+                        public void executionReport(ExecutionReport er) {
+                            jlbh.sampleNanos(System.nanoTime() - er.sendingTime());
+                        }
+
+                        @Override
+                        public void orderCancelReject(OrderCancelReject ocr) {
+                        }
+
+                        @Override
+                        public void jvmError(String msg) {
+                        }
+                    });
+                    while (!Thread.currentThread().isInterrupted())
+                        reader.readOne();
+
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+            }, "last");
+            last.start();
+
+            jlbh.start();
+
+            processor.interrupt();
+            last.interrupt();
+        }
+        printProperties();
+        Jvm.pause(1000);
+        IOTools.deleteDirWithFiles(tmpDir);
+        // for a clean shutdown
+        BackgroundResourceReleaser.stop();
+        DiskSpaceMonitor.INSTANCE.close();
+    }
+
+    static ChronicleQueue single(String tmpDir, String x) {
+        return ChronicleQueue.singleBuilder(tmpDir + x)
+                .blockSize(OS.isSparseFileSupported() ? 64L << 30 : 64L << 20)
+                .build();
+    }
+
+    private static void printProperties() {
+        long estimatedMemory = Math.round(Runtime.getRuntime().totalMemory() / 1e6);
+        System.out.println("-Xmx" + estimatedMemory + "m " +
+                "-DbyteInBinary=" + AbstractEvent.BYTES_IN_BINARY + " " +
+                "-DpregeneratedMarshallable=" + AbstractEvent.PREGENERATED_MARSHALLABLE + " " +
+                "-Dthroughput=" + THROUGHPUT + " " +
+                "-DrunTime=" + RUN_TIME + " " +
+                "-Dpath=" + PATH + " " +
+                "-DaccountForCoordinatedOmission=" + ACCOUNT_FOR_COORDINATED_OMISSION);
+    }
+
+    private static class MyJLBHTask implements JLBHTask {
+        private JLBH jlbh;
+        private NewOrderSingle nos;
+        private OMSIn in;
+
+        public MyJLBHTask(ChronicleQueue input) {
+            nos = new NewOrderSingle()
+                    .sender(ShortText.parse("client"))
+                    .target(ShortText.parse("OMS"))
+                    .clOrdID("clOrdId")
+                    .orderQty(1e6)
+                    .price(1.6)
+                    .symbol(ShortText.parse("AUDUSD"))
+                    .ordType(OrderType.LIMIT)
+                    .side(Side.SELL);
+            in = input.createAppender().methodWriter(OMSIn.class);
+        }
+
+        @Override
+        public void init(JLBH jlbh) {
+            this.jlbh = jlbh;
+        }
+
+        @Override
+        public void run(long startTimeNS) {
+            nos.sendingTime(startTimeNS).transactTime(now());
+            in.newOrderSingle(nos);
+        }
+    }
+}
+....
+
+Lines 164, Blanks 22, Tokens 2236
+
+== File: src\main\java\town\lost\oms\OMSImpl.java
+....
+/*
+ */
+
+package town.lost.oms;
+
+import net.openhft.chronicle.core.time.SystemTimeProvider;
+import town.lost.oms.api.OMSIn;
+import town.lost.oms.api.OMSOut;
+import town.lost.oms.dto.*;
+
+/**
+ * The {@code OMSImpl} class is a concrete implementation of the {@link OMSIn} interface,
+ * acting as an intermediary between client requests and the {@link OMSOut} interface.
+ *
+ * <p>This class processes requests for order creation, order cancellation, and cancelling all orders.
+ * It generates appropriate responses using {@link ExecutionReport} and {@link OrderCancelReject}
+ * and sends them through the {@link OMSOut} interface.
+ *
+ * <p><strong>Note:</strong> This class is not thread-safe. If multiple threads are expected to use
+ * the same instance of {@code OMSImpl}, synchronization or separate instances per thread should be used.
+ *
+ * <h2>Usage Example:</h2>
+ *
+ * <pre>{@code
+ * OMSOut omsOut = new OMSOutImplementation();
+ * OMSIn oms = new OMSImpl(omsOut);
+ *
+ * NewOrderSingle newOrder = new NewOrderSingle()
+ *     .sender("ClientA")
+ *     .target("OMS")
+ *     .clOrdID("Order123")
+ *     .symbol("AAPL")
+ *     .orderQty(100)
+ *     .price(150.00)
+ *     .side(Side.BUY)
+ *     .ordType(OrderType.MARKET)
+ *     .transactTime(System.currentTimeMillis());
+ *
+ * oms.newOrderSingle(newOrder);
+ * }</pre>
+ */
+public class OMSImpl implements OMSIn {
+    // The outbound interface for sending execution reports and order cancel rejections
+    private final OMSOut out;
+
+    // Reusable instance of ExecutionReport for creating new orders
+    private final ExecutionReport er = new ExecutionReport();
+
+    // Reusable instance of OrderCancelReject for cancelling orders
+    private final OrderCancelReject ocr = new OrderCancelReject();
+
+    /**
+     * Constructs a new {@code OMSImpl} with a given outbound interface.
+     *
+     * @param out the outbound interface to be used for sending responses
+     */
+    public OMSImpl(OMSOut out) {
+        this.out = out;
+    }
+
+    /**
+     * Processes a new single order request. The request's details are populated into an execution report and sent out.
+     *
+     * @param nos the {@link NewOrderSingle} request to process
+     */
+    @Override
+    public void newOrderSingle(NewOrderSingle nos) {
+        // Reset the execution report DTO
+        er.reset();
+        final long orderID = SystemTimeProvider.CLOCK.currentTimeNanos(); // Generate unique order ID
+
+        // Populate the ExecutionReport with request details
+        er.sender(nos.target())
+                .target(nos.sender())
+                .symbol(nos.symbol())
+                .clOrdID(nos.clOrdID())
+                .ordType(nos.ordType())
+                .orderQty(nos.orderQty())
+                .price(nos.price())
+                .side(nos.side())
+                .sendingTime(nos.sendingTime())
+                .transactTime(nos.transactTime())
+                .leavesQty(0)
+                .cumQty(0)
+                .avgPx(0)
+                .orderID(orderID)
+                .text("Not ready");
+
+        // Send execution report
+        out.executionReport(er);
+    }
+
+    /**
+     * Processes a cancel order request. The request's details are populated into an order cancel rejection and sent out.
+     *
+     * @param cor the {@link CancelOrderRequest} request to process
+     */
+    @Override
+    public void cancelOrderRequest(CancelOrderRequest cor) {
+        // Reset the reusable OrderCancelReject instance
+        ocr.reset();
+        // Populate OrderCancelReject with request details
+        ocr.sender(cor.target())
+                .target(cor.sender())
+                .symbol(cor.symbol())
+                .clOrdID(cor.clOrdID())
+                .sendingTime(cor.sendingTime())
+                .reason("No such order");
+
+        // Send order cancellation rejection
+        out.orderCancelReject(ocr);
+    }
+
+    /**
+     * Processes a cancel all orders request. The request's details are populated into an order cancel rejection and sent out.
+     *
+     * @param cancelAll the {@link CancelAll} request to process
+     */
+    @Override
+    public void cancelAll(CancelAll cancelAll) {
+        // Reset the reusable OrderCancelReject instance
+        ocr.reset();
+        // Populate OrderCancelReject with request details
+        ocr.sender(cancelAll.target())
+                .target(cancelAll.sender())
+                .symbol(cancelAll.symbol())
+                .clOrdID(cancelAll.clOrdID())
+                .sendingTime(cancelAll.sendingTime())
+                .reason("No orders to cancel");
+
+        // Send order cancellation rejection
+        out.orderCancelReject(ocr);
+    }
+}
+....
+
+Lines 121, Blanks 13, Tokens 1041
+
+== File: src\main\java\town\lost\oms\OrderAdderMain.java
+....
+/*
+ */
+
+package town.lost.oms;
+
+import net.openhft.chronicle.core.pool.ClassAliasPool;
+import net.openhft.chronicle.core.time.SystemTimeProvider;
+import net.openhft.chronicle.core.util.Mocker;
+import net.openhft.chronicle.queue.ChronicleQueue;
+import net.openhft.chronicle.queue.ExcerptAppender;
+import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
+import net.openhft.chronicle.queue.rollcycles.TestRollCycles;
+import net.openhft.chronicle.wire.converter.ShortText;
+import town.lost.oms.api.OMSIn;
+import town.lost.oms.dto.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+/**
+ * The {@code OrderAdderMain} class is a utility application that allows users to add new orders to the Order Management System (OMS).
+ *
+ * <p>This class connects to a Chronicle Queue and writes {@link NewOrderSingle} messages to it.
+ * Users can interactively add orders by hitting the Enter key. The application will prompt the user
+ * and continue to accept orders until any non-empty input is entered.
+ */
+public class OrderAdderMain {
+
+    /**
+     * The entry point of the application.
+     *
+     * @param args the input arguments (none expected)
+     */
+    public static void main(String[] args) throws IOException {
+        // Add NewOrderSingle class to the alias pool
+        ClassAliasPool.CLASS_ALIASES.addAlias(NewOrderSingle.class);
+
+        // Establish connection with the queue
+        try (ChronicleQueue q = SingleChronicleQueueBuilder.binary("in")
+                .rollCycle(TestRollCycles.TEST8_DAILY)
+                .build();
+             ExcerptAppender appender = q.createAppender()) {
+
+            // Acquire the appender and write methods for OMSIn
+            OMSIn in = appender.methodWriter(OMSIn.class);
+
+            // Create a logging mock for OMSIn
+            OMSIn in2 = Mocker.logging(OMSIn.class, "in - ", System.out);
+
+            // Create a new order single
+            NewOrderSingle nos = new NewOrderSingle()
+                    .sender(fromShortText("sender"))
+                    .target(fromShortText("target"))
+                    .transactTime(now())
+                    .sendingTime(now())
+                    .account(1)
+                    .timeInForce(TimeInForce.GTC)
+                    .currency(Ccy.USD)
+                    .orderQty(1)
+                    .ordType(OrderType.MARKET)
+                    .side(Side.BUY)
+                    .symbol(fromShortText("EURUSD"));
+
+            // Inform the user to add an order
+            System.out.println("\nHit blank line to add an order, anything else to exit");
+
+            // Initialize a BufferedReader to read user input
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            int orderCounter = 0;
+            while ("".equals(br.readLine())) {
+                // For each blank line read, add a new order
+                nos.clOrdID(Long.toString(orderCounter++));
+
+                // Send the new order
+                in.newOrderSingle(nos);
+                in2.newOrderSingle(nos);
+            }
+        }
+        // Inform the user that the program has finished running
+        System.out.println("Finished");
+
+        // Exit the program
+        System.exit(0);
+    }
+
+    /**
+     * Returns the current system time in nanoseconds.
+     *
+     * @return the current time in nanoseconds
+     */
+    static long now() {
+        return SystemTimeProvider.INSTANCE.currentTimeNanos();
+    }
+
+    /**
+     * Converts a string to a long using base85 encoding.
+     *
+     * @param s the string to convert
+     * @return the long representation of the string
+     */
+    static long fromShortText(String s) {
+        return ShortText.INSTANCE.parse(s);
+    }
+}
+....
+
+Lines 90, Blanks 15, Tokens 822
+
+== File: src\main\java\town\lost\oms\OrderViewerMain.java
+....
+/*
+ */
+
+package town.lost.oms;
+
+import net.openhft.chronicle.bytes.MethodReader;
+import net.openhft.chronicle.core.Jvm;
+import net.openhft.chronicle.core.util.Mocker;
+import net.openhft.chronicle.queue.ChronicleQueue;
+import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
+import net.openhft.chronicle.queue.rollcycles.TestRollCycles;
+import town.lost.oms.api.OMSIn;
+
+/**
+ * The {@code OrderViewerMain} class is a utility application that continuously reads and displays
+ * orders from a Chronicle Queue. It acts as a simple viewer for incoming orders, logging them to
+ * the console.
+ */
+public class OrderViewerMain {
+
+    /**
+     * The entry point of the application.
+     *
+     * @param args the input arguments (none expected)
+     */
+    public static void main(String[] args) {
+        // Inform the user that the program is waiting for messages
+        System.out.println("\nWaiting for messages...");
+
+        // Establish connection with the queue
+        try (ChronicleQueue q = SingleChronicleQueueBuilder.binary("in")
+                .rollCycle(TestRollCycles.TEST8_DAILY)
+                .build()) {
+
+            // Create a logging mock for OMSIn
+            OMSIn logging = Mocker.logging(OMSIn.class, "read - ", System.out);
+
+            // Create a MethodReader from the tail of the queue
+            MethodReader reader = q.createTailer().methodReader(logging);
+
+            // Continuously read messages from the queue
+            while (true) {
+                // Read one message from the queue; pause if no message was read
+                if (!reader.readOne()) {
+                    Jvm.pause(50);
+                }
+            }
+        }
+    }
+}
+....
+
+Lines 42, Blanks 8, Tokens 378
+
+== File: src\test\java\town\lost\oms\OMSImplTest.java
+....
+/*
+ */
+
+package town.lost.oms;
+
+import net.openhft.chronicle.core.time.SetTimeProvider;
+import net.openhft.chronicle.core.time.SystemTimeProvider;
+import org.junit.After;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import town.lost.oms.api.OMSOut;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertEquals;
+
+/**
+ * Test class for OMSImpl.
+ * The OMSImplTest runs tests for each method in OMSImpl class.
+ * The test data is read from specified files and the actual output is compared against expected output.
+ */
+@SuppressWarnings("deprecation")
+@RunWith(Parameterized.class)
+public class OMSImplTest {
+    // Defines the paths to the tests to run.
+    static final List<String> paths = Arrays.asList(new String[]{
+            "newOrderSingle",
+            "newOrderSingleEquity",
+            "cancelOrderRequest",
+            "cancelAll"
+    });
+
+    // The name of the test, and the tester that will run the test.
+    final String name;
+    final net.openhft.chronicle.wire.utils.YamlTester tester;
+
+    // Constructor that sets the name and tester.
+    public OMSImplTest(String name, net.openhft.chronicle.wire.utils.YamlTester tester) {
+        this.name = name;
+        this.tester = tester;
+    }
+
+    // Defines the parameters for the parameterized test runner.
+    @Parameterized.Parameters(name = "{0}")
+    public static List<Object[]> parameters() {
+        // Returns a list of test parameters to run the tests with.
+        // Each test will be run with an instance of AccountManagerImpl,
+        // and will be subjected to various agitations to ensure robustness.
+        return new net.openhft.chronicle.wire.utils.YamlTesterParametersBuilder<>(out -> new OMSImpl(out), OMSOut.class, paths)
+                .agitators(
+                        net.openhft.chronicle.wire.utils.YamlAgitator.messageMissing(),
+                        net.openhft.chronicle.wire.utils.YamlAgitator.duplicateMessage(),
+                        net.openhft.chronicle.wire.utils.YamlAgitator.overrideFields("sendingTime: '', symbol: '', side: '', orderQty: NaN, orderQty: -1, price: NaN, price: -1, clOrdId: '', ordType: ''".split(", *")),
+                        net.openhft.chronicle.wire.utils.YamlAgitator.missingFields("sender, target, sendingTime, symbol, transactTime, account, orderQty, price, side, clOrdID, ordType, timeInForce, currency".split(", *")))
+                .exceptionHandlerFunction(out -> (log, msg, thrown) -> out.jvmError(thrown == null ? msg : (msg + " " + thrown)))
+                .exceptionHandlerFunctionAndLog(true)
+                .get();
+    }
+
+    // After each test, this method resets the system time provider.
+    @After
+    public void tearDown() {
+        SystemTimeProvider.CLOCK = SystemTimeProvider.INSTANCE;
+    }
+
+    // This is the actual test method, which uses the provided tester
+    // to run the test and then compares the expected output to the actual output.
+    @Test
+    public void runTester() {
+        // Sets the system clock to a specific time for the purpose of testing.
+        SystemTimeProvider.CLOCK = new SetTimeProvider("2019-12-03T09:54:37.345679")
+                .autoIncrement(1, TimeUnit.SECONDS);
+        // Asserts that the expected output matches the actual output.
+        assertEquals(tester.expected(), tester.actual());
+    }
+}
+....
+
+Lines 69, Blanks 10, Tokens 791
+
+== File: src\test\resources\cancelAll\in.yaml
+....
+---
+# This is a test for the CancelOrderRequest operation.
+# The CLIENT1 (sender) is sending a request to the Order Management System (OMS1, the target)
+# to cancel an order that was previously placed. The order is identified by its unique ID (clOrdID).
+
+cancelOrderRequest: {
+  sender: CLIENT1,
+  target: OMS1,
+  sendingTime: 2019-12-03T09:54:37.134475,
+  symbol: EURUSD,
+  account: ACC-12345,
+  clOrdID: dkj4378fwh,
+  origClOrdID: ABC1234567,
+  side: BUY
+}
+...
+---
+# This is a test for the CancelAll operation.
+# The CLIENT1 (sender) sends a request to the OMS1 (target) to cancel all orders.
+cancelAll: {
+  sender: CLIENT1,
+  target: OMS1,
+  sendingTime: 2019-12-03T09:54:37.134475,
+  symbol: EURUSD,
+  clOrdID: CANCEL_ALL,
+}
+...
+....
+
+Lines 26, Blanks 1, Tokens 229
+
+== File: src\test\resources\cancelAll\out.yaml
+....
+# This is a test for the CancelOrderRequest operation.
+# The CLIENT1 (sender) is sending a request to the Order Management System (OMS1, the target)
+# to cancel an order that was previously placed. The order is identified by its unique ID (clOrdID).
+---
+orderCancelReject: {
+  sender: OMS1,
+  target: CLIENT1,
+  sendingTime: 2019-12-03T09:54:37.134475,
+  symbol: EURUSD,
+  clOrdID: dkj4378fwh,
+  reason: No such order
+}
+...
+# This is a test for the CancelAll operation.
+# The CLIENT1 (sender) sends a request to the OMS1 (target) to cancel all orders.
+---
+orderCancelReject: {
+  sender: OMS1,
+  target: CLIENT1,
+  sendingTime: 2019-12-03T09:54:37.134475,
+  symbol: EURUSD,
+  clOrdID: CANCEL_ALL,
+  reason: No orders to cancel
+}
+...
+....
+
+Lines 25, Blanks 0, Tokens 220
+
+== File: src\test\resources\cancelOrderRequest\in.yaml
+....
+---
+# This is a test for the CancelOrderRequest operation.
+# The CLIENT1 (sender) is sending a request to the Order Management System (OMS1, the target)
+# to cancel an order that was previously placed. The order is identified by its unique ID (clOrdID).
+
+cancelOrderRequest: {
+  sender: CLIENT1,
+  target: OMS1,
+  sendingTime: 2019-12-03T09:54:37.134475,
+  symbol: EURUSD,
+  account: ACC-12345,
+  clOrdID: dkj4378fwh,
+  origClOrdID: ABC1234567,
+  side: BUY
+}
+...
+....
+
+Lines 15, Blanks 1, Tokens 142
+
+== File: src\test\resources\cancelOrderRequest\out.yaml
+....
+# This is a test for the CancelOrderRequest operation.
+# The CLIENT1 (sender) is sending a request to the Order Management System (OMS1, the target)
+# to cancel an order that was previously placed. The order is identified by its unique ID (clOrdID).
+---
+orderCancelReject: {
+  sender: OMS1,
+  target: CLIENT1,
+  sendingTime: 2019-12-03T09:54:37.134475,
+  symbol: EURUSD,
+  clOrdID: dkj4378fwh,
+  reason: No such order
+}
+...
+....
+
+Lines 13, Blanks 0, Tokens 124
+
+== File: src\test\resources\newOrderSingle\in.yaml
+....
+---
+# This is a test for the NewOrderSingle operation.
+# The client (sender) is sending a new order to the Order Management System (OMS, the target).
+# The order details such as the trading symbol, order quantity, price, and the order type are specified.
+
+newOrderSingle: {
+  sender: CLIENT,
+  target: OMS,
+  sendingTime: 2019-12-03T09:54:37.134475,
+  symbol: EURUSD,
+  transactTime: 2019-12-03T09:54:37.344751,
+  account: ACC-12345,
+  orderQty: 10E6,
+  price: 1.2123,
+  side: BUY,
+  clOrdID: dkj4378fwh,
+  ordType: LIMIT,
+  timeInForce: GTC,
+  currency: USD
+}
+...
+
+....
+
+Lines 20, Blanks 2, Tokens 186
+
+== File: src\test\resources\newOrderSingle\out.yaml
+....
+# This is a test for the NewOrderSingle operation.
+# The client (sender) is sending a new order to the Order Management System (OMS, the target).
+# The order details such as the trading symbol, order quantity, price, and the order type are specified.
+---
+executionReport: {
+  sender: OMS,
+  target: CLIENT,
+  sendingTime: 2019-12-03T09:54:37.134475,
+  symbol: EURUSD,
+  transactTime: 2019-12-03T09:54:37.344751,
+  orderQty: 10E6,
+  price: 1.2123,
+  orderID: 2019-12-03T09:54:37.345679,
+  lastPx: 0.0,
+  leavesQty: 0.0,
+  cumQty: 0.0,
+  avgPx: 0.0,
+  side: BUY,
+  ordType: LIMIT,
+  clOrdID: dkj4378fwh,
+  text: Not ready
+}
+...
+....
+
+Lines 23, Blanks 0, Tokens 225
+
+== File: src\test\resources\newOrderSingleEquity\in.yaml
+....
+---
+# Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
+newOrderSingle: {
+  sender: CLIENT1,
+  target: OMS1,
+  sendingTime: 2023-10-20T14:25:37.134475Z,
+  symbol: AAPL,
+  transactTime: 2023-10-20T14:25:37.134475Z,
+  account: ACC-12345,
+  orderQty: 1000,
+  price: 150.25,
+  side: buy,
+  clOrdID: ABC1234567,
+  ordType: LIMIT,
+  timeInForce: DAY,
+  currency: USD
+}
+...
+---
+# Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
+newOrderSingle: {
+  sender: CLIENT2,
+  target: OMS1,
+  sendingTime: 2023-10-20T14:27:15.987654Z,
+  symbol: GOOGL,
+  transactTime: 2023-10-20T14:27:15.987654Z,
+  account: ACC-67890,
+  orderQty: 500,
+  price: 2750.50,
+  side: sell,
+  clOrdID: XYZ7654321,
+  ordType: MARKET,
+  timeInForce: DAY,
+  currency: USD
+}
+...
+....
+
+Lines 36, Blanks 0, Tokens 299
+
+== File: src\test\resources\newOrderSingleEquity\out.yaml
+....
+# Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
+---
+executionReport: {
+  sender: OMS1,
+  target: CLIENT1,
+  sendingTime: 2023-10-20T14:25:37.134475,
+  symbol: AAPL,
+  transactTime: 2023-10-20T14:25:37.134475,
+  orderQty: 1E3,
+  price: 150.25,
+  orderID: 2019-12-03T09:54:37.345679,
+  lastPx: 0.0,
+  leavesQty: 0.0,
+  cumQty: 0.0,
+  avgPx: 0.0,
+  side: BUY,
+  ordType: LIMIT,
+  clOrdID: ABC1234567,
+  text: Not ready
+}
+...
+# Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
+---
+executionReport: {
+  sender: OMS1,
+  target: CLIENT2,
+  sendingTime: 2023-10-20T14:27:15.987654,
+  symbol: GOOGL,
+  transactTime: 2023-10-20T14:27:15.987654,
+  orderQty: 500.0,
+  price: 2750.5,
+  orderID: 2019-12-03T09:54:38.345679,
+  lastPx: 0.0,
+  leavesQty: 0.0,
+  cumQty: 0.0,
+  avgPx: 0.0,
+  side: SELL,
+  ordType: MARKET,
+  clOrdID: XYZ7654321,
+  text: Not ready
+}
+...
+....
+
+Lines 42, Blanks 0, Tokens 382
+
+== Summary ==
+Total Lines:  2833
+Total Blanks: 298
+Total Tokens: 25169
+Tokens/Line:  8.9
