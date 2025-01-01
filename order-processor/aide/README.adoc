@@ -4,6 +4,8 @@
 :lang: en-GB
 :toc:
 
+Copied from https://github.com/peter-lawrey/aide[Peter Lawrey's AIDE Project]
+
 This folder contains supplemental AsciiDoc files that guide usage, workflows, or style conventions for AI-based projects.
 
 == Overview
@@ -13,7 +15,6 @@ aide/
 ├─ aide-glossary.adoc       → Terminology definitions
 ├─ aide-style-guide.adoc    → Project coding style guidelines
 ├─ aide-workflow.adoc       → AI workflow explanation
-├─ examples.adoc            → Example using AI
 └─ notes-on-using-aide.adoc → Notes on using AIDE
 ----
 
