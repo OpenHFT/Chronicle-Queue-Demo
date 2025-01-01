@@ -29,8 +29,7 @@ Specifically:
 - The framework calls `validate()` on any outbound message (e.g., `ExecutionReport`) before it is actually persisted to the outbound queue.
 
 2. **Single-Threaded Operation**:
-- The system runs in a single-threaded loop for demonstration purposes.
-No concurrency issues are tested here.
+   - The system runs in a single-threaded loop for demonstration purposes. No concurrency issues are tested here.
 
 3. **Exception Handling**:
 - If `OMSImpl` throws an unhandled exception, the framework intercepts it and calls `OMSOut.jvmError(...)`.
@@ -66,8 +65,7 @@ We do not require full queue-based flows in these tests; rather, we rely on mock
 - Where relevant, confirm that the correct method (`executionReport` vs. `orderCancelReject` vs. `jvmError`) is called under erroneous conditions.
 
 5. **No Assumed Validation**
-- Even though the framework calls `validate()`, unit tests can optionally explore what happens if a `DTO` with invalid fields reaches `OMSImpl`.
-This ensures robust handling or clarifies the contract.
+   - Even though the framework calls `validate()`, unit tests can optionally explore what happens if a `DTO` with invalid fields reaches `OMSImpl`. This ensures robust handling or clarifies the contract.
 
 === 3.3 Example Tests
 
@@ -81,7 +79,9 @@ This ensures robust handling or clarifies the contract.
 === 4.1 Purpose and Structure
 
 These tests simulate **end-to-end** flows:
-- *Given* some optional setup in `_setup.yaml` (if needed), - *When* inbound events are described in `in.yaml`, - *Then* the system is expected to produce matching events in `out.yaml`.
+- *Given* some optional setup in `_setup.yaml` (if needed),
+- *When* inbound events are described in `in.yaml`,
+- *Then* the system is expected to produce matching events in `out.yaml`.
 
 They are typically used with a runner (e.g., `YamlTester`) that replays the inbound events through `OMSImpl` and verifies the generated output events line-by-line or field-by-field.
 
