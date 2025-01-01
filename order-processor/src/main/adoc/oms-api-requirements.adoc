@@ -8,6 +8,9 @@ This requirements document provides **sufficient detail to recreate** both the `
 
 In this system, an **Order Management System (OMS)** receives inbound events (orders, cancellations) and emits outbound events (execution reports, reject messages). This design uses **Chronicle Queue** for persistence and asynchronous event-driven processing, with **Chronicle Wire** for serialization.
 
+NOTE: All event messages in this system (e.g., `NewOrderSingle`, `CancelOrderRequest`, `ExecutionReport`) are conceptually derived from the Financial Information eXchange (FIX) Protocol, version 4.2. See https://www.fixtrading.org/standards/fix-4-2/ for more details on field definitions, message flow, and usage conventions in FIX-based trading systems.
+
+
 == Assumptions
 
 1. **Single-Threaded**: This demo runs in a single-threaded context (e.g., one thread polling events from the queue).  
