@@ -1,0 +1,316 @@
+[#aide-examples]
+= AIDE Examples
+
+== Prompt: Event Driven Example
+
+----
+Give a high performance sample program for event logging and event processing.
+----
+
+**Result**
+
+Here’s an example that utilises Chronicle Queue's **Method Readers** and **Method Writers** for event logging and processing.
+This approach leverages Chronicle Queue's built-in serialization and method invocation capabilities, offering cleaner and more efficient code.
+
+'''
+=== Maven Dependency
+
+Add the following dependency to your `pom.xml`:
+
+[source,xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>net.openhft</groupId>
+        <artifactId>chronicle-queue</artifactId>
+        <version>3.27ea0</version>
+    </dependency>
+</dependencies>
+----
+
+=== Interface Definitions
+
+Define the interfaces for the events to be logged and processed.
+
+==== EventInterface.java
+
+[source,java]
+----
+public interface EventInterface {
+    void onEvent(String event);
+}
+----
+
+'''
+
+=== EventLogger.java
+
+The `EventLogger` writes events to the queue using a **Method Writer**.
+
+[source,java]
+----
+import net.openhft.chronicle.queue.ChronicleQueue;
+
+public class EventLogger implements AutoCloseable {
+
+    private final ChronicleQueue queue;
+    private final EventInterface eventWriter;
+
+    public EventLogger(String path) {
+        queue = ChronicleQueue.singleBuilder(path).build();
+        eventWriter = queue.methodWriter(EventInterface.class);
+    }
+
+    public void logEvent(String event) {
+        eventWriter.onEvent(event);
+    }
+
+    public void close() {
+        queue.close();
+    }
+
+    public static void main(String[] args) {
+        try (EventLogger logger = new EventLogger("events-queue")) {
+            logger.logEvent("UserLogin: user123");
+            logger.logEvent("FileUpload: fileX.pdf");
+        }
+    }
+}
+----
+
+'''
+
+=== EventProcessor.java
+
+The `EventProcessor` reads and processes events using a **Method Reader**.
+
+[source,java]
+----
+import net.openhft.chronicle.queue.ChronicleQueue;
+import net.openhft.chronicle.bytes.MethodReader;
+public class EventProcessor {
+
+    private final ChronicleQueue queue;
+    private final MethodReader reader;
+
+    public EventProcessor(String path) {
+        queue = ChronicleQueue.singleBuilder(path).build();
+        reader = queue.createTailer().methodReader((EventInterface) this::processEvent);
+    }
+
+    private void processEvent(String event) {
+        System.out.println("Processing event: " + event);
+    }
+
+    public void startProcessing() {
+        while (true) {
+            if (!reader.readOne()) {
+                try {
+                    Thread.sleep(10); // Prevent busy spinning
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        EventProcessor processor = new EventProcessor("events-queue");
+        processor.startProcessing();
+    }
+}
+----
+
+'''
+
+=== Key Changes
+
+1. **Event Writer**:
+- Uses `ChronicleQueue.methodWriter(EventInterface.class)` to generate a proxy implementation of `EventInterface`.
+- Simplifies the logging of events by invoking interface methods.
+
+2. **Event Reader**:
+- Uses `ChronicleQueue.methodReader(...)` to process events by calling the specified interface method.
+
+3. **Event Processing Logic**:
+- The `processEvent` method is invoked directly for each event by the `MethodReader`.
+
+'''
+
+=== Execution
+
+1. Run `EventLogger` to log events.
+2. Start `EventProcessor` to process the logged events in real-time.
+
+'''
+
+=== Benefits of Using Method Readers and Writers
+
+- **Clean API**: Method calls directly represent events, reducing boilerplate.
+- **Type Safety**: Ensures compile-time validation of event definitions.
+- **High Performance**: Optimized serialization and deserialization with minimal latency.
+
+This approach streamlines event-driven systems while maintaining high performance and simplicity.
+
+== Prompt: Key Value Store Example
+
+----
+Given a java example of a high performance key value store
+----
+
+**Result**
+
+Here’s an example of a high-performance key-value store implemented in Java using **Chronicle Map**, a low-latency, in-memory, persisted key-value store suitable for high-throughput applications.
+
+'''
+
+=== Maven Dependency
+
+Add the following dependency to your `pom.xml`:
+
+[source,xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>net.openhft</groupId>
+        <artifactId>chronicle-map</artifactId>
+        <version>3.27ea0</version>
+    </dependency>
+</dependencies>
+----
+
+'''
+
+=== Implementation
+
+==== KeyValueStore.java
+
+This class provides a simple interface to interact with a Chronicle Map.
+
+[source,java]
+----
+package build.chronicle.aide;
+
+import net.openhft.chronicle.map.ChronicleMap;
+
+import java.io.File;
+import java.io.IOException;
+
+public class KeyValueStore implements AutoCloseable {
+
+    private final ChronicleMap<String, String> map;
+
+    public KeyValueStore(String filePath) throws IOException {
+        // Create or load a persisted Chronicle Map
+        map = ChronicleMap
+                .of(String.class, String.class)
+                .averageKey("exampleKey")
+                .averageValue("exampleValue")
+                .entries(1_000_000) // Number of expected entries
+                .createPersistedTo(new File(filePath));
+    }
+
+    public void put(String key, String value) {
+        map.put(key, value);
+    }
+
+    public String get(String key) {
+        return map.get(key);
+    }
+
+    public void remove(String key) {
+        map.remove(key);
+    }
+
+    public void close() {
+        map.close();
+    }
+
+    public static void main(String[] args) throws IOException {
+        String filePath = "key-value-store.dat";
+
+        try (KeyValueStore store = new KeyValueStore(filePath)) {
+            // Insert key-value pairs
+            store.put("user:1", "Alice");
+            store.put("user:2", "Bob");
+
+            // Retrieve and print values
+            System.out.println("user:1 -> " + store.get("user:1"));
+            System.out.println("user:2 -> " + store.get("user:2"));
+
+            // Remove a key
+            store.remove("user:1");
+            System.out.println("user:1 -> " + store.get("user:1")); // Should print null
+        }
+    }
+}
+----
+
+'''
+
+=== Features
+
+1. **Persistence**:
+- The data is stored in a file (`key-value-store.dat`) and survives application restarts.
+- Use `.createOrRecoverPersistedTo(filePath)` to create or recover a persisted map.
+
+2. **Performance**:
+- Optimized for low-latency reads and writes.
+- Suitable for applications requiring millions of operations per second.
+
+3. **Scalability**:
+- Supports billions of entries with minimal memory overhead.
+
+4. **Ease of Use**:
+- Simple API for `put`, `get`, and `remove` operations.
+
+'''
+
+=== How It Works
+
+1. **Initialization**:
+- The Chronicle Map is configured with average key/value sizes and the expected number of entries.
+
+2. **Operations**:
+- Keys and values are stored as `String`.
+This can be replaced with any serializable class for more complex use cases.
+
+3. **Persistence**:
+- The map persists to a file, enabling recovery after application restarts.
+
+4. **Cleanup**:
+- The `close` method ensures all resources are released and the map is safely persisted.
+
+'''
+
+=== Example Output
+
+[source,text]
+----
+user:1 -> Alice
+user:2 -> Bob
+user:1 -> null
+----
+
+'''
+
+=== Advanced Usage
+
+1. **Custom Key/Value Types**:
+Replace `String.class` with custom types for both keys and values.
+
+[source,java]
+----
+ChronicleMap.of(MyKey.class, MyValue.class)
+            .averageKey(new MyKey())
+            .averageValue(new MyValue())
+            .entries(1_000_000)
+            .createOrRecoverPersistedTo("custom-map.dat");
+----
+
+2. **Concurrency**:
+- Chronicle Map supports concurrent access across threads and processes.
+- It’s thread-safe without additional locking mechanisms.
+
+This example demonstrates a robust and efficient key-value store suitable for high-performance applications like caching, distributed systems, or analytics.
