@@ -72,8 +72,7 @@ Any validation failure triggers a path where `jvmError` is called or a rejection
 - Contains fields such as `symbol` and `clOrdID`, representing which orders to cancel.
 
 * **Process**:
-- Similar to `cancelOrderRequest`, no orders are tracked.
-The system publishes an `OrderCancelReject` with `"No orders to cancel"`.
+- Similar to `cancelOrderRequest`, no orders are tracked. The system publishes an `OrderCancelReject` with `"No orders to cancel"`.
 
 * **Output**: `OrderCancelReject`
 
@@ -93,8 +92,7 @@ This ensures system-level errors are tracked in the same queue-based workflow.
 2. **Order Rejection**: Returns an `OrderCancelReject` for both single-order and mass-cancel requests, or if validation fails.
 3. **DTO Mapping**: Maps inbound DTO fields to outbound DTO fields (`sender ↔ target`, `symbol`, `clOrdID`, etc.).
 4. **Time/ID Generation**: Uses `SystemTimeProvider.CLOCK.currentTimeNanos()` to assign `orderID`.
-5. **Validation Flow**: Relies on the framework to call `validate()` on input and output DTOs.
-If invalid, the framework or `OMSImpl` triggers appropriate rejection/error handling.
+5. **Validation Flow**: Relies on the framework to call `validate()` on input and output DTOs. If invalid, the framework or `OMSImpl` triggers appropriate rejection/error handling.
 
 == Sample Implementation
 
