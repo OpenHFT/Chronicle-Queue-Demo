@@ -9,13 +9,24 @@ The Order Processor Demo showcases the implementation of services using messages
 * <<prerequisites,Prerequisites>>
 * <<installation,Installation>>
 * <<running-the-project,Running the Project>>
-* <<contributing,Contributing>>
-* <<acknowledgments,Acknowledgments>>
 
+== Requirements
+
+The Order Processor Demo has the following requirements documents:
+
+- link:src/main/adoc/oms-requirements.adoc[OMS Requirements]: This document outlines the requirements for the Order Management System (OMS) in the project.
+- link:src/main/adoc/oms-api-requirements.adoc[OMS API Requirements]: This document outlines the requirements for the OMS API in the project.
+- link:src/main/adoc/test-requirements.adoc[Test Requirements]: This document outlines the requirements for testing the project.
+- link:src/main/adoc/selected-fix-4.2.adoc[Selected FIX 4.2]: This document outlines the selected FIX 4.2 messages and their corresponding DTO classes used in the project.
+
+This project uses link:aide/README.adoc[AIDE] to maintain consistency between requirements, tests, and code. See https://github.com/peter-lawrey/aide[AIDE Project] for more information.
+
+[#getting-started]
 == Getting Started
 
 To get started with the Order Processor Demo, you need to clone the repository to your local machine. Once you have cloned the repository, you can open it in your IDE of choice (we recommend IntelliJ CE for this project).
 
+[#prerequisites]
 == Prerequisites
 
 Before you begin, ensure you have the following installed:
@@ -25,6 +36,7 @@ Before you begin, ensure you have the following installed:
 - **Integrated Development Environment (IDE)**: IntelliJ IDEA Community Edition (recommended) or any other IDE
 - **Internet Access**: Required for Maven to download necessary dependencies
 
+[#installation]
 == Installation
 
 Here are the steps to clone the repository and open it in IntelliJ:
@@ -34,8 +46,10 @@ Here are the steps to clone the repository and open it in IntelliJ:
 3. Navigate to the cloned repository and click 'Open'
 4. Wait for the IDE to import the project and download the necessary dependencies
 
+[#running-the-project]
 == Running the Project
 
+// change this to be [mermaid] to be seen in the rendered output
 [source,mermaid]
 ....
 sequenceDiagram
@@ -56,10 +70,12 @@ To run the project, you need to compile the project and run the main classes for
 
 You can run these classes directly from your IDE, or you can use `mvn compile exec:exec@id` on the command line to run the compiled classes.
 
+[#contributing]
 == Contributing
 
 We appreciate any contributions to the Order Processor Demo. If you find any bugs or issues, please open an issue in the repository. If you want to contribute to the code, please fork the repository, make your changes, and open a pull request.
 
+[#acknowledgments]
 == Acknowledgments
 
 - Inspired by real-world financial trading systems.
