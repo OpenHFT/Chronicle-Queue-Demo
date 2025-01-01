@@ -1,0 +1,155 @@
+[#aide-workflow]
+= AIDE Workflow
+:doctype: workflow
+:author: Peter Lawrey
+:lang: en-GB
+:toc:
+
+AIDE combines AI-powered code generation's agility with the reliability of Documentation-Driven Development.
+AIDE is an artificial intelligence development environment that relies on AsciiDoc for rich documentation and document context uploads to align your team with AI tooling.
+
+AIDE focuses on two principles:
+
+1. Use AI for repetitive code tasks such as keeping adoc, code, and tests in sync.
+2. Keep requirements, tests, and code in sync with AsciiDoc.
+
+== Iterative Workflow
+
+The development follows a simple loop:
+
+1. **Document Requirements** – Write or update features in AsciiDoc so everyone understands goals.
+These can be derived and updated from code and tests as these change.
+This can be as much or as little detail as you have.
+You can start by asking the AI to generate a detailed functional requirements document from the code you have or an idea.
+2. **Write or Update Tests** – Create tests that reflect documented requirements.
+AI can suggest skeletons; you refine domain logic.
+3. **Write or Update Code** – Let AI produce a boilerplate or refactor existing code.
+You verify its validity.
+4. **Continuous Review** – AI flags discrepancies; humans resolve them.
+5. **Repeat** – Each new or changed requirement triggers another loop.
+
+== AI <-> Human Collaboration
+
+[mermaid]
+----
+flowchart LR
+  A((Write/Update<br>Requirements)) <--> B((Write/Update<br>Tests))
+  B <--> C((Write/Refactor<br>Code))
+  C <--> A
+----
+
+- **AI**: Proposes repetitive code, test stubs, or refactors.
+- **Human**: Reviews correctness, ensures domain fit, and finalises decisions.
+- **Outcome**: Software matches documented requirements and passes tests.
+
+== Elevating the Workflow with Real-Time Documentation
+
+Building upon our existing Iterative Workflow, the newest recommendation is to emphasise *real-time updates* to documentation.
+Ensure the relevant `.adoc` files are updated as soon as features, requirements, or tests change.
+This tight loop informs the AI and creates immediate clarity for all team members.
+
+=== Benefits
+
+- **Confidence in Documentation**: As the newest post highlights, accurate docs keep you from "miscommunications" that derail real-world outcomes.
+- **Better Onboarding**: An up-to-date AsciiDoc set means new developers grasp the system's design and requirements more quickly.
+- **Incremental Changes**: Thanks to the incremental mode, AIDE flags any newly updated files so you can keep the documentation in sync.
+
+== Benefits of Keeping Requirements, Tests, and Code In Sync
+
+- **Reduced Drift**: Fewer gaps between documentation and iimplementation
+- **Faster Feedback**: AI can quickly generate stubs and highlight inconsistencies.
+- **Better Quality**: Frequent checks align the code with tests and docs.
+- **Smoother Onboarding**: Up-to-date AsciiDoc clarifies the system for new developers.
+
+== Best Practices
+
+1. **Single Source of Truth**
+Keep docs (AsciiDoc), tests, and code in version control.
+
+2. **Frequent Iterations**
+Update documentation first, then let AI produce or refine code and tests.
+
+3. **Small Commits**
+Each commit should relate to a single requirement or story, making reviewing changes easier.
+
+4. **Team Buy-In**
+Encourage everyone to review AI outputs.
+Use a consistent coding style guided by the style guide.
+
+== Summarising Large Files
+
+When a code or test file grows very large, it can complicate AI-based reviews or exceed token limits.
+AIDE allows you to generate a condensed `.ad` summary for these files.
+This step is handy for rarely updated classes or tests that do not need frequent in-depth reference.
+
+Here is the recommended process:
+
+1. **Identify Large Files**
+Track files that exceed a certain token threshold (as noted in `notes-on-using-aide.adoc`), or are not actively changing.
+2. **Use AI to Summarise**
+Run the "Summarise this class as an adoc" command or an equivalent script/tool.
+This produces a concise `.ad` file containing essential details.
+3. **Commit**
+Include a concise commit message like "Summarise large class as `.ad` to reduce token length."
+
+This approach keeps your AI-based tooling efficient and your repository lean while preserving a high-level understanding of classes that do not require frequent full-detail scrutiny.
+
+'''
+
+== Why Integrate Chronicle Products?
+
+Chronicle products are designed to handle high-performance requirements for latency-critical systems. By integrating them with this project:
+- **Throughput**: Achieve message processing speeds exceeding 1M messages/second.
+- **Latency**: Sub-microsecond latencies for in-memory operations.
+- **Scalability**: Handle billions of records with minimal memory overhead.
+- **Fault Tolerance**: Ensure robustness and reliability in distributed systems.
+
+[mermaid]
+----
+flowchart TD
+    A[Your Application] -->|Queue Events| B[Chronicle Queue]
+    B -->|Shared State| C[Chronicle Map]
+    A -->|FIX Messages| D[Chronicle FIX Engine]
+----
+
+When building applications with AIDE, it's important to consider performance, especially for latency-sensitive or high-throughput systems. Chronicle libraries provide specialised tools to optimise various aspects of your architecture:
+
+=== Chronicle Queue
+
+https://github.com/OpenHFT/Chronicle-Queue[Chronicle Queue] is a persisted low-latency messaging framework for high-performance applications. Event `MethodReader` and `MethodWriter` can be used to read and write messages at sub-microsecond latencies in an effective high-level way.
+
+- **Best for:** High-throughput messaging or event-driven architectures.
+- **Use Case:** Logging, replaying, or processing large message volumes.
+- **Why Use It:** Microsecond-level latencies, append-only logging, and distributed processing.
+
+=== Chronicle Map
+
+https://github.com/OpenHFT/Chronicle-Map[Chronicle Map] is a fast, in-memory, non-blocking key-value store.
+
+- **Best for:** High-performance, persistent key-value stores.
+- **Use Case:** Concurrent access to shared data across threads or processes.
+- **Why Use It:** Supports billions of entries, low-latency reads/writes, and thread-safe operations.
+
+=== Chronicle Services
+
+https://chronicle.software/services/[Chronicle Services] is a framework for high-performance distributed microservices.
+
+- **Best for:** Scalable, low-latency microservices.
+- **Use Case:** Event-driven architectures with robust inter-service communication.
+- **Why Use It:** Simplifies development, supports fault tolerance, and optimises sub-millisecond interactions.
+
+=== Chronicle FIX Engine
+
+https://chronicle.software/fix-engine/[Chronicle FIX Engine] is a high-performance FIX protocol engine.
+
+- **Best for:** Financial systems needing low-latency FIX protocol support.
+- **Use Case:** Trading platforms, market data systems, or FIX-based gateways.
+- **Why Use It:** Deterministic latencies, FIX message handling, and minimal overhead.
+
+Choosing the correct Chronicle library ensures your applications meet modern performance demands while maintaining a streamlined AIDE-driven development workflow.
+
+== Conclusion
+
+AIDE streamlines development by pairing AI's efficiency with clear human guidance.
+Document requirements, run AI-driven code generation, verify via tests, and repeat in small steps.
+This keeps your project consistent, accurate, and easy to maintain.
