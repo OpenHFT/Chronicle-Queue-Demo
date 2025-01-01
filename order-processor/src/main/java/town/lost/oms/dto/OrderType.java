@@ -16,7 +16,7 @@ package town.lost.oms.dto;
  * NewOrderSingle nos = new NewOrderSingle()
  *    .sender(ShortText.parse("client"))
  *    .target(ShortText.parse("OMS"))
- *    .clOrdID("clOrdId")
+ *    .clOrdID("clOrdID")
  *    .orderQty(1e6)
  *    .price(1.6)
  *    .symbol(ShortText.parse("AUDUSD"))

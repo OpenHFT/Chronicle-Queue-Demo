@@ -54,7 +54,7 @@ public class OMSImplTest {
                 .agitators(
                         net.openhft.chronicle.wire.utils.YamlAgitator.messageMissing(),
                         net.openhft.chronicle.wire.utils.YamlAgitator.duplicateMessage(),
-                        net.openhft.chronicle.wire.utils.YamlAgitator.overrideFields("sendingTime: '', symbol: '', side: '', orderQty: NaN, orderQty: -1, price: NaN, price: -1, clOrdId: '', ordType: ''".split(", *")),
+                        net.openhft.chronicle.wire.utils.YamlAgitator.overrideFields("sendingTime: '', symbol: '', side: '', orderQty: NaN, orderQty: -1, price: NaN, price: -1, clOrdID: '', ordType: ''".split(", *")),
                         net.openhft.chronicle.wire.utils.YamlAgitator.missingFields("sender, target, sendingTime, symbol, transactTime, account, orderQty, price, side, clOrdID, ordType, timeInForce, currency".split(", *")))
                 .exceptionHandlerFunction(out -> (log, msg, thrown) -> out.jvmError(thrown == null ? msg : (msg + " " + thrown)))
                 .exceptionHandlerFunctionAndLog(true)
