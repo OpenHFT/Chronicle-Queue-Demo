@@ -1,10 +1,10 @@
 # Scenario: Submit a new AAPL equity order
 # Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
-# missing orderQty: 1000,
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: orderQty is required"
+# override clOrdID: ABC1234567 to clOrdID: ''
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: clOrdID is required"
 ...
 # Scenario: Submit a new GOOGL equity order
 # Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
-# missing orderQty: 500,
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: orderQty is required"
+# override clOrdID: XYZ7654321 to clOrdID: ''
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: clOrdID is required"
 ...

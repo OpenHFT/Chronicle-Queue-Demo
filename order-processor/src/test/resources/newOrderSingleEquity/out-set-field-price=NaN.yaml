@@ -1,7 +1,9 @@
+# Scenario: Submit a new AAPL equity order
 # Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
 # override price: 150.25 to price: NaN
 jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: price is invalid"
 ...
+# Scenario: Submit a new GOOGL equity order
 # Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
 # override price: 2750.50 to price: NaN
 jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: price is invalid"
