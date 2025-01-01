@@ -66,7 +66,7 @@ Reran `AppDocumentApp` to create a new context.asciidoc file.
 - `improve and reduce duplication in src/main/adoc files`
 * Ten reasonable suggestions to improve the requirements and test documents, but none compelling.
 
-== Third Phase
+== Third Phase - TBD
 
 Review the project
 
