@@ -63,6 +63,8 @@ Reran `AppDocumentApp` to create a new context.asciidoc file.
 - Run tests with `-Dregress.tests` to update the out.yaml files.
 * This created three new agitated tests after correcting the case of `clOrdID` in the YAML files.
 - `Generate a details requirements asciidoc for unit tests and yaml based event driven tests including assumptions made by the framework`
+- `improve and reduce duplication in src/main/adoc files`
+* Ten reasonable suggestions to improve the requirements and test documents, but none compelling.
 
 == Third Phase
 

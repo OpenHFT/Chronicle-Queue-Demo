@@ -145,6 +145,3 @@ Whenever the code or the domain logic changes:
 == 6. Summary
 
 This document outlines how to structure both **unit tests** and **YAML-based event-driven tests**, ensuring they align with the **framework assumptions** (validation, single-threaded design, exception interception). By maintaining consistent naming, timestamps, and enumerations, the tests remain clear and consistent with the domain logic. Each new feature or bug fix should be accompanied by **at least one** new YAML scenario or unit test to preserve coverage and maintain system quality.
-
-Save the file as something like test-requirements.adoc in your documentation directory so the entire team can reference it. This ensures everyone uses the same guidelines for creating or extending unit tests and YAML-based tests.
-
