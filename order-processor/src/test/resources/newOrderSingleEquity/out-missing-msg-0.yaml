@@ -1,4 +1,5 @@
 # Missing message 0
+# Scenario: Submit a new GOOGL equity order
 # Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
 ---
 executionReport: {

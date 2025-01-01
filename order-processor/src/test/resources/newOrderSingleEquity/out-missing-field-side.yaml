@@ -1,7 +1,9 @@
+# Scenario: Submit a new AAPL equity order
 # Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
 # missing side: BUY,
 jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: side is required"
 ...
+# Scenario: Submit a new GOOGL equity order
 # Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
 # missing side: SELL,
 jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: side is required"

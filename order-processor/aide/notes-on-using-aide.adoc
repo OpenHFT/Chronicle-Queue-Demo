@@ -5,14 +5,15 @@
 :lang: en-GB
 :toc:
 
-
-Keeping notes on how the project is progressing and what changes you have made is helpful. This can help you understand the project better and make the necessary changes at the end to complete it.
+Keeping notes on how the project is progressing and what changes you have made is helpful.
+This can help you understand the project better and make the necessary changes at the end to complete it.
 
 NOTE: This document can be a template for recording notes on your own project and for helping the AI suggest improvements, as it is also a source of information between phases.
 
 == First Phase - Requirements
 
-Create a skeleton for the project and see what the AI can generate for you. These are more a source of inspiration than a source of truth.
+Create a skeleton for the project and see what the AI can generate for you.
+These are more a source of inspiration than a source of truth.
 
 NOTE: Using `o1` is usally better than `4o` as it is more likely to be understood by the AI and produce a better result. `4o` works better for converting images, or web pages to asciidoc.
 
@@ -58,23 +59,30 @@ Reran `AppDocumentApp` to create a new context.asciidoc file.
 ** (Reran `AppDocumentApp` to create a new increment.asciidoc file so it has the changes I just made)
 ** Merged using `Compare with Clipboard`
 - `generate a unit test for OMSImpl that covers edge cases`
-
+* Minor fixes to the tests to ensure they compile.
+- Run tests with `-Dregress.tests` to update the out.yaml files.
+* This created three new agitated tests after correcting the case of `clOrdID` in the YAML files.
+- `Generate a details requirements asciidoc for unit tests and yaml based event driven tests including assumptions made by the framework`
 
 == Third Phase
+
 Review the project
 
 - Look at more specific improvements
 - Make selective changes
 
 == Fourth Phase
+
 Restructure the project to make it easier to work with
 
 - Refactor the requirements, code, and/or tests to make them easier for the AI to work with and understand.
 
 == Fifth Phase
+
 Finalize the project
 
 - Review the changes made in the previous phases to ensure they are consistent and correct.
 - Make any necessary corrections or adjustments once you feel you aren't advancing.
 
-NOTE: You must understand the project to make the necessary changes at the end to make it complete. If you don't understand something, ask for clarification or skip it and possibly return to it later.
+NOTE: You must understand the project to make the necessary changes at the end to make it complete.
+If you don't understand something, ask for clarification or skip it and possibly return to it later.
