@@ -1,0 +1,181 @@
+= OMSImpl Functional Requirements (Updated)
+:toc:
+:toclevels: 3
+
+== Introduction
+
+The `OMSImpl` class is the core implementation of the `OMSIn` interface, responsible for handling inbound order-related messages and producing appropriate outbound responses. It serves as the "business logic" portion of the Order Management System (OMS), transforming inbound messages (`NewOrderSingle`, `CancelOrderRequest`, `CancelAll`) into outbound messages (`ExecutionReport`, `OrderCancelReject`).
+
+This component is designed to operate within an **event-driven framework**. Each inbound event is read from a Chronicle Queue, and each outbound event is written to another Chronicle Queue. This approach provides *traceability*, as all inbound and outbound events are persisted.
+
+== Purpose and Scope
+
+The primary purposes of `OMSImpl` are:
+
+1. **Receive and Validate** incoming messages (via the framework, which calls `validate()` on DTOs prior to invocation).
+2. **Process** inbound messages (e.g., new orders, cancellation requests).
+3. **Generate** outbound messages (e.g., execution reports, cancellation rejects).
+4. **Publish** outbound events to a Chronicle Queue, after validation via `validate()`.
+
+The scope of `OMSImpl` includes creating new orders, rejecting cancellations, and responding to mass-cancel requests with a single rejection message in this simple example. State management (e.g., actual order book) is not within the scope of this demonstration.
+
+== Event-Driven Interaction Model
+
+- **Input Events**: Arrive through a Chronicle Queue and are read by a matching method on `OMSImpl` (e.g., `newOrderSingle(...)`).
+- **Output Events**: Published to another Chronicle Queue, which downstream consumers or loggers can subscribe to.
+- **Traceability**: Because both inbound and outbound events are fully persisted, the system can be audited or replayed.
+
+== Functional Overview
+
+`OMSImpl` implements the following methods from `OMSIn`:
+
+1. `newOrderSingle(NewOrderSingle nos)`
+2. `cancelOrderRequest(CancelOrderRequest cor)`
+3. `cancelAll(CancelAll cancelAll)`
+
+=== Validation
+
+All inbound DTOs are validated by the framework before calling `OMSImpl`.
+Similarly, `OMSImpl` constructs outbound DTOs (e.g., `ExecutionReport`, `OrderCancelReject`), and these are also validated before being written to the Chronicle Queue. Any validation failure triggers a path where `jvmError` is called or a rejection message is published.
+
+=== newOrderSingle
+
+* **Input**: `NewOrderSingle nos`
+- Contains fields such as `symbol`, `orderQty`, `price`, `side`, `clOrdID`, `ordType`, etc.
+- Includes metadata (e.g., `sender()`, `target()`, `transactTime()`, `sendingTime()`).
+
+* **Process**:
+- A unique `orderID` is generated (in the reference implementation, a nanosecond timestamp).
+- An `ExecutionReport` DTO is populated with the relevant data and sent out.
+- If the inbound `NewOrderSingle` fails validation (missing fields, invalid values), the system *must* create and send an `OrderCancelReject` instead of an `ExecutionReport`.
+
+* **Output**: `ExecutionReport` (or `OrderCancelReject` if invalid)
+
+=== cancelOrderRequest
+
+* **Input**: `CancelOrderRequest cor`
+- Contains fields such as `symbol`, `account`, `origClOrdID`, `clOrdID`, `side`, etc.
+
+* **Process**:
+- In this simple reference implementation, no existing orders are tracked, so the request is rejected with `OrderCancelReject` containing the reason `"No such order"`.
+
+* **Output**: `OrderCancelReject`
+
+=== cancelAll
+
+* **Input**: `CancelAll cancelAll`
+- Contains fields such as `symbol` and `clOrdID`, representing which orders to cancel.
+
+* **Process**:
+- Similar to `cancelOrderRequest`, no orders are tracked. The system publishes an `OrderCancelReject` with `"No orders to cancel"`.
+
+* **Output**: `OrderCancelReject`
+
+== Error Handling
+
+When an **exception is thrown** during processing (e.g., a validation or runtime error), the event-driven framework captures the exception and calls `OMSOut.jvmError(msg)`. This ensures system-level errors are tracked in the same queue-based workflow.
+
+== Performance Requirements
+
+- For this simple example, the component **must** be capable of consistently handling **100k messages/second**.
+- **99% latency** should remain **low jitter** or better under these throughput conditions, indicating that the system processes most messages quickly and consistently.
+
+== Class Responsibilities
+
+1. **Order Creation**: Creates and populates an `ExecutionReport` from a `NewOrderSingle`.
+2. **Order Rejection**: Returns an `OrderCancelReject` for both single-order and mass-cancel requests, or if validation fails.
+3. **DTO Mapping**: Maps inbound DTO fields to outbound DTO fields (`sender ↔ target`, `symbol`, `clOrdID`, etc.).
+4. **Time/ID Generation**: Uses `SystemTimeProvider.CLOCK.currentTimeNanos()` to assign `orderID`.
+5. **Validation Flow**: Relies on the framework to call `validate()` on input and output DTOs. If invalid, the framework or `OMSImpl` triggers appropriate rejection/error handling.
+
+== Sample Implementation
+
+[source,java]
+----
+public class OMSImpl implements OMSIn {
+    private final OMSOut out;
+    private final ExecutionReport er = new ExecutionReport();
+    private final OrderCancelReject ocr = new OrderCancelReject();
+
+    public OMSImpl(OMSOut out) {
+        this.out = out;
+    }
+
+    @Override
+    public void newOrderSingle(NewOrderSingle nos) {
+        // If validated already, proceed; otherwise framework calls jvmError() or triggers rejection
+        er.reset();
+        long orderID = SystemTimeProvider.CLOCK.currentTimeNanos();
+
+        er.sender(nos.target())
+          .target(nos.sender())
+          .symbol(nos.symbol())
+          .clOrdID(nos.clOrdID())
+          .ordType(nos.ordType())
+          .orderQty(nos.orderQty())
+          .price(nos.price())
+          .side(nos.side())
+          .sendingTime(nos.sendingTime())
+          .transactTime(nos.transactTime())
+          .leavesQty(0)
+          .cumQty(0)
+          .avgPx(0)
+          .orderID(orderID)
+          .text("Not ready");
+
+        out.executionReport(er);
+    }
+
+    @Override
+    public void cancelOrderRequest(CancelOrderRequest cor) {
+        ocr.reset();
+        ocr.sender(cor.target())
+           .target(cor.sender())
+           .symbol(cor.symbol())
+           .clOrdID(cor.clOrdID())
+           .sendingTime(cor.sendingTime())
+           .reason("No such order");
+
+        out.orderCancelReject(ocr);
+    }
+
+    @Override
+    public void cancelAll(CancelAll cancelAll) {
+        ocr.reset();
+        ocr.sender(cancelAll.target())
+           .target(cancelAll.sender())
+           .symbol(cancelAll.symbol())
+           .clOrdID(cancelAll.clOrdID())
+           .sendingTime(cancelAll.sendingTime())
+           .reason("No orders to cancel");
+
+        out.orderCancelReject(ocr);
+    }
+}
+----
+
+== Execution and Testing
+
+To compile and run a demonstration that uses `OMSImpl` (and other classes in this system), follow these steps:
+
+1. **Clone the source code** for the Order Processor Demo (the project containing `pom.xml` and these source files).
+2. **Build the project**:
++
+----
+mvn clean install
+----
+3. **Run the relevant main classes**:
++
+- `OrderAdderMain` to send `NewOrderSingle` messages.
+- `OrderViewerMain` to observe messages in the queue.
+- `OMSBenchmarkMain` to measure latency and throughput.
+
+4. **Observe the results**:
+- Execution Reports and Order Cancel Rejects appear in the output Chronicle Queue and/or console.
+
+5. **Error Handling**:
+- Any exceptions thrown are collected and published by calling `jvmError(msg)` on `OMSOut`.
+
+== Conclusion
+
+The `OMSImpl` class is a simple yet illustrative component in an event-driven OMS framework. It showcases how to ingest inbound FIX-like messages from a Chronicle Queue, validate them, process the logic (create an `ExecutionReport` or `OrderCancelReject`), and publish results back to a Chronicle Queue. It must handle 100k msgs/s with low jitter at or better than the 99% latency target. This design ensures robust traceability, minimal coupling, and a clean separation of inbound versus outbound workflows.
