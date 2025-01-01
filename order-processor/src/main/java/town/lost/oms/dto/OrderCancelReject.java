@@ -19,12 +19,17 @@ import net.openhft.chronicle.wire.converter.ShortText;
  * This indicates that the event will be processed into a {@link OrderCancelReject} that will be sent to the order
  * system.
  *
- * <p>Each {@code OrderCancelReject} event contains:
+ * The {@code OrderCancelReject} class corresponds to a FIX 4.2 "Order Cancel Reject" (MsgType=35=9).
+ * <p>
+ * Typical FIX tag mappings:
  * <ul>
- *   <li><strong>symbol</strong>: The identifier for the financial instrument involved in the order.</li>
- *   <li><strong>clOrdID</strong>: The client order ID of the order that was requested to be canceled.</li>
- *   <li><strong>reason</strong>: A string explaining why the cancellation request was rejected.</li>
+ *   <li>{@code symbol} (FIX 55) - Symbol for the order whose cancellation is rejected.</li>
+ *   <li>{@code clOrdID} (FIX 11) - The client order ID referencing which cancel request is rejected.</li>
+ *   <li>{@code reason} could map to {@code CxlRejReason (102)} or {@code Text (58)} for free-form explanation.</li>
+ *   <li>{@code sender}/{@code target} - Conceptually align with SenderCompID (49) / TargetCompID (56).</li>
+ *   <li>{@code sendingTime} (FIX 52, optional) - Timestamp for when the reject was emitted.</li>
  * </ul>
+ * Generally used if a {@code CancelOrderRequest} (35=F) is invalid or cannot be satisfied.
  *
  * <p>Note that the symbol field is encoded using {@link ShortText} to minimize the space required for storage and transmission.
  */

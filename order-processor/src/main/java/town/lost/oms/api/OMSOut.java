@@ -9,30 +9,33 @@ import town.lost.oms.dto.ExecutionReport;
 import town.lost.oms.dto.OrderCancelReject;
 
 /**
- * The {@code OMSOut} interface defines the output operations that an Order Management System (OMS) can perform.
+ * The {@code OMSOut} interface defines outbound operations from the Order Management System (OMS).
  * <p>
- * It includes methods to handle execution reports and order cancel rejections.
- * <p>It extends the {@link ErrorListener} interface to handle any JVM errors that may occur during processing.
- * Each method receives an instance of a data transfer object that represents the details of the operation.
- *
- * @see ExecutionReport
- * @see OrderCancelReject
- * @see ErrorListener
+ * In FIX 4.2 terms, these correspond to:
+ * <ul>
+ *   <li><strong>ExecutionReport (35=8)</strong> - see {@link ExecutionReport}</li>
+ *   <li><strong>OrderCancelReject (35=9)</strong> - see {@link OrderCancelReject}</li>
+ * </ul>
+ * This interface also extends {@link ErrorListener} to handle critical errors.
+ * Typically, these methods are called by {@code OMSImpl} once inbound requests
+ * have been processed and an outcome is determined.
  */
-public interface OMSOut extends ErrorListener{
+public interface OMSOut extends ErrorListener {
 
     /**
-     * Handles an execution report.
+     * Handles an execution report (FIX 4.2 MsgType=35=8), which might indicate a new,
+     * partially filled, filled, or canceled order status.
      *
-     * @param er The {@link ExecutionReport} object representing the details of the execution report.
+     * @param er The {@link ExecutionReport} object representing the order’s current state.
      */
     @MethodId(11)
     void executionReport(ExecutionReport er);
 
     /**
-     * Handles an order cancel reject.
+     * Handles an order-cancel-reject (FIX 4.2 MsgType=35=9), indicating that a cancellation
+     * request could not be honored (e.g., no such order).
      *
-     * @param ocr The {@link OrderCancelReject} object representing the details of the order cancel reject.
+     * @param ocr The {@link OrderCancelReject} object representing the reason for rejection.
      */
     @MethodId(12)
     void orderCancelReject(OrderCancelReject ocr);
