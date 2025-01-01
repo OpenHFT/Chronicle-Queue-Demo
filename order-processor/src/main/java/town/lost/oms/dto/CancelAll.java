@@ -41,7 +41,7 @@ import net.openhft.chronicle.wire.converter.ShortText;
  *
  * <p>Note that the {@code symbol} field is encoded using {@link ShortTextLongConverter} to minimize storage and transmission size.
  */
-public class CancelAll extends AbstractEvent<CancelOrderRequest> {
+public class CancelAll extends AbstractEvent<CancelAll> {
     private static final int MASHALLABLE_VERSION = 1;
     // Symbol for which all orders are to be canceled.
     @ShortText

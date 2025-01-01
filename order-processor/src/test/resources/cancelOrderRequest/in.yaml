@@ -1,4 +1,5 @@
 ---
+# Scenario: Cancel a single existing order
 # This is a test for the CancelOrderRequest operation.
 # The CLIENT1 (sender) is sending a request to the Order Management System (OMS1, the target)
 # to cancel an order that was previously placed. The order is identified by its unique ID (clOrdID).
