@@ -1,5 +1,6 @@
 = Order Processor Demo
 Peter Lawrey
+:lang: en-GB
 
 The Order Processor Demo showcases the implementation of services using messages based on the Financial Information Exchange (FIX) protocol. This project simulates an order processing system, including features such as creating new orders, cancelling specific orders, and cancelling all orders. The project is designed to mimic real-world financial trading systems, demonstrating how such a system can be built using Java.
 
