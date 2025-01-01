@@ -1,0 +1,131 @@
+= Selected FIX 4.2 Messages
+
+== NewOrderSingle (35=D)
+
+**Message Type**: D (New Order - Single)
+
+**DTO Class**: `town.lost.oms.dto.NewOrderSingle`
+
+The fields in `NewOrderSingle` commonly align with the following FIX tags:
+
+|===
+| DTO Field     | Typical FIX Tag | Description
+| `clOrdID`     | 11              | Unique ID assigned by the client to identify the order.
+| `symbol`      | 55              | Ticker symbol or security identifier.
+| `side`        | 54              | Side of the order: 1 = Buy, 2 = Sell, etc. In your code, this is the `Side` enum.
+| `orderQty`    | 38              | Quantity of the order to be bought or sold.
+| `price`       | 44              | Price for Limit or other price-based orders.
+| `timeInForce` | 59              | Time in Force instructions, e.g. 0 = Day, 1 = GTC, 3 = IOC, etc. Mapped to your `TimeInForce` enum.
+| `currency`    | 15              | Currency in which the order is denominated (e.g., USD).
+| `account`     | 1               | Account number or name under which the order is placed.
+| `transactTime`| 60              | Time at which the transaction occurred.
+| `sender` / `target` | (Custom)  | In FIX, the `SenderCompID` (49) and `TargetCompID` (56) fields often track the sender/receiver. In your DTO, these are `long` fields for IDs, but they conceptually align with the notion of comp IDs.
+|===
+
+In FIX 4.2, a **New Order Single** is identified by **MsgType (35) = D**. The system typically uses this message to submit a new order to the market or execution venue.
+
+'''
+
+== CancelOrderRequest (35=F)
+
+**Message Type**: F (Order Cancel Request)
+
+**DTO Class**: `town.lost.oms.dto.CancelOrderRequest`
+
+`CancelOrderRequest` parallels the **Order Cancel Request** in FIX 4.2:
+
+|===
+| DTO Field    | Typical FIX Tag | Description
+| `clOrdID`    | 11              | New (unique) client ID for this cancel request.
+| `origClOrdID`| 41              | Original client ID of the order to be canceled (links this request to the original order).
+| `symbol`     | 55              | Symbol of the order to be canceled.
+| `side`       | 54              | Side of the order (buy or sell).
+| `account`    | 1               | Account under which the original order was placed.
+| `sendingTime`| 52              | In FIX, *SendingTime* is tag 52. You may have a similar timestamp in `CancelOrderRequest` for logging.
+| `transactTime`| 60 (optional)  | Some versions include the transaction time for the cancel request.
+| `sender` / `target` | (Custom) | Similar concept to `SenderCompID` (49) / `TargetCompID` (56).
+|===
+
+FIX 4.2 expects an **Order Cancel Request** to be answered by either an **Order Cancel Reject** (if not canceled) or an **ExecutionReport** (if partially or fully canceled).
+
+'''
+
+== CancelAll (Custom)
+
+**Message Type**: (Not standard in FIX 4.2)
+
+**DTO Class**: `town.lost.oms.dto.CancelAll`
+
+`CancelAll` does **not** have a direct equivalent in the FIX 4.2 standard. While FIX 4.4 and certain vendor extensions introduced mass-cancel or mass-action messages, they are not part of the official FIX 4.2 schema.
+
+|===
+| DTO Field     | Custom / Extended Tag | Description
+| `symbol`      | Could reuse 55       | If you intend to mass-cancel by symbol, you might reuse `Symbol (55)`.
+| `clOrdID`     | 11                   | In some custom implementations, a new unique ID for the mass cancel request.
+| `sender` / `target` | (Custom)       | Same concept of participants as in other messages (comp IDs in standard FIX).
+| `sendingTime` | 52 (optional)        | Could track when the mass cancel was requested.
+|===
+
+**Usage**: The system you’re building demonstrates how to handle mass-cancel requests. This is an **extension** beyond FIX 4.2’s default messages.
+
+'''
+
+== ExecutionReport (35=8)
+
+**Message Type**: 8 (Execution Report)
+
+**DTO Class**: `town.lost.oms.dto.ExecutionReport`
+
+In FIX 4.2, **ExecutionReport** is among the most common messages, used for order status, fills, partial fills, etc.:
+
+|===
+| DTO Field       | Typical FIX Tag | Description
+| `symbol`        | 55              | Symbol or security identifier.
+| `side`          | 54              | Side of the order (1=Buy, 2=Sell).
+| `orderQty`      | 38              | Original quantity requested.
+| `price`         | 44              | Price associated with the order (especially for limit orders).
+| `orderID`       | 37              | Unique identifier for the order as assigned by the broker/exchange.
+| `clOrdID`       | 11              | The client’s original order ID if relevant.
+| `lastPx`        | 31              | Price of the last fill.
+| `leavesQty`     | 151             | Quantity remaining open (not filled yet).
+| `cumQty`        | 14              | Cumulative quantity filled so far.
+| `avgPx`         | 6               | Average fill price across all partial executions.
+| `text`          | 58              | Free-form text, e.g. reason for acceptance or comments.
+| `transactTime`  | 60              | Time of the transaction or fill.
+| `sendingTime`   | 52 (optional)   | The time at which the ExecutionReport is being sent.
+| `ordType`       | 40              | Could reflect the original order type (e.g., Limit, Market).
+| `sender` / `target` | (Custom)    | Conceptually like `SenderCompID` (49) / `TargetCompID` (56).
+|===
+
+A single `ExecutionReport` can indicate **new**, **partial fill**, **fill**, **done for day**, **canceled**, or other statuses. The **ExecType (150)** and **OrdStatus (39)** fields in real FIX can reflect these states, but your DTO has not directly exposed them.
+
+'''
+
+== OrderCancelReject (35=9)
+
+**Message Type**: 9 (Order Cancel Reject)
+
+**DTO Class**: `town.lost.oms.dto.OrderCancelReject`
+
+Corresponding to the **Order Cancel Reject** message in FIX 4.2:
+
+|===
+| DTO Field   | Typical FIX Tag | Description
+| `symbol`    | 55              | Symbol for which the cancellation was requested.
+| `clOrdID`   | 11              | Client order ID referencing which cancel request is being rejected.
+| `reason`    | 58 or 102       | In some FIX flows, `Text (58)` or `CxlRejReason (102)` can carry the reason for rejection.
+| `sender` / `target` | (Custom)| Aligns with `SenderCompID (49)` / `TargetCompID (56)` in standard FIX.
+| `sendingTime`| 52 (optional)  | Timestamp of when the reject was emitted.
+|===
+
+The “reject” scenario typically arises if the **Order Cancel Request** was invalid, the order couldn’t be found, or the order is already filled/closed.
+
+'''
+
+== Summary
+
+- **FIX 4.2** uses **MsgType (35)** to identify each message type (e.g., `35=D` for New Order Single, `35=F` for Order Cancel Request, `35=8` for ExecutionReport, `35=9` for OrderCancelReject).
+- Many **standard fields** have well-known tag numbers (e.g., `ClOrdID (11)`, `Symbol (55)`, `Side (54)`, `Price (44)`), which map directly to your DTO fields like `clOrdID`, `symbol`, `side`, `price`.
+- **CancelAll** is **not** part of FIX 4.2 but can be considered a **custom or extension** message that follows a similar pattern.
+
+By aligning your data classes (`NewOrderSingle`, `CancelOrderRequest`, `ExecutionReport`, etc.) with these **standard FIX tags and message types**, you retain the ability to integrate with other FIX-based systems in the future, or to parse/emit raw FIX messages if required.
