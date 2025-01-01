@@ -10,7 +10,8 @@ Keeping notes on how the project is progressing and what changes you have made i
 
 NOTE: This document can be a template for recording notes on your own project and for helping the AI suggest improvements, as it is also a source of information between phases.
 
-== First Phase
+== First Phase - Requirements
+
 Create a skeleton for the project and see what the AI can generate for you. These are more a source of inspiration than a source of truth.
 
 NOTE: Using `o1` is usally better than `4o` as it is more likely to be understood by the AI and produce a better result. `4o` works better for converting images, or web pages to asciidoc.
@@ -46,12 +47,18 @@ More YAML based tests can be added by including a new directory in the list of p
 
 Output written as `src/main/adoc/oms-api-requirements.adoc`
 
-== Second Phase
-Generate requirements docs for each events and the API
+== Second Phase - Unit Tests
 
-- Update the requirements from the code and tests
-- Update the tests from the requirements and code
-- Update the code from the requirements and tests
+Reran `AppDocumentApp` to create a new context.asciidoc file.
+
+- `suggest improvements to the YAML based tests`
+* Consistent case for `sell`, `ordType`, and `clOrdID` in the YAML files.
+* Consistent absense of timezone ie removed `Z` from timestamps.
+* `Following suggestion 2.1, add a Scenario headings to all the YAML based in.yaml files`
+** (Reran `AppDocumentApp` to create a new increment.asciidoc file so it has the changes I just made)
+** Merged using `Compare with Clipboard`
+- `generate a unit test for OMSImpl that covers edge cases`
+
 
 == Third Phase
 Review the project
