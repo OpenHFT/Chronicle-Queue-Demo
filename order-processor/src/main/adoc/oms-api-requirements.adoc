@@ -12,6 +12,9 @@ This design uses **Chronicle Queue** for persistence and asynchronous event-driv
 
 NOTE: All event messages in this system (e.g., `NewOrderSingle`, `CancelOrderRequest`, `ExecutionReport`) are conceptually derived from the Financial Information eXchange (FIX) Protocol, version 4.2. See https://www.fixtrading.org/standards/fix-4-2/ for more details on field definitions, message flow, and usage conventions in FIX-based trading systems.
 
+NOTE: All event messages in this system (e.g., `NewOrderSingle`, `CancelOrderRequest`, `ExecutionReport`) are conceptually derived from the Financial Information eXchange (FIX) Protocol, version 4.2. See https://www.fixtrading.org/standards/fix-4-2/ for more details on field definitions, message flow, and usage conventions in FIX-based trading systems.
+
+
 == Assumptions
 
 1. **Single-Threaded**: This demo runs in a single-threaded context (e.g., one thread polling events from the queue).

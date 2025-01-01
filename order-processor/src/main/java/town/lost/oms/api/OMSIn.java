@@ -25,7 +25,8 @@ import town.lost.oms.dto.NewOrderSingle;
 public interface OMSIn {
 
     /**
-     * Processes a new single-order submission (FIX 4.2 MsgType=35=D).
+     * Processes a new single-order submission. Typically leads to an {@code ExecutionReport} on success
+     * or an {@code OrderCancelReject} on failure (if the order is invalid).
      *
      * @param nos The {@link NewOrderSingle} representing the details of the new order.
      */
@@ -33,18 +34,19 @@ public interface OMSIn {
     void newOrderSingle(NewOrderSingle nos);
 
     /**
-     * Processes a request to cancel a specific order (FIX 4.2 MsgType=35=F).
+     * Processes a request to cancel a specific existing order. If no matching order is found,
+     * the implementation is expected to generate an {@code OrderCancelReject} with a reason like "No such order".
      *
-     * @param cor The {@link CancelOrderRequest} representing the details of the cancel request.
+     * @param cor The {@link CancelOrderRequest} object representing the details of the cancel request.
      */
     @MethodId('F')
     void cancelOrderRequest(CancelOrderRequest cor);
 
     /**
-     * Processes a request to cancel all orders for a particular symbol or filter
-     * (custom extension beyond FIX 4.2).
+     * Processes a request to cancel all orders matching a specific filter (e.g., by symbol).
+     * In a minimal demo scenario, this may reject if no orders exist or simply log the cancellation attempt.
      *
-     * @param cancelAll The {@link CancelAll} object representing the mass-cancel request.
+     * @param cancelAll The {@link CancelAll} object representing the details of the mass-cancel request.
      */
     void cancelAll(CancelAll cancelAll);
 }
