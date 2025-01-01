@@ -24,20 +24,26 @@ import static town.lost.oms.dto.ValidateUtil.*;
  *
  * <p>Each {@code ExecutionReport} contains various pieces of information about the order execution, including:
  *
+ * The {@code ExecutionReport} class corresponds to a FIX 4.2 "Execution Report" (MsgType=35=8).
+ * Used for order status updates, including partial fills, full fills, cancellations, etc.
+ * <p>
+ * Typical FIX tag mappings:
  * <ul>
- *   <li><strong>symbol</strong>: The identifier of the financial instrument.</li>
- *   <li><strong>transactTime</strong>: The transaction time in nanoseconds.</li>
- *   <li><strong>orderQty</strong>: The quantity of the order.</li>
- *   <li><strong>price</strong>: The price of the order.</li>
- *   <li><strong>orderID</strong>: The unique identifier of the order.</li>
- *   <li><strong>lastPx</strong>: The last traded price of the order.</li>
- *   <li><strong>leavesQty</strong>: The remaining quantity of the order.</li>
- *   <li><strong>cumQty</strong>: The accumulated quantity of the order.</li>
- *   <li><strong>avgPx</strong>: The average price of the order.</li>
- *   <li><strong>side</strong>: The side of the order (buy or sell).</li>
- *   <li><strong>ordType</strong>: The type of the order (e.g., market or limit).</li>
- *   <li><strong>clOrdID</strong>: The client order ID.</li>
- *   <li><strong>text</strong>: An optional text message about the order execution.</li>
+ *   <li>{@code symbol} (FIX 55) - Security identifier.</li>
+ *   <li>{@code side} (FIX 54) - Side of the order.</li>
+ *   <li>{@code orderQty} (FIX 38) - Original quantity.</li>
+ *   <li>{@code price} (FIX 44) - Limit price (if applicable).</li>
+ *   <li>{@code orderID} (FIX 37) - Unique identifier assigned by the broker/exchange.</li>
+ *   <li>{@code clOrdID} (FIX 11) - Client’s original order ID (if relevant).</li>
+ *   <li>{@code lastPx} (FIX 31) - Price of the last fill.</li>
+ *   <li>{@code leavesQty} (FIX 151) - Remaining quantity not yet filled.</li>
+ *   <li>{@code cumQty} (FIX 14) - Total quantity filled so far.</li>
+ *   <li>{@code avgPx} (FIX 6) - Average fill price across partial executions.</li>
+ *   <li>{@code text} (FIX 58) - Free-form text for clarifications or rejections.</li>
+ *   <li>{@code transactTime} (FIX 60) - Time of the transaction/fill.</li>
+ *   <li>{@code sendingTime} (FIX 52, optional) - Time at which the ExecutionReport is sent.</li>
+ *   <li>{@code ordType} (FIX 40) - The original order type (e.g., MARKET, LIMIT).</li>
+ *   <li>{@code sender}/{@code target} - Analogous to SenderCompID (49)/TargetCompID (56).</li>
  * </ul>
  *
  * <p>The {@code symbol} field is encoded using {@link ShortTextLongConverter}, and {@code transactTime} and {@code orderID}

@@ -18,6 +18,15 @@ import net.openhft.chronicle.wire.converter.ShortText;
  * <p>This class extends the {@link AbstractEvent} class with the type parameter {@link CancelAll}, indicating that
  * it is processed as a {@code CancelAll} event.
  *
+ * Potential FIX-like mappings:
+ * <ul>
+ *   <li>{@code symbol} - Could reuse Symbol (FIX 55) if mass-cancel is by symbol.</li>
+ *   <li>{@code clOrdID} (FIX 11) - A unique ID for the cancel-all request.</li>
+ *   <li>{@code sendingTime} (FIX 52, optional) - Time the request was sent.</li>
+ *   <li>{@code sender}/{@code target} - Align conceptually with SenderCompID (49)/TargetCompID (56).</li>
+ * </ul>
+ * If the system does not support partial or symbolic mass cancels, it may simply issue
+ * an {@code OrderCancelReject} with reason "No orders to cancel" for empty sets.
  * <p>This class is typically used like this:
  *
  * <pre>

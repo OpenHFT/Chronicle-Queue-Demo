@@ -20,13 +20,21 @@ import net.openhft.chronicle.wire.converter.ShortText;
  *
  * <p>Each {@code CancelOrderRequest} contains the symbol of the financial instrument for the order that is being requested to be cancelled and the client order ID.
  *
+ * The {@code CancelOrderRequest} class parallels a FIX 4.2 "Order Cancel Request" (MsgType=35=F).
+ * <p>
+ * Typical FIX tag mappings:
  * <ul>
- *   <li><strong>symbol</strong>: The symbol of the financial instrument for the order.</li>
- *   <li><strong>account</strong>: The account associated with the order.</li>
- *   <li><strong>clOrdID</strong>: The client order ID, a unique identifier for the order.</li>
- *   <li><strong>origClOrdID</strong>: The original client order ID of the order to be canceled.</li>
- *   <li><strong>side</strong>: The side of the order (e.g., buy or sell).</li>
+ *   <li>{@code clOrdID} (FIX 11) - New unique client ID for this cancel request.</li>
+ *   <li>{@code origClOrdID} (FIX 41) - Original client ID of the order to be canceled.</li>
+ *   <li>{@code symbol} (FIX 55) - Symbol of the order to be canceled.</li>
+ *   <li>{@code side} (FIX 54) - Side of the order (buy/sell).</li>
+ *   <li>{@code account} (FIX 1) - Account under which the original order was placed.</li>
+ *   <li>{@code sendingTime} (FIX 52) - Time the cancel request is being sent.</li>
+ *   <li>{@code transactTime} (FIX 60, optional) - May store the transaction time for the request.</li>
+ *   <li>{@code sender}/{@code target} - Conceptually match SenderCompID (49) / TargetCompID (56).</li>
  * </ul>
+ * If the request cannot be fulfilled, an {@code OrderCancelReject} (MsgType=35=9) may result,
+ * indicating why the cancel was rejected.
  *
  * <p>The {@code symbol} and {@code account} fields are encoded using {@link ShortTextLongConverter}
  * to save space, while the client order IDs are strings for identification purposes.

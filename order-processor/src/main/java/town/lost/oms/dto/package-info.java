@@ -1,5 +1,6 @@
 /**
- * Provides the classes and interfaces necessary to create and manage Order Management System (OMS) data transfer objects (DTOs).
+ * Provides the classes and interfaces necessary to create and manage Order Management System (OMS) data transfer objects (DTOs) aligned with
+ * the FIX 4.2 specification (https://www.fixtrading.org/standards/fix-4-2/).
  *
  * <p>This package includes the following key components:
  *

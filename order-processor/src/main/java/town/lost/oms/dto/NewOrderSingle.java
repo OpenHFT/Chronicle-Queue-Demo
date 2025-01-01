@@ -23,18 +23,23 @@ import static town.lost.oms.dto.ValidateUtil.invalidQuantity;
  *
  * <p>Each {@code NewOrderSingle} contains various pieces of information about the order, including:
  *
+ * The {@code NewOrderSingle} class corresponds to a FIX 4.2 "New Order - Single" (MsgType=35=D).
+ * <p>
+ * Typical FIX tag mappings:
  * <ul>
- *   <li><strong>symbol</strong>: The identifier of the financial instrument.</li>
- *   <li><strong>transactTime</strong>: The transaction time in nanoseconds.</li>
- *   <li><strong>account</strong>: The account associated with the order.</li>
- *   <li><strong>orderQty</strong>: The quantity of the order.</li>
- *   <li><strong>price</strong>: The price of the order.</li>
- *   <li><strong>side</strong>: The side of the order (buy or sell).</li>
- *   <li><strong>clOrdID</strong>: The client order ID.</li>
- *   <li><strong>ordType</strong>: The type of the order (e.g., market or limit).</li>
- *   <li><strong>timeInForce</strong>: The time-in-force instruction for the order.</li>
- *   <li><strong>currency</strong>: The currency of the order.</li>
+ *   <li>{@code clOrdID} (FIX 11) - Unique ID assigned by the client.</li>
+ *   <li>{@code symbol} (FIX 55) - Ticker symbol or security identifier.</li>
+ *   <li>{@code side} (FIX 54) - Side of the order (1=Buy, 2=Sell).</li>
+ *   <li>{@code orderQty} (FIX 38) - Quantity of the order to be bought/sold.</li>
+ *   <li>{@code price} (FIX 44) - Price for limit or other price-based orders.</li>
+ *   <li>{@code timeInForce} (FIX 59) - Time in Force (Day, GTC, IOC, etc.).</li>
+ *   <li>{@code currency} (FIX 15) - Currency (e.g., USD).</li>
+ *   <li>{@code account} (FIX 1) - Account number or name.</li>
+ *   <li>{@code transactTime} (FIX 60) - Timestamp of the transaction.</li>
+ *   <li>{@code sender}/{@code target} - Conceptually match SenderCompID (49) / TargetCompID (56).</li>
  * </ul>
+ * This DTO is used for creating new orders in the system. Validation is performed
+ * externally (by the framework) before passing to {@code OMSIn#newOrderSingle}.
  *
  * <p>The symbol is encoded using {@link ShortText} and the transaction time is in nanoseconds, both to save space.
  * The client order ID is a string that identifies the order, the side indicates whether the order is to buy or sell,
