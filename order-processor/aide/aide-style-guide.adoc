@@ -1,0 +1,98 @@
+[#aide-style-guide]
+= AIDE Style Guide
+:doctype: style-guide
+:author: Peter Lawrey
+:lang: en-GB
+:toc:
+
+This guide outlines the core conventions for naming, coding, and documentation. By following these practices, the team maintains clarity, consistency, and a high-quality codebase overall.
+
+== 1. Language and Wording
+
+1. Use **British English** spelling (e.g., `colour`, `initialise`) in code comments, documentation, and commit messages.
+2. Maintain a **professional, concise** tone; avoid slang or overly informal expressions.
+3. Define all project-specific or domain-specific terms in a link:aide-glossary.adoc[AIDE Glossary].
+4. Use straight apostrophes and single and double quotes in code and documentation.
+5. Code identifiers may use British or American spellings as needed; consistency within a project is key.
+6. When adding suggested improvements to `.adoc` files, use comment syntax like `// consider:`
+7. **Document-First Approach**:
+* As recommended in the "Next Level AIDE" post, write or update `.adoc` content as early as possible, either in parallel with feature development or before coding (similar to TDD).
+* This ensures that the single source of truth is always current and that AI-driven code suggestions align with the actual requirements.
+
+== 2. Directory and Package Structure
+
+1. **Directory Names**: all lowercase; use hyphens or underscores if necessary (e.g., `my-project-utils/`).
+2. **File Names**:
+* Java: match the class name (e.g., `MyService.java`).
+* Documentation: use `.adoc` (e.g., `project-overview.adoc`) with lowercase, hyphenated file names.
+* Configuration: `.yaml` or `.properties`, describing purpose (e.g., `app-config.yaml`).
+3. **Packages**: all lowercase, reflecting the maven `groupId` and `artifactId` and subsystem (e.g., `groupId.artifactId.service`).
+
+== 3. Java Code Style
+
+=== 3.1 Formatting
+1. **Indentation**: 4 spaces; no tabs.
+2. **Line Length**: Keep to 128 characters or fewer if possible.
+3. **Braces**:
+* Open brace on the same line (e.g., `if (condition) {`).
+* Close brace on a new line.
+4. **Blank Lines**: Separate method definitions with one blank line; group related lines logically.
+
+=== 3.2 Naming Conventions
+1. **Classes**: PascalCase (e.g., `OrderService`).
+2. **Methods and Variables**: camelCase (e.g., `processOrder`, `userName`).
+3. **Constants**: ALL_CAPS_WITH_UNDERSCORES (e.g., `MAX_BUFFER_SIZE`).
+
+=== 3.3 Comments and Documentation
+1. Use Javadoc for **public** classes and methods, explaining purpose, parameters, and returns.
+2. Only add inline comments (`//`) if the logic isn't apparent.
+3. Maintain descriptive commit messages in the present tense (e.g., "Add new caching layer").
+
+== 4. Testing
+
+=== 4.1 Test Naming Conventions
+1. Test classes should be named by appending `Test` to the class they test (e.g., `OrderServiceTest` for `OrderService`).
+2. Test method names should describe the test scenario and expected behavior, using camelCase (e.g., `shouldReturnOrderDetailsWhenOrderExists`).
+
+=== 4.2 Directory Structure
+1. Mirror the main package structure under `src/test/java/...`.
+2. Use a logical grouping of tests, such as:
+- Unit tests under `src/test/java`
+- Integration tests under `src/integrationTest/java` (if applicable).
+
+=== 4.3 Test Coverage
+1. Ensure at least **80% test coverage** for critical business logic.
+2. Focus on covering edge cases, particularly for methods with complex branching.
+3. Write integration tests for new features or significant architectural changes.
+
+=== 4.4 Writing Effective Tests
+1. Each test should focus on a single behavior or scenario.
+2. Use parameterized tests for scenarios with repetitive logic.
+3. Avoid hardcoding data when reusable fixtures or factories can be applied.
+
+=== 4.5 Mocking and Stubbing
+1. Use mocking frameworks (e.g., Mockito) to isolate the unit under test.
+2. Stub external dependencies to ensure consistent and repeatable test outcomes.
+3. Prefer fakes or in-memory implementations for lightweight data operations (e.g., an in-memory database for integration tests).
+
+=== 4.6 Test Documentation
+1. Include comments to clarify the intent of complex test cases.
+2. Document preconditions, inputs, and expected outputs within the test itself or in its name.
+3. Ensure test cases reference any associated requirements or bug IDs in the comments.
+
+== 5. Documentation (AsciiDoc)
+1. Start each `.adoc` file with a title line (`= Title`) and optional metadata.
+2. Organise content under headings: `==`, `===`, `====`.
+3. Use `[source,java]` blocks (or similar) for code highlighting.
+4. Keep lines concise, highlighting key points in bullet lists or admonitions (e.g., `NOTE:`).
+
+== 6. Version Control and Commit Messages
+1. Write short, clear commit messages in the **present tense** (e.g., "Fix login bug in UserService").
+2. Reference issue IDs if applicable (e.g., "Fix #42: Add advanced search feature").
+
+== 7. Additional Best Practices
+1. **AutoCloseable Usage**: Where possible, consider implementing `AutoCloseable` to be used in a try-with-resources block, ensuring deterministic cleanup.
+2. **Template Management**: Use templates for AI prompts and text blocks to ensure consistency and reduce duplication.
+
+== 8. Summary
+By following these concise guidelines—especially consistent, clear Java formatting and straightforward documentation practices—teams ensure a streamlined, maintainable codebase. Remember to evolve this guide as the project grows and needs change.
