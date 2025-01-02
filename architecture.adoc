@@ -1,0 +1,119 @@
+= Architecture
+:toc:
+:toclevels: 3
+
+This document describes the overall system architecture, focusing on the event-driven design powered by Chronicle Queue, how each module connects, and the core concurrency and data-flow patterns.
+
+== Design Principles
+
+1. **Event-Driven**  
+   Each service or module produces or consumes events via Chronicle Queue. We avoid tight coupling or synchronous calls, letting queues mediate communication.
+
+2. **Low Latency & High Throughput**  
+   Chronicle Queue’s in-memory, append-only design gives us sub-microsecond latencies and can handle millions of events per second on commodity hardware.
+
+3. **Replay & Durability**  
+   Every message is persisted to a queue file. We can replay historical data for debugging or auditing, or even reconstruct an entire system state by replaying logs from the start.
+
+4. **Modularity**  
+   Each submodule (e.g., `event-routing`, `md-pipeline`, `order-processor`) addresses a distinct domain scenario or pattern while adhering to a consistent queue-based approach.
+
+== Core Architecture Overview
+
+At a high level:
+
+```
+   [Producer/Simulator] --> [Chronicle Queue] --> [Consumer/Processor] --> [Potentially Another Queue] --> ...
+```
+
+- **Producer**: Writes method calls or messages into a queue. Could be an external service, command-line input, or an exchange simulator.
+- **Chronicle Queue**: A durable, zero-GC logging of all events (append-only). Another process or thread can read from it with minimal blocking.
+- **Consumer**: Subscribes via a `MethodReader`, processes the data (e.g., aggregates, transforms), and may write responses or derived events into another queue.
+
+Because each queue is independent, you can run each module in a separate process—enabling easy scaling or horizontal distribution.
+
+== Concurrency Model
+
+1. **Single-Threaded Readers**
+Many demos use a single-threaded approach: a single method reader loop that blocks on the queue for new events. This eliminates complex synchronization and yields consistent micro-latencies.
+
+2. **Multi-Process**
+For pipeline-like flows (`md-pipeline` or `event-routing`), each stage is typically a separate process (or separate main class) reading from one queue and writing to the next. This separation ensures that no single process becomes a bottleneck.
+
+3. **MethodWriter/MethodReader**
+Chronicle’s code generation approach:
+- **MethodWriter** automatically serializes method calls (e.g., `in.mdi(...)`) into queue entries.
+- **MethodReader** decodes those entries, calling the actual consumer logic in real time.
+This allows your code to look like normal method invocations while behind the scenes it’s writing or reading from a queue.
+
+4. **Message History & Replay**
+Some modules (`message-history-demo`) add a small overhead for each message: a `MessageHistory` that tracks where/when it was produced, how many hops it took. If a consumer fails, we can replay the queue from a safe checkpoint.
+
+== Module-by-Module Breakdown
+
+=== Hello World
+A minimal example:
+- Reads lines from console (`SaysInput`).
+- Possibly modifies them (e.g., adds an exclamation).
+- Outputs to the console (`SaysOutput`).
+
+The entire flow can happen in a single process or across multiple if you store input lines in a queue for another process to read.
+xref:usage-and-tests.adoc#hello-world[See usage instructions →]
+
+=== Event Routing
+A scenario where messages (like `Value` objects) get routed or filtered in different ways:
+- **ViaThreeFive**: Demonstrates branching logic (divisible by 3, 5).
+- **SifterImpl**: Checks if a value is even or divisible by 3, sending them to different outputs.
+
+By abstracting reading/writing behind interfaces (`ViaIn`, `ViaOut`, `ValueMessage`), you decouple the logic from the underlying queue, making it easy to swap in new routing conditions.
+xref:usage-and-tests.adoc#event-routing[See usage instructions →]
+
+=== Market Data Pipeline (md-pipeline)
+A multi-process pipeline common in trading or real-time data systems:
+1. **ExchangeSimulator** (Generate) – Publishes simulated market increments to `agg-in` queue.
+2. **Aggregator** (AggregatorImpl) – Reads increments, aggregates them into a snapshot, outputs to `agg-out`.
+3. **Strategy** (StrategyImpl) – Reads aggregated snapshots from `agg-out`, decides on trades, writes them to `strat-out`.
+4. **OMS** (OMSImpl) – Optionally reads from `strat-out` to process new orders.
+
+This chain can run in multiple terminals or containers, each tailing one queue and writing to the next.
+xref:usage-and-tests.adoc#md-pipeline[See usage instructions →]
+
+=== Order Processor (OMS)
+Implements a small Order Management System referencing some FIX 4.2 tags:
+- Processes inbound `NewOrderSingle`, `CancelOrderRequest` events.
+- Publishes `ExecutionReport` or `OrderCancelReject`.
+
+Because the logic is single-threaded, we can handle thousands of orders per second with minimal overhead. For usage and benchmark commands, see xref:usage-and-tests.adoc#order-processor[Order Processor usage →]
+
+=== Benchmarks
+Various classes in `benchmarks/` measure raw throughput, latency distribution, or stress tests.
+- **ThroughputMain** blasts tens of millions of messages into a queue and reads them back, measuring speed.
+- **LatencyDistributionMain** measures per-message latency.
+
+For how to run these tests, see xref:usage-and-tests.adoc#benchmarks[Benchmarking →].
+
+== Advanced Chronicle Features
+
+1. **Shared Memory & Replication**
+By default, Chronicle queues store data in memory-mapped files. This is nearly as fast as raw memory access. For advanced setups, Chronicle can replicate data across processes or even machines in near real-time.
+
+2. **Chronicle Map**
+Some submodules (like account-based demos) may store large key-value data in an off-heap map (Chronicle Map). This is not extensively shown in the main modules but can be integrated in a similar pattern.
+
+3. **Custom Converters & Interceptors**
+Chronicle supports user-defined converters (e.g., Base85 encoding for IDs), as well as interceptors to log or transform data during reads/writes.
+
+4. **Message History**
+The `message-history-demo` shows how each queue hop can track timing and source IDs, enabling advanced debugging or performance audits.
+
+== Deployment & Scaling Notes
+
+- **Single Host**: You can run multiple modules on the same machine, each pointing to different queue directories, achieving near-zero-latency hops.
+- **Distributed**: Place each module on a separate host or container. Latencies may increase with network overhead, but you still preserve asynchronous queue-based flows.
+- **Auto-Restart**: Because the queue is durable, if a consumer process is restarted, it can resume from the last confirmed index, ensuring no data loss or duplication.
+
+== Conclusion
+
+This architecture leverages Chronicle’s strengths—durability, minimal GC, sub-microsecond latencies—while illustrating an event-driven approach across multiple domain demos (Hello World, Event Routing, MD Pipeline, Order Processor, etc.). The result is a flexible yet high-performance platform for real-time event processing, easily extended or replicated into production-ready systems.
+
+For instructions on **running** these modules or **testing** them with YAML scenarios, see xref:usage-and-tests.adoc[Usage & Tests]. For **style guidelines** and domain references (e.g., FIX 4.2), see xref:reference.adoc[Reference].

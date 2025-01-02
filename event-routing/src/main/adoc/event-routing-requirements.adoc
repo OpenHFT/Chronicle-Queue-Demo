@@ -1,0 +1,110 @@
+= Event Routing Submodule – Functional Requirements
+:toc:
+:toclevels: 3
+:sectnums:
+
+The *event-routing* submodule is a small system that demonstrates how to **route** (or direct) messages from an input source to one or more outputs, based on simple rules like “divisible by 3” or “even number.” By using Chronicle Queue, these messages are passed around in an **asynchronous, event-driven** way.
+
+== 1. Purpose and Goals
+
+. **Showcase how messages can be routed** in a low-latency, asynchronous style using Chronicle Queue.
+. **Separate routing logic from the rest of the system** by defining easy-to-use interfaces (like `ViaIn`, `ViaOut`, and `ValueMessage`).
+. **Provide simple examples** (e.g., messages that get sent to a "three" channel if divisible by 3) to illustrate the concept.
+
+=== 1.1 Who Is This For?
+* **New developers** who want a straightforward example of event-driven routing.
+* **Anyone** interested in seeing how Chronicle Queue can be used to build small, modular routing flows.
+
+== 2. Key Concepts
+
+* **Value**: A simple data object (DTO) containing a numeric field (e.g., `val`).
+* **ValueMessage**: An interface that defines one method: `value(Value value)`. This method is where you handle incoming `Value` objects.
+* **ViaIn** and **ViaOut**: Interfaces that let you specify how to **name** a route (`via("someName")`) and choose an **input** (`in()`) or **output** (`out()`).
+
+NOTE:
+Using `via("...")` explicitly sets the “route name” or “channel name” for messages. Any subsequent logic (e.g., filtering by divisibility) can branch messages to one or more output channels based on that route. Think of `via` as the address you stamp on each message so the system knows where to send it.
+
+== 3. Functional Requirements
+
+=== 3.1 Basic Message Routing
+
+. **FR-1**
+The system **must** accept messages with at least a numeric field called `val` (inside a `Value` object).
+
+. **FR-2**
+Each incoming message **must** go through a **rule-based check** (like “Is `val % 3 == 0`?”) to decide what output channel(s) it belongs to.
+
+. **FR-3**
+If a message meets **multiple** conditions (for example, divisible by both 3 and 5), it should be sent to all relevant channels (e.g., "three" and "five").
+
+=== 3.2 Interfaces and Interaction
+
+. **FR-4**
+The submodule **must** provide a `ValueMessage` interface so developers can call `value(Value v)` when they have a new message.
+
+. **FR-5**
+A `ViaIn` interface **must** let developers specify a route name (`via(String name)`) and then call `in()` to start reading or receiving messages on that route.
+Using `via("nameOfRoute")` indicates *how* (or *where*) messages should be tagged for subsequent filtering or distribution.
+
+. **FR-6**
+A `ViaOut` interface **must** let developers specify a route name (`via(String name)`) and then call `out()` to direct messages to that output route.
+Similarly, `via("someOutput")` ensures the system appends or publishes messages to a queue (or channel) labeled `"someOutput"`.
+
+**Why?**
+Using these `via(...)` methods keeps routing flexible. You can easily swap out how you decide routes or what queue to write to without changing the rest of the system.
+
+=== 3.3 Chronicle Queue Integration
+
+. **FR-7**
+The submodule **should** use Chronicle Queue’s `MethodWriter` to turn your interface calls (like `value(...)`) into actual queue entries automatically.
+
+. **FR-8**
+Another part of the system (e.g., a consumer) **must** use a `MethodReader` to listen for these entries and invoke your routing logic, which might write to a second queue or log the result somewhere.
+
+This ensures **asynchronous** communication: one part writes events, another reads them whenever it’s ready.
+
+=== 3.4 Error Handling
+
+. **FR-9**
+If a message doesn’t meet basic requirements (like `val` is missing), or the routing fails, the submodule **should** at least log an error and skip the message.
+
+. **FR-10**
+For a message that doesn’t match any rule, the code can still forward it to a default output or do nothing, as determined by the developer’s preference.
+
+== 4. Testing
+
+=== 4.1 YAML Tests
+
+. **FR-11**
+The submodule **must** support simple YAML tests in which `in.yaml` lists the messages (like `{ val: 6 }`), and `out.yaml` shows where each message ends up.
+
+. **FR-12**
+If `val=6`, for example, the expected `out.yaml` should indicate it was routed to a `three` channel. Tests compare actual vs. expected results.
+
+=== 4.2 Unit & Integration Tests
+
+. **FR-13**
+Developers **should** create unit tests for any custom routing logic (like Sifter or Divisible).
+
+. **FR-14**
+If multiple routes or outputs can be triggered at once (e.g., `15` goes to "three" and "five"), test that the system handles multi-route messages without collisions or missed routes.
+
+== 5. Examples
+
+=== 5.1 Divisible by Three or Five
+If `val = 15`, the routing logic might send it to:
+- `via("three")`
+- `via("five")`
+
+=== 5.2 Even-Odd Filtering
+A `SifterImpl` could check if `val` is even, then direct it to an “evens” channel. Odd values could remain unmodified or be sent to another path.
+
+== 6. Non-Functional Considerations
+
+* **Performance**: Typically microseconds-level, but you’re free to optimize or benchmark if your scenarios require it.
+* **Simplicity**: This module is intentionally straightforward—one or two conditions to illustrate the concept.
+* **Extensibility**: You can easily add more rules or multiple routing layers without changing core interfaces.
+
+== 7. Summary
+
+The event-routing submodule aims to **demonstrate how messages can flow** through **simple, event-driven rules** using Chronicle Queue. With `via(String name)` acting as the explicit route for each message, it’s easy to define or change routing behavior. Simply implement or extend `ValueMessage` and `ViaIn`/`ViaOut` rules, then create matching tests (YAML or JUnit) to confirm your routing works as intended.

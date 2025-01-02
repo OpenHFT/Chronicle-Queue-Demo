@@ -1,8 +1,11 @@
 package run.chronicle.routing.inout.api;
 
 /**
- * This is a ViaOut interface.
- * It provides a generic contract for classes that need to specify a route ("via") and an output destination ("out").
+ * An interface for specifying a route ("via") and obtaining
+ * an output destination ("out").
+ *
+ * Typically, you'd call via("someName") to define a route,
+ * then out() to get a ValueMessage for writing messages.
  *
  * @param <V> the type returned by the {@code via} method
  * @param <O> the type returned by the {@code out} method

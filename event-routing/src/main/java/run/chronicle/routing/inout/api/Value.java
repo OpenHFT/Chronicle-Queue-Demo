@@ -3,8 +3,9 @@ package run.chronicle.routing.inout.api;
 import net.openhft.chronicle.wire.SelfDescribingMarshallable;
 
 /**
- * This is a Value class extending SelfDescribingMarshallable.
- * It wraps a long value and provides methods for setting and retrieving this value.
+ * Represents a simple DTO with a numeric value 'val'.
+ * We can route these messages based on val's properties
+ * (e.g., divisible by 3, negative, etc.).
  */
 public class Value extends SelfDescribingMarshallable {
 
@@ -22,12 +23,17 @@ public class Value extends SelfDescribingMarshallable {
     }
 
     /**
-     * This is a getter for the val instance variable.
-     * It returns the current long value of this Value object.
-     *
-     * @return The current long value of this Value object
+     * Returns the numeric value of this message.
      */
     public long val() {
         return val;
+    }
+
+    /**
+     * (Optional) Allows updating the numeric value.
+     */
+    public Value val(long newVal) {
+        this.val = newVal;
+        return this;
     }
 }
