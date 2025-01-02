@@ -1,6 +1,6 @@
 # Temporarily exclude these files from aide to make the token size manageable
-account/
-order-processor/
+#account/
+#order-processor/
 
 ### How to update
 # This is copied from OpenHFT/.gitignore
