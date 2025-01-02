@@ -53,7 +53,7 @@ public class AccountManagerBenchmarkMain {
         // This ExecutorService is used for running the client/gateway/service in the current process
         ExecutorService es = Executors.newCachedThreadPool(new AffinityThreadFactory("test"));
 
-        // Initialize a new instance of AccountManagerServiceMain. This is the main service for managing accounts.
+        // Initialise a new instance of AccountManagerServiceMain. This is the main service for managing accounts.
         AccountManagerServiceMain service = null;
 
         // Check if the host part of the URL is empty. If it is, that means we are running the service locally.

@@ -19,7 +19,7 @@ public class OMSImpl implements OMSIn {
 
     /**
      * This is the constructor for the OMSImpl class.
-     * It initializes the out instance variable with the provided OMSOut object.
+     * It initialises the out instance variable with the provided OMSOut object.
      *
      * @param out An instance of the OMSOut interface that will handle the output of the OMS.
      */
@@ -29,7 +29,7 @@ public class OMSImpl implements OMSIn {
 
     /**
      * This is the main method for the OMSImpl class.
-     * It sets up the system and initializes the necessary components for running the OMS.
+     * It sets up the system and initialises the necessary components for running the OMS.
      *
      * @param args Command-line arguments (not used in this implementation)
      */

@@ -29,7 +29,7 @@ public class SifterImpl implements SifterIn {
 
     /**
      * Constructor for the SifterImpl class.
-     * This initializes the SifterOut object used for outputting the processed values.
+     * This initialises the SifterOut object used for outputting the processed values.
      *
      * @param so A SifterOut object to be used for outputting the processed values
      */

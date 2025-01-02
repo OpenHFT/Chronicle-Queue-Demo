@@ -18,7 +18,7 @@ public final class ViaOutTextMethodWriter implements ViaOut<ValueMessage, ValueM
     private transient Supplier<MarshallableOut> out;
 
     // Constructor for the ViaOutTextMethodWriter class.
-    // It initializes the Supplier<MarshallableOut> for output handling and a Closeable resource to be managed.
+    // It initialises the Supplier<MarshallableOut> for output handling and a Closeable resource to be managed.
     // An UpdateInterceptor is also accepted as an argument, but currently not used in the class.
     public ViaOutTextMethodWriter(Supplier<MarshallableOut> out, Closeable closeable, UpdateInterceptor updateInterceptor) {
         this.out = out;

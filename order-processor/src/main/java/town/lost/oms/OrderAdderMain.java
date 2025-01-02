@@ -66,7 +66,7 @@ public class OrderAdderMain {
             // Inform the user to add an order
             System.out.println("\nHit blank line to add an order, anything else to exit");
 
-            // Initialize a BufferedReader to read user input
+            // Initialise a BufferedReader to read user input
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             int orderCounter = 0;
             while ("".equals(br.readLine())) {

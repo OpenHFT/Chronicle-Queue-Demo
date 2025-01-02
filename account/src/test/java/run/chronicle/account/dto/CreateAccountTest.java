@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class CreateAccountTest {
 
     /**
-     * Helper method to create a fully-initialized {@link CreateAccount} object
+     * Helper method to create a fully-initialised {@link CreateAccount} object
      * for testing. Uses consistent, known values for all fields.
      *
      * @return a {@code CreateAccount} instance populated with test data
@@ -63,21 +63,21 @@ public class CreateAccountTest {
                 expectedTime, createAccount.sendingTime());
 
         // Verify the name field is correctly set.
-        assertEquals("The name field should match the initialized value.",
+        assertEquals("The name field should match the initialised value.",
                 "name", createAccount.name());
 
         // Additional checks to ensure all fields are as expected.
-        assertEquals("The sender field should match the initialized value.",
+        assertEquals("The sender field should match the initialised value.",
                 "sender", ShortText.INSTANCE.asString(createAccount.sender()));
-        assertEquals("The target field should match the initialized value.",
+        assertEquals("The target field should match the initialised value.",
                 "target", ShortText.INSTANCE.asString(createAccount.target()));
-        assertEquals("The account number should match the initialized value.",
+        assertEquals("The account number should match the initialised value.",
                 2L, createAccount.account());
-        assertEquals("The currency field should match the initialized value.",
+        assertEquals("The currency field should match the initialised value.",
                 "CURR", ShortText.INSTANCE.asString(createAccount.currency()));
-        assertEquals("The balance should match the initialized value.",
+        assertEquals("The balance should match the initialised value.",
                 1.0, createAccount.balance(), 0.0);
-        assertEquals("The overdraft should match the initialized value.",
+        assertEquals("The overdraft should match the initialised value.",
                 3.0, createAccount.overdraft(), 0.0);
     }
 }

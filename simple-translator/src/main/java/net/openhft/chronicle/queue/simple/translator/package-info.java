@@ -20,7 +20,7 @@
  *     </li>
  *     <li>
  *         <strong>{@link net.openhft.chronicle.queue.simple.translator.TranslatorMain}</strong>:
- *         The entry point that initializes and configures a {@link SimpleTranslator} to bridge messages
+ *         The entry point that initialises and configures a {@link SimpleTranslator} to bridge messages
  *         between the English and French queues.
  *     </li>
  *     <li>

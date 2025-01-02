@@ -14,7 +14,7 @@ public class Value extends SelfDescribingMarshallable {
 
     /**
      * This is a constructor for the Value class.
-     * It initializes the val instance variable with the provided value.
+     * It initialises the val instance variable with the provided value.
      *
      * @param val A long value to set as the initial value for this instance
      */

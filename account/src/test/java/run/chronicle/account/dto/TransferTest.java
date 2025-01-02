@@ -73,8 +73,8 @@ public class TransferTest {
         assertEquals("sender", ShortText.INSTANCE.asString(transfer.sender()));
         assertEquals("target", ShortText.INSTANCE.asString(transfer.target()));
         assertEquals(NanoTime.INSTANCE.parse("2001/02/03T04:05:06.007008009"), transfer.sendingTime());
-        assertEquals("Expected account 'from' to match initialized value.", 12345, transfer.from());
-        assertEquals("Expected account 'to' to match initialized value.", 67890, transfer.to());
+        assertEquals("Expected account 'from' to match initialised value.", 12345, transfer.from());
+        assertEquals("Expected account 'to' to match initialised value.", 67890, transfer.to());
         assertEquals("Expected currency to be 'CURR' after parsing.", "CURR", ShortText.INSTANCE.asString(transfer.currency()));
         assertEquals("Expected amount to be 1.0.", 1.0, transfer.amount(), 0.0);
         assertEquals("Expected reference field to match 'reference' bytes.",

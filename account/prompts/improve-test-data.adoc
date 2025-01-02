@@ -7,7 +7,7 @@ The goal is to produce maintainable, clear, and requirements-aligned test cases.
 
 The testing approach involves the following files:
 
-* `_setup.yaml` - Initializes the system state before the test scenario begins (e.g., creating initial accounts).
+* `_setup.yaml` - Initialises the system state before the test scenario begins (e.g., creating initial accounts).
 * `in.yaml` - Defines the input commands (events) that the system under test will process.
 * `out.yaml` - Specifies the expected events produced by the system in response to the inputs, along with helpful comments that link the outputs back to the corresponding input events.
 
@@ -70,7 +70,7 @@ sequenceDiagram
     SetupFile->>TestRunner: Load initial state instructions
     Note over TestRunner: The Test Runner reads _setup.yaml<br>and applies initial configurations<br> (e.g., create accounts)
 
-    TestRunner->>System: Initialize system state<br> from _setup.yaml
+    TestRunner->>System: Initialise system state<br> from _setup.yaml
     Note over System: System now has initial state<br> (e.g., Alice’s account with 15 EUR)
 
     InputFile->>TestRunner: Provide input<br> commands/events

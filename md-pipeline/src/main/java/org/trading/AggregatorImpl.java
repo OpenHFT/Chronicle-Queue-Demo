@@ -28,7 +28,7 @@ public class AggregatorImpl implements AggregatorIn {
 
     /**
      * Constructor for the AggregatorImpl class.
-     * Initializes the AggregatorOut instance for output handling.
+     * Initialises the AggregatorOut instance for output handling.
      *
      * @param out An implementation of the AggregatorOut interface for handling aggregated data
      */
