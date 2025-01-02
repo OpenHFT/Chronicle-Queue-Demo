@@ -16,6 +16,7 @@ mvn clean install
 To run a simple example, like the hello-world module:
 
 ----
+cd hello-world
 mvn install exec:java@RecordInputToConsoleMain
 ----
 
