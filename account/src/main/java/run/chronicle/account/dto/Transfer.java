@@ -19,17 +19,29 @@ package run.chronicle.account.dto;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 import net.openhft.chronicle.wire.converter.ShortText;
+
 /**
- * The Transfer class extends AbstractEvent and represents a transfer event in the banking system.
- * It encapsulates all necessary details of a transfer, including the account numbers of both sender and receiver, the currency, the amount, and a reference to the transaction details. Like the previous classes,
- * it also provides a fluent interface for setters and includes a validate method to ensure all required fields are set.
+ * Represents a funds transfer operation between two accounts.
+ *
+ * <p>Example usage:</p>
+ * <pre>{@code
+ * Transfer tx = new Transfer()
+ *     .sender(vaultId)
+ *     .target(gatewayId)
+ *     .sendingTime(SystemTimeProvider.CLOCK.currentTimeNanos())
+ *     .from(101013L)
+ *     .to(101025L)
+ *     .currency(EUR_CODE)
+ *     .amount(10.0)
+ *     .reference(Bytes.from("Payment for services"));
+ * }</pre>
  */
 public class Transfer extends AbstractEvent<Transfer> {
-    private long from, to; // The account numbers for the transfer
+    private long from, to;
     @ShortText
-    private int currency; // The currency of the transfer, represented in ShortText format
-    private double amount; // The amount to be transferred
-    private Bytes<?> reference = Bytes.allocateElasticOnHeap(); // Reference to the transaction details
+    private int currency;
+    private double amount;
+    private final Bytes<?> reference = Bytes.allocateElasticOnHeap();
 
     /**
      * Retrieves the sender's account number.
@@ -81,7 +93,8 @@ public class Transfer extends AbstractEvent<Transfer> {
     }
 
     /**
-     * Sets the currency code of the transfer.
+     * Sets the currency code of the transfer and returns this instance.
+     * The currency code should typically map to a known currency.
      *
      * @param currency the currency code to set (e.g., "EUR", "USD")
      * @return this object for method chaining
@@ -112,7 +125,8 @@ public class Transfer extends AbstractEvent<Transfer> {
     }
 
     /**
-     * Retrieves the reference to the transaction details.
+     * Returns the reference data associated with this transfer.
+     * This could be a note, a reference number, or any additional context.
      *
      * @return the transaction reference
      */
@@ -121,7 +135,8 @@ public class Transfer extends AbstractEvent<Transfer> {
     }
 
     /**
-     * Sets the reference to the transaction details.
+     * Sets the reference details for this transfer and returns this instance.
+     * The provided {@code Bytes} data is appended after clearing the existing reference.
      *
      * @param reference the reference to the transaction details
      * @return the updated object
@@ -132,9 +147,17 @@ public class Transfer extends AbstractEvent<Transfer> {
     }
 
     /**
-     * The validate method is used to verify that all necessary properties have been set.
+     * Validates that all required fields have been set and are valid.
+     * This includes:
+     * <ul>
+     *   <li><strong>from:</strong> must be nonzero</li>
+     *   <li><strong>to:</strong> must be nonzero</li>
+     *   <li><strong>currency:</strong> must be nonzero</li>
+     *   <li><strong>amount:</strong> must be positive</li>
+     *   <li><strong>reference:</strong> must be non-null and non-empty</li>
+     * </ul>
      *
-     * @throws InvalidMarshallableException If any of these properties is not set
+     * @throws InvalidMarshallableException if any validation check fails
      */
     @Override
     public void validate() throws InvalidMarshallableException {
@@ -152,10 +175,9 @@ public class Transfer extends AbstractEvent<Transfer> {
     }
 
     /**
-     * Overridden to specify the message format. In this case, it uses a lower level binary format,
-     * not a self-describing message.
+     * Specifies that this event uses a lower-level binary format rather than a self-describing message.
      *
-     * @return false as it does not use a self-describing message.
+     * @return {@code false}, indicating a non-self-describing message format
      */
     @Override
     public boolean usesSelfDescribingMessage() {

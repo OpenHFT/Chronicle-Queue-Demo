@@ -21,7 +21,7 @@ public class StrategyImpl implements AggregatorOut {
 
     /**
      * Constructor for the StrategyImpl class.
-     * It initializes the output interface for OMS and a new order object.
+     * It initialises the output interface for OMS and a new order object.
      *
      * @param out An instance of {@link OMSIn} to be used for communication with the OMS
      */

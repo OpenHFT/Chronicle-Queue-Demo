@@ -1,0 +1,95 @@
+= Order Processor Submodule Documentation
+:toc:
+
+== Overview
+
+The **order-processor** submodule is a demonstration of an Order Management System (OMS) implementation.
+It integrates Chronicle Queue for high-performance message handling and leverages the FIX protocol (4.2) for financial message semantics.
+The submodule includes:
+
+- Functional implementations for creating, modifying, and canceling orders.
+- Test coverage using unit tests and YAML-based Behavior-Driven Development (BDD) scenarios.
+- Utilities for benchmarking and order viewing.
+
+== Directory Structure
+
+All directories here are under `order-processor` directory.
+
+The `order-processor` submodule consists of:
+
+src/main/java :: Source code for OMS interfaces and implementations.
+src/main/adoc :: AsciiDoc documentation of requirements and FIX mappings.
+src/test :: Unit tests and YAML-based test scenarios.
+
+== Key Components
+
+=== OMS API
+
+Defines inbound (`OMSIn`) and outbound (`OMSOut`) interfaces:
+
+- `OMSIn`: Handles incoming order-related events such as `NewOrderSingle` and `CancelOrderRequest`.
+- `OMSOut`: Publishes responses like `ExecutionReport` and `OrderCancelReject`.
+
+=== OMS Implementation
+
+OMSImpl :: Implements `OMSIn` and processes messages.
+- Generates unique `orderID` using a nanosecond timestamp.
+- Outputs responses via `OMSOut`.
+- Designed for single-threaded operation.
+
+=== Data Transfer Objects (DTOs)
+
+Encapsulates order-related data:
+
+- Examples: `NewOrderSingle`, `CancelOrderRequest`, `ExecutionReport`.
+- Validated before processing using `validate()` methods.
+
+=== Utilities
+
+OrderAdderMain :: Simulates order creation.
+OrderViewerMain :: Displays order messages from the queue.
+OMSBenchmarkMain :: Benchmarks message throughput and latency.
+
+== Documentation
+
+=== Requirements
+
+AsciiDoc files outline the OMS requirements:
+
+- `oms-requirements.adoc`: Functional requirements for `OMSImpl`.
+- `oms-api-requirements.adoc`: API specifications.
+- `test-requirements.adoc`: Guidelines for unit and YAML-based tests.
+
+=== FIX 4.2 Mappings
+
+- `selected-fix-4.2.adoc`: Maps DTO fields to FIX tags.
+
+== Testing
+
+Unit Tests :: Cover edge cases (e.g., negative quantities, missing fields).
+BDD Tests :: YAML files specify inputs and expected outputs:
+- `newOrderSingle`: Test for `NewOrderSingle` events.
+- `cancelOrderRequest`: Test for cancel requests.
+- `cancelAll`: Test for mass cancel scenarios.
+
+== Performance
+
+- Benchmarking with **OMSBenchmarkMain**.
+- Handles 100,000 messages/second with sub-microsecond latencies.
+
+== Usage
+
+1. Clone the repository.
+2. Build the project with Maven:
+
+   mvn clean install
+
+3. Run examples:
+- `OrderAdderMain` to create orders.
+- `OrderViewerMain` to view queue messages.
+- `OMSBenchmarkMain` for performance testing.
+
+== Conclusion
+
+The `order-processor` submodule demonstrates a robust, high-performance OMS using Chronicle libraries.
+It ensures alignment with FIX 4.2 and provides comprehensive testing and benchmarking capabilities.

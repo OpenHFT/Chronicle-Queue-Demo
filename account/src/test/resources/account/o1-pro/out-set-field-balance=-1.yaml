@@ -1,0 +1,154 @@
+# Scenario: Valid EUR-to-EUR Transfer (Alice -> Charlie)
+# Alice (101013) has 15 EUR, Charlie (101040) has 50 EUR.
+# Transfer 10 EUR from Alice to Charlie should succeed.
+---
+onTransfer: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:03,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:01:00,
+    from: 101013,
+    to: 101040,
+    currency: EUR,
+    amount: 10.0,
+    reference: Groceries Payment
+  }
+}
+...
+# Scenario: Currency Mismatch Transfer (Alice -> Bob)
+# Attempting a transfer of 10 EUR to Bob who holds a USD account.
+# This should fail due to currency mismatch.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:04,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:02:00,
+    from: 101013,
+    to: 101025,
+    currency: EUR,
+    amount: 10.0,
+    reference: Dog food
+  },
+  reason: insufficient funds
+}
+...
+# Scenario: Invalid Create Account
+# Attempt to create an account with a negative initial balance (-20).
+# This should fail with a createAccountFailed event.
+# override balance: -20 to balance: -1
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: balance must be positive or zero"
+...
+# Scenario: Non-Existent Account Transfer
+# Attempting to transfer 5 EUR from a non-existent account (999999) to Charlie (101040).
+# This should fail with reason "accountNotFound".
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:05,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:04:00,
+    from: 999999,
+    to: 101040,
+    currency: EUR,
+    amount: 5.0,
+    reference: Mystery Sender
+  },
+  reason: from account doesn't exist
+}
+...
+# Scenario: Insufficient Funds Transfer
+# After the first successful transfer, Alice has 5 EUR left (15 - 10 = 5).
+# Attempting to transfer 100 EUR from Alice to Charlie should fail with "insufficientFunds".
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:06,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:05:00,
+    from: 101013,
+    to: 101040,
+    currency: EUR,
+    amount: 100.0,
+    reference: Big Purchase
+  },
+  reason: insufficient funds
+}
+...
+# Scenario: Checkpoint
+# Requesting a checkpoint after all operations.
+# Expected output: startCheckpoint, onCreateAccount events for all existing accounts,
+# and endCheckpoint, reflecting the final state of known accounts.
+---
+startCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T11:00:00
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:07,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:00,
+    name: alice,
+    account: 101013,
+    currency: EUR,
+    balance: 5.0,
+    overdraft: 0.0
+  }
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:08,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:01,
+    name: bob,
+    account: 101025,
+    currency: USD,
+    balance: 1E3,
+    overdraft: 0.0
+  }
+}
+...
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:09,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:02,
+    name: charlie,
+    account: 101040,
+    currency: EUR,
+    balance: 60.0,
+    overdraft: 0.0
+  }
+}
+...
+endCheckpoint: {
+  sender: gw2,
+  target: vault,
+  sendingTime: 2023-01-20T11:00:00
+}
+...

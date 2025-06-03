@@ -19,14 +19,21 @@ package run.chronicle.account.dto;
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 
 /**
- * The class OnCreateAccount is an extension of the AbstractEvent class,
- * and it represents an event that occurs when a CreateAccount action has successfully occurred.
- * The class contains a reference to the CreateAccount instance that initiated the event.
- * This class follows the convention of using a fluent style for its setters,
- * and it also includes a validate method to make sure that the createAccount field has been properly set.
+ * Represents an event indicating that an account was successfully created.
+ * This event references the original {@link CreateAccount} request that
+ * led to the successful creation.
+ *
+ * <p>Example usage:
+ * <pre>{@code
+ * OnCreateAccount event = new OnCreateAccount()
+ *     .sender(vaultId)
+ *     .target(gatewayId)
+ *     .sendingTime(SystemTimeProvider.CLOCK.currentTimeNanos())
+ *     .createAccount(originalRequest);
+ * }</pre>
  */
 public class OnCreateAccount extends AbstractEvent<OnCreateAccount> {
-    private CreateAccount createAccount; // The CreateAccount instance that triggered this event
+    private CreateAccount createAccount;
 
     /**
      * Retrieves the {@link CreateAccount} instance that triggered this event.
@@ -49,18 +56,22 @@ public class OnCreateAccount extends AbstractEvent<OnCreateAccount> {
     }
 
     /**
-     * Validates that all necessary properties have been set and are valid.
+     * Validates that all required properties are set and valid. This includes:
+     * <ul>
+     *   <li>All fields from the superclass (sender, target, sendingTime)</li>
+     *   <li>A non-null {@link CreateAccount} instance</li>
+     *   <li>Validation of the {@code CreateAccount} instance itself</li>
+     * </ul>
      *
-     * @throws InvalidMarshallableException if validation fails
+     * @throws InvalidMarshallableException if validation fails for this event
      */
     @Override
     public void validate() throws InvalidMarshallableException {
         super.validate(); // Validate fields in the superclass
 
         if (createAccount == null) {
-            throw new InvalidMarshallableException("CreateAccount must be set");
-        } else {
-            createAccount.validate(); // Validate the CreateAccount instance
+            throw new InvalidMarshallableException("Invalid OnCreateAccount: 'createAccount' must not be null.");
         }
+        createAccount.validate();  // Validate the associated CreateAccount object
     }
 }

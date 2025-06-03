@@ -1,68 +1,111 @@
 = Low-Latency Account Management System Over TCP and Shared Memory
-Peter Lawrey
+:author: Peter Lawrey
+:revdate: 2024-12-16
+:revnumber: 1.3
+:toc: left
+:toclevels: 3
 
-This example shows a simple high performance microservice accessible via TCP or shared memory storing each message in and out persisted in a Chronicle Queue.
-There are a number of configurations with a comparison of the performance.
-It is designed to produce minimal garbage to minimise jitter.
+An event-driven account management system utilising Chronicle libraries for high-performance and low-latency operations. This project demonstrates a reference architecture for creating accounts, performing transfers, and capturing checkpoints of system state, supported by comprehensive testing and benchmarking tools.
 
-This Account Management System is designed to handle basic account operations such as account creation and fund transfers.
-It's built on Chronicle Wire and uses Fluent Interface pattern, taking advantage of YAML files for test input data.
+This project showcases a low-latency, high-performance account management microservice accessible via TCP or shared memory.
+Each inbound and outbound message is persisted in a Chronicle Queue, ensuring durability and traceability.
+The system is designed to produce minimal garbage and reduce latency jitter, making it suitable for high-frequency financial operations.
 
-This system leverages the `channels` package in Chronicle Wire, a high-speed messaging framework that excels in handling high volume and latency-critical data.
+Built on Chronicle Queue and leveraging YAML-based input data, this service uses a fluent interface pattern to handle various account operations, such as account creation, fund transfers, and state checkpoints.
+It also includes benchmarking and testing utilities for performance evaluation.
 
-== Overview
+== Key Features
 
-The Account Management System serves as an efficient banking system that facilitates basic account operations, including account creation and fund transfers.
-It is architected for low latency, efficient memory utilization, and performance under high transaction volume scenarios.
+Low Latency :: Designed for microsecond-level response times, especially when using shared memory transport.
+High Throughput :: Capable of handling high transaction volumes with minimal garbage production.
+Fault Tolerance & Durability :: All messages persist in a Chronicle Queue, aiding recovery and auditability.
+Flexible Communication :: Supports TCP and shared memory transport configurations.
+Modular Design :: Separates API, DTOs, and implementations for easier maintenance and extension.
 
-The core functionality is built around three main components:
+== System Overview
 
-. *Account Creation*: This feature allows for the establishment of new bank accounts with relevant details, such as account holder's name, account ID, currency type, and the initial balance.
-. *Fund Transfer*: The system is capable of processing funds transfer between different accounts securely and swiftly.
-Transfer details include sender account, target account, transfer amount, currency type, and a reference note.
-. *Checkpointing*: The checkpoint functionality provides a snapshot of the current state of all accounts in the system at a specific point in time.
+=== Core Operations
 
-=== Network Communication
+. **Account Creation**:
+Create new accounts with specified details (name, account ID, currency, initial balance, and optional overdraft).
 
-The system communicates over TCP to ensure reliable data transmission, or shared memory where possible to minimise latencies.
-TCP is chosen for its built-in error checking and correction, ensuring that all account management data reaches the correct destination in the correct order and without errors.
-All shared memory messaging is persisted to memory mapped files as it is written.
+. **Fund Transfers**:
+Transfer funds between accounts, validating currencies, balances, and overdrafts.
+Produces events indicating success or failure.
+
+. **Checkpointing**:
+Emit a snapshot of all accounts' current state at a given time for auditing or recovery.
+
+=== Architecture and Communication
+
+The service can operate in various configurations:
+
+TCP Client to TCP Service :: Offers the most flexibility for distributed deployments, with typical latencies under 20 µs.
+TCP Client to Shared Memory Service :: Achieves better performance, typically ~10 µs latency.
+Shared Memory Client and Service :: This method achieves the lowest latency, around 1.5 µs for typical operations.
+
+Chronicle Services' `channels` package and Chronicle Queue facilitate fast, low-overhead message passing.
+State changes are persistently recorded for replay or state restoration.
+
+== Architecture and Key Components
+
+=== Overview
+The system is composed of the following layers:
+
+Input/Output Layer :: Handles external requests (e.g., through Chronicle Channels) and emits responses/events.
+Service Layer :: Contains domain services (e.g., `AccountService`) that enforce business rules like account creation, validation, currency checks, and balance updates.
+DTOs (Data Transfer Objects) :: Represent business events such as `CreateAccount`, `Transfer`, `OnTransfer`, etc. DTOs are validated before processing to ensure data integrity.
+Event-Driven Model :: Uses Chronicle’s method readers/writers and queues to handle requests asynchronously and at low latency.
+Benchmarking and Testing Tools :: Includes JLBH for microsecond-level latency testing and YAML-driven scenario tests.
+
+=== Key Classes
+* `AccountManagerImpl`: Orchestrates incoming events, delegating domain logic to `AccountService` and communicating results back via `AccountManagerOut`.
+* `AccountService`: Encapsulates the domain logic for account management (e.g., validating accounts, performing transfers).
+* `DTO Classes (CreateAccount, Transfer, OnTransfer, etc.)`: Define the structure and validation rules for events.
+* `BenchmarkMain Classes`: Run performance tests and measure end-to-end latencies under various throughput settings.
+
+A typical flow:
+1. A request (e.g., `createAccount`) arrives via a Chronicle channel.
+2. `AccountManagerImpl` receives the request, delegates validation and business logic to `AccountService`.
+3. `AccountService` returns success or a failure reason.
+4. `AccountManagerImpl` emits corresponding events (e.g., `onCreateAccount` or `createAccountFailed`).
 
 === Testability and Benchmarking
 
-The system also comes with a comprehensive set of tests and a benchmarking suite, allowing for easy performance measurement and regression testing.
-The `AccountManagerBenchmarkMain` class acts as a benchmarking and testing entry point, demonstrating the functionality of the system and showing the execution time for the operations.
+A suite of tests and benchmarks (e.g., `AccountManagerBenchmarkMain`) allows easy verification of correctness and performance.
+You can measure latency, throughput, and other key metrics to ensure the service meets performance goals.
 
-=== Using a Production Server
+== Making It Production-Ready with Chronicle Services
 
-In production, you want a server that has
+To further enhance this solution for production environments, consider using https://chronicle.software/services/[Chronicle Services].
+Chronicle Services provides advanced features to ensure high availability, resilience, and smooth operations, including:
 
-- A recent, fast processor with enough cores.
-More cores isn't always better esp if it's more than you need.
-- A Fast enterprise grade storage device e.g. NVMe.
-This can reduce jitter due to writes by a factor fo 10 or better.
-- Fast memory.
-As event processing systems stream a large amount of data, yet retain relatively little, the memory size doesn't need to be large if your IO subsystem is fast enough.
-- As we advocate producing little garbage and storing most data off heap, your heap size might be relatively small. e.g. 2 GB
-- If you have a large eden space of 24 GB, you can produce 1 GB/hour of garbage and only minor collect once per day.
-Possibly in a maintenance window if you have one.
-However, for modest volumes an Eden size of 1 GB might be enough.
+Failover Support :: If the primary fails, the system automatically switches to a standby service instance, minimizing downtime.
+Process Restarting :: Automatically restart services after unexpected terminations or during scheduled maintenance windows.
+Live Upgrades :: Deploy updates without halting the entire system, allowing for rolling upgrades with minimal latency impact.
+Idempotent Collections :: Simplify restartable event processing by ensuring operations can be safely replayed without side effects.
+Acknowledged Replication :: Achieve high availability and real-time distribution across hosts, ensuring data consistency and durability.
+Encryption :: Protect sensitive transaction data with on-disk encryption.
+Monitoring & Management :: Gain insights into system performance and health, enabling proactive troubleshooting and optimization.
 
-=== Commercial Extensions to Productionise Microservices
+Integrating Chronicle Services allows your account management microservice to meet strict service-level agreements (SLAs), maintain continuous uptime, and adapt to evolving business and technical requirements.
 
-There is a commercial extension https://chronicle.software/services/ that supports
+image::img/Chronicle-Services-Diagram.png[]
 
-- Control over restarting of services
-- Idempotent collections to simplify restarting event processing.
-- Acknowledged Replication for High Availability and Realtime Distribution restartable across hosts.
-- Encryption of messages stored on disk.
-- Monitoring and Management support
+== Recommended Production Environment
 
-image:img/Chronicle-Services-Diagram.png[]
+Consider running the service on a server with:
+
+Modern, Fast CPU :: Ensure sufficient but not excessive CPU cores.
+High-Performance Storage (NVMe) :: Reduces jitter from IO operations.
+Fast Memory :: Memory-intensive operations benefit from faster RAM.
+Small Heap Size :: A modest heap (e.g., 2 GB) is sufficient since most data is off-heap.
+Tuned Eden Space :: A large Eden space can reduce GC frequency.
+For modest volumes, ~1 GB Eden size may suffice.
 
 == Network Layouts
 
-The client and the service can be laid out in a variety of ways without changing the code.
+The client and the service can be laid out in various ways without changing the code.
 
 .Ballpark latencies running on a production quality server
 |===
@@ -72,7 +115,7 @@ The client and the service can be laid out in a variety of ways without changing
 | Shared Memory | Shared Memory | 1.5 &micro;s | 3 &micro;s
 |===
 
-=== TCP Client, TCP Service
+=== Example: TCP Client, TCP Service
 
 This approach offers the most distributed option.
 The typical latencies are under 20 &micro;s with the 99%ile latency not much higher.
@@ -80,58 +123,85 @@ The typical latencies are under 20 &micro;s with the 99%ile latency not much hig
 [source,mermaid]
 ....
 sequenceDiagram
-autonumber
-Client->>Gateway: transfer
-Note over Client,Gateway: via TCP, persisted
-Gateway->>+Service: transfer
-Note right of Gateway: via TCP
-Note right of Service: processes event
-Service->>-Gateway: onTransfer
-Note over Service,Gateway: via TCP, persisted
-Gateway->>Client: onTransfer
-Note left of Gateway: via TCP
+    autonumber
+
+    participant Client as Client Application
+    participant Gateway as Gateway<br/> (TCP <-> Shared Memory)
+    participant Service as Service<br/> (Account Manager)
+
+    Client->>Gateway: transfer (via TCP)
+    Note over Client,Gateway: The request is persisted<br/>to a Chronicle Queue
+
+    Gateway->>+Service: transfer (via TCP)
+    Note right of Gateway: Gateway acts as a bridge<br/>and persists the message
+    Note right of Service: Service processes the event<br/>(update balances, etc.)
+
+    Service->>-Gateway: onTransfer (via TCP)
+    Note over Service,Gateway: Response is persisted again<br/> for audit and recovery
+
+    Gateway->>Client: onTransfer (via TCP)
+    Note left of Gateway: Client receives<br/> the result of the operation
 ....
 
 This can be benchmarked all-in-one with the command line properties `-Durl=tcp://localhost:1248 -DserviceUrl=tcp://:1248` running `AccountManagerBenchmarkMain`
 
-=== TCP Client, Shared Memory Service
+=== Example: TCP Client, Shared Memory Service
 
-This approach offers the most distributed option. The typical latencies are around 10 &micro;s with the 99%ile latency not much higher.
+This approach offers the most distributed option.
+The typical latencies are around 10 &micro;s with the 99%ile latency not much higher.
 
 [source,mermaid]
 ....
 sequenceDiagram
-autonumber
-Client->>Gateway: transfer
-Note over Client,Gateway: via TCP, persisted
-Gateway->>+Service: transfer
-Note right of Gateway: via Shared Memory
-Note right of Service: processes event
-Service->>-Gateway: onTransfer
-Note over Service,Gateway: via Shared Memory, persisted
-Gateway->>Client: onTransfer
-Note left of Gateway: via TCP
+    autonumber
+
+    participant Client as Client Application
+    participant Gateway as Gateway<br/>(TCP <-> Shared Memory)
+    participant Service as Service<br/> (Account Manager)
+
+    Client->>Gateway: transfer (via TCP)
+    Note over Client,Gateway: The request is persisted<br/> to a Chronicle Queue on the Gateway.
+
+    Gateway->>+Service: transfer (via Shared Memory)
+    Note right of Gateway: Gateway provides low-latency<br/> shared memory messaging
+    Note right of Service: Service processes the event<br/> (e.g., debit & credit accounts)
+
+    Service->>-Gateway: onTransfer (via Shared Memory)
+    Note over Service,Gateway: Response is persisted again<br/> for audit and recovery
+
+    Gateway->>Client: onTransfer (via TCP)
+    Note left of Gateway: Client receives the result<br/> of the transfer operation
 ....
 
 This can be benchmarked all-in-one with the command line properties `-Durl=tcp://:1248` running `AccountManagerBenchmarkMain`
 
-=== Shared Memory Client and Service
+=== Example: Shared Memory Client and Service
 
-This approach offers the most distributed option. The typical latencies are under 2 &micro;s with the 99%ile latency about double this.
+This approach offers the most distributed option.
+The typical latencies are under 2 &micro;s with the 99%ile latency about double this.
 
 [source,mermaid]
 ....
 sequenceDiagram
-autonumber
-Client->>queue: transfer
-Note over Client,queue: via Shared Memory, persisted
-queue->>+Service: transfer
-Note right of queue: via Shared Memory
-Note right of Service: processes event
-Service->>-queue: onTransfer
-Note over Service,queue: via Shared Memory, persisted
-queue->>Client: onTransfer
-Note left of queue: via Shared Memory
+    autonumber
+
+    participant Client as Client Application
+    participant Queue as Queue<br/> (Shared Memory Channel)
+    participant Service as Service<br/> (Account Manager)
+
+    Client->>Queue: transfer (via Shared Memory)
+    Note over Client,Queue: The transfer request is immediately<br/> persisted in a Chronicle Queue<br/> for audit and recovery.
+
+    Queue->>+Service: transfer (via Shared Memory)
+    Note right of Queue: The Service reads the request<br/> directly from the Queue.
+    Note right of Service: The Service processes the event<br/> (e.g., adjust balances).
+
+    Service->>-Queue: onTransfer (via Shared Memory)
+    Note over Service,Queue: The response event is<br/> also persisted in the Queue.
+
+    Queue->>Client: onTransfer (via Shared Memory)
+    Note left of Queue: The Client reads the response,<br/> completing the round-trip<br/> with minimal latency.
+
 ....
 
 This can be benchmarked all-in-one with the default command line properties running `AccountManagerBenchmarkMain`
@@ -140,19 +210,18 @@ This can be benchmarked all-in-one with the default command line properties runn
 
 We lay out our packages in the following manner
 
-- `api` package for the input and output interfaces.
-The input of one microservice might be the output of another microservice.
-- `dto` package for POJOs (Plain Old Java Objects) that hold the data associated with each event.
-- `impl` package for the service implementation and the high level classes it uses
-- `util` package for separating low level helper methods and classes.
+* `api` – Input and output interfaces defining the service contract.
+* `dto` – Data Transfer Objects (POJOs) representing commands and events.
+* `impl` – The core implementation of the account management logic.
+* `util` – Utility classes for low-level operations and helpers.
 
-For demos, we might include `main` classes, however for a production system, we use a framework Chronicle Services https://chronicle.software/services/ to handle manageability, monitoring, restart and fail over.
+For demos, we might include `main` classes; however, for a production system, we use a framework https://chronicle.software/services/[Chronicle Services] to handle manageability, monitoring, restart and failover.
 
 == How to Run
 
 . Compile the source files using your preferred Java compiler.
-. `AccountManagerServiceMain` runs the end service responsible for holding state and generating results of transactions
-
+. `AccountManagerServiceMain` runs the end service responsible for holding the state and generating results of transactions
+.
 . `AccountManagerGatewayMain` acts as a gateway listening for TCP connections and writing to/reading from the shared memory queue the microservices uses
 
 . `AccountManagerClientMain` injects a few simple messages and waits for resulting events from the AccountManagerImpl
@@ -199,13 +268,11 @@ transfer: {
 }
 ----
 
-== Note
+== Limitations and Future Work
 
-This is a basic implementation and does not handle many edge cases.
-It also lacks a user-friendly interface, and the input is provided directly through YAML files.
-It's intended as a demonstration of a system built on Chronicle Wire, and may not be suitable for production use without further modifications and improvements.
+This demo does not handle all edge cases and lacks a user-friendly interface.
+Future enhancements may include:
 
-== Contribute
-
-We would love your contributions!
-Please submit a pull request with any improvements or bug fixes you have made.
+* Improved error handling
+* Better user interfaces or REST/HTTP endpoints
+* More robust fault tolerance and recovery strategies, possibly leveraging Chronicle Services further

@@ -11,27 +11,47 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
+/**
+ * Unit tests for {@link LogsAccountManagerOut}, verifying that all events logged by this mock implementation
+ * produce the expected logging output. This ensures that logging behavior remains stable and predictable.
+ */
 public class LogsAccountManagerOutTest {
+
+    /**
+     * Resets the Jvm exception handlers after each test to prevent side effects between tests.
+     */
     @After
     public void reset() {
         Jvm.resetExceptionHandlers();
     }
+
+    /**
+     * Tests that the {@link LogsAccountManagerOut} correctly logs various events to Jvm's exception handlers.
+     * This includes verifying that all output events are captured with the expected log level, message, and format.
+     */
     @Test
     public void expectOutput() {
+        // Start recording exceptions thrown/logged by Jvm for verification.
         Map<ExceptionKey, Integer> recorded = Jvm.recordExceptions(true);
+
+        // Instantiate a LogsAccountManagerOut and emit various events.
         LogsAccountManagerOut out = new LogsAccountManagerOut();
-        out.createAccountFailed(new CreateAccountFailed());
-        out.endCheckpoint(new CheckPoint());
-        out.jvmError("jvm error");
-        out.onCreateAccount(new OnCreateAccount());
-        out.onTransfer(new OnTransfer());
-        out.startCheckpoint(new CheckPoint());
-        out.transferFailed(new TransferFailed());
-        String collect = recorded.keySet().stream()
+        out.createAccountFailed(new CreateAccountFailed()); // Should produce a WARN log
+        out.endCheckpoint(new CheckPoint());                // Should produce a DEBUG log
+        out.jvmError("jvm error");                          // Should produce an ERROR log
+        out.onCreateAccount(new OnCreateAccount());         // Should produce a DEBUG log
+        out.onTransfer(new OnTransfer());                   // Should produce a DEBUG log
+        out.startCheckpoint(new CheckPoint());              // Should produce a DEBUG log
+        out.transferFailed(new TransferFailed());           // Should produce a WARN log
+
+        // Filter and collect logs only from the same package as this test.
+        String collectedLog = recorded.keySet().stream()
                 .filter(e -> e.clazz().getPackage().equals(LogsAccountManagerOutTest.class.getPackage()))
                 .map(Object::toString)
                 .collect(Collectors.joining("\n"));
-        assertEquals("" +
+
+        // Expected log output. Each event should match these lines exactly.
+        String expected = "" +
                 "ExceptionKey{level=WARN, clazz=class run.chronicle.account.util.LogsAccountManagerOut, message='createAccountFailed !run.chronicle.account.dto.CreateAccountFailed {\n" +
                 "  sender: \"\",\n" +
                 "  target: \"\",\n" +
@@ -74,8 +94,10 @@ public class LogsAccountManagerOutTest {
                 "  transfer: !!null \"\",\n" +
                 "  reason: !!null \"\"\n" +
                 "}\n" +
-                "', throwable=}", collect);
+                "', throwable=}";
 
+        // Assert that the collected log matches the expected output exactly.
+        assertEquals("The recorded exception logs should match the expected logging output.",
+                expected, collectedLog);
     }
-
 }

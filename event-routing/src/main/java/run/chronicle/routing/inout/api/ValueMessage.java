@@ -1,9 +1,9 @@
 package run.chronicle.routing.inout.api;
 
 /**
- * This is a ValueMessage interface.
- * It provides a contract for any class that wants to send a {@link Value} message.
- * The purpose of this interface is to encapsulate the process of sending a value in a message.
+ * Describes the contract for any class that handles
+ * a 'Value' message. The system will call `value(...)`
+ * whenever a new message is received or processed.
  */
 public interface ValueMessage {
 

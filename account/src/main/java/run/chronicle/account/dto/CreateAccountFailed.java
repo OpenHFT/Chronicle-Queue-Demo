@@ -19,15 +19,27 @@ package run.chronicle.account.dto;
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 
 /**
- * This class, CreateAccountFailed, is an extension of AbstractEvent used to represent a situation
- * where an attempt to create an account has failed. This class adds two properties to the event:
- * a reference to the original CreateAccount object that failed, and a reason string describing why
- * the account creation failed. As with other classes in this system, it uses a fluent style of
- * setters, and includes a validate method to ensure all necessary properties have been set.
+ * Represents an event indicating that an attempt to create an account has failed.
+ * This event includes:
+ * <ul>
+ *   <li><strong>createAccount</strong>: The original {@link CreateAccount} request that failed.</li>
+ *   <li><strong>reason</strong>: A descriptive message explaining why the creation failed.</li>
+ * </ul>
+ *
+ * <p>Example usage:</p>
+ * <pre>{@code
+ * CreateAccountFailed caf = new CreateAccountFailed()
+ *     .sender(vaultId)
+ *     .target(gwId)
+ *     .sendingTime(SystemTimeProvider.CLOCK.currentTimeNanos())
+ *     .createAccount(originalRequest)
+ *     .reason("account already exists");
+ * }</pre>
  */
 public class CreateAccountFailed extends AbstractEvent<CreateAccountFailed> {
-    private CreateAccount createAccount; // Reference to the CreateAccount instance that failed
-    private String reason; // The reason for the failure
+
+    private CreateAccount createAccount;
+    private String reason;
 
     /**
      * @return the CreateAccount instance that failed
@@ -69,6 +81,8 @@ public class CreateAccountFailed extends AbstractEvent<CreateAccountFailed> {
 
     /**
      * Validates that all necessary properties have been set and are valid.
+     * Ensures that the original {@link CreateAccount} request and the reason are present
+     * and valid. If validation fails, an {@link InvalidMarshallableException} is thrown.
      *
      * @throws InvalidMarshallableException if validation fails
      */

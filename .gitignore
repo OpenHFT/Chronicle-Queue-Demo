@@ -1,3 +1,7 @@
+# Temporarily exclude these files from aide to make the token size manageable
+#account/
+#order-processor/
+
 ### How to update
 # This is copied from OpenHFT/.gitignore
 # update the original and run OpenHFT/update_gitignore.sh

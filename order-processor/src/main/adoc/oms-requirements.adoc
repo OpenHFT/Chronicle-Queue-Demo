@@ -25,9 +25,9 @@ State management (e.g., actual order book) is not within the scope of this demon
 
 == Event-Driven Interaction Model
 
-- **Input Events**: Arrive through a Chronicle Queue and are read by a matching method on `OMSImpl` (e.g., `newOrderSingle(...)`).
-- **Output Events**: Published to another Chronicle Queue, which downstream consumers or loggers can subscribe to.
-- **Traceability**: Because both inbound and outbound events are fully persisted, the system can be audited or replayed.
+Input Events :: Arrive through a Chronicle Queue and are read by a matching method on `OMSImpl` (e.g., `newOrderSingle(...)`).
+Output Events :: Published to another Chronicle Queue, which downstream consumers or loggers can subscribe to.
+Traceability :: Because both inbound and outbound events are fully persisted, the system can be audited or replayed.
 
 == Functional Overview
 
@@ -45,37 +45,36 @@ Any validation failure triggers a path where `jvmError` is called or a rejection
 
 === newOrderSingle
 
-* **Input**: `NewOrderSingle nos`
+Input :: `NewOrderSingle nos`
 - Contains fields such as `symbol`, `orderQty`, `price`, `side`, `clOrdID`, `ordType`, etc.
 - Includes metadata (e.g., `sender()`, `target()`, `transactTime()`, `sendingTime()`).
 
-* **Process**:
+Process ::
 - A unique `orderID` is generated (in the reference implementation, a nanosecond timestamp).
 - An `ExecutionReport` DTO is populated with the relevant data and sent out.
 - If the inbound `NewOrderSingle` fails validation (missing fields, invalid values), the system *must* create and send an `OrderCancelReject` instead of an `ExecutionReport`.
 
-* **Output**: `ExecutionReport` (or `OrderCancelReject` if invalid)
+Output :: `ExecutionReport` (or `OrderCancelReject` if invalid)
 
 === cancelOrderRequest
 
-* **Input**: `CancelOrderRequest cor`
+Input :: `CancelOrderRequest cor`
 - Contains fields such as `symbol`, `account`, `origClOrdID`, `clOrdID`, `side`, etc.
 
-* **Process**:
+Process ::
 - In this simple reference implementation, no existing orders are tracked, so the request is rejected with `OrderCancelReject` containing the reason `"No such order"`.
 
-* **Output**: `OrderCancelReject`
+Output :: `OrderCancelReject`
 
 === cancelAll
 
-* **Input**: `CancelAll cancelAll`
+Input :: `CancelAll cancelAll`
 - Contains fields such as `symbol` and `clOrdID`, representing which orders to cancel.
 
-* **Process**:
-- Similar to `cancelOrderRequest`, no orders are tracked.
-The system publishes an `OrderCancelReject` with `"No orders to cancel"`.
+Process ::
+- Similar to `cancelOrderRequest`, no orders are tracked. The system publishes an `OrderCancelReject` with `"No orders to cancel"`.
 
-* **Output**: `OrderCancelReject`
+Output :: `OrderCancelReject`
 
 == Error Handling
 
@@ -93,8 +92,7 @@ This ensures system-level errors are tracked in the same queue-based workflow.
 2. **Order Rejection**: Returns an `OrderCancelReject` for both single-order and mass-cancel requests, or if validation fails.
 3. **DTO Mapping**: Maps inbound DTO fields to outbound DTO fields (`sender ↔ target`, `symbol`, `clOrdID`, etc.).
 4. **Time/ID Generation**: Uses `SystemTimeProvider.CLOCK.currentTimeNanos()` to assign `orderID`.
-5. **Validation Flow**: Relies on the framework to call `validate()` on input and output DTOs.
-If invalid, the framework or `OMSImpl` triggers appropriate rejection/error handling.
+5. **Validation Flow**: Relies on the framework to call `validate()` on input and output DTOs. If invalid, the framework or `OMSImpl` triggers appropriate rejection/error handling.
 
 == Sample Implementation
 

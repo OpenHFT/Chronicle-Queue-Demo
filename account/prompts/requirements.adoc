@@ -1,0 +1,178 @@
+= Account Management Service Requirements
+:toc:
+:lang: en-GB
+
+== Introduction
+
+This document specifies the functional requirements for an Account Management Service (AMS) that processes account-related commands and generates corresponding events.
+The AMS is designed to be driven by incoming commands (events) such as account creation, fund transfers, and checkpoint requests.
+It produces events to indicate success or failure and to provide state snapshots.
+
+== Terminology
+
+*Account*: A financial store of value characterized by an account number, owner name, currency, balance, and an optional overdraft limit.
+
+*Command*: An inbound request to the system (e.g., create an account, transfer funds, request checkpoint).
+Commands are modelled as Events in this system.
+
+*Event*: An outbound notification from the system that indicates a command's state change, success, or failure.
+
+*Checkpoint*: A request to serialize or snapshot the current state of all accounts for audit or recovery purposes.
+
+== Functional Requirements
+
+=== Account Creation
+
+==== Inputs
+
+1. A `CreateAccount` command containing:
+
+* `sender`: The origin of the command.
+* `target`: The intended system (e.g., `vault`).
+* `sendingTime`: Holds when the command was sent as a wall clock timestamp with nanosecond resolution.
+* `name`: The account holder's name.
+* `account`: The numeric identifier for the account (long).
+* `currency`: The currency in which the account operates.
+* `balance`: The initial balance of the account.
+* `overdraft`: The overdraft limit allowed for the account.
+
+The `sendingTime` can be set using `SystemTimeProvider.CLOCK.currentTimeNanos()`.
+
+==== Processing
+
+Upon receiving a `CreateAccount` command:
+
+1. Validate that `target` matches this instance's configured identifier.
+2. Validate that `balance` ≥ 0.
+3. Validate that the `account` number does not already exist in the system.
+4. If validation fails, output a `createAccountFailed` event, including the reason.
+5. If validation succeeds:
+
+* Store the account details in a local data structure (e.g., a `Map<Long, CreateAccount>`).
+* Emit an `onCreateAccount` event with the stored `CreateAccount` details.
+
+==== Outputs
+
+* `onCreateAccount` event on success:
+* `sender`: System ID (e.g., `vault`)
+* `target`: The original `sender` of the `CreateAccount` command
+* `sendingTime`: The system's current time
+* Embedded `createAccount` field containing the original request data.
+
+* `createAccountFailed` event on failure:
+* `sender`: System ID (e.g., `vault`)
+* `target`: The original `sender` of the `CreateAccount` command
+* `sendingTime`: The system's current time
+* `reason`: A textual description of the failure (e.g., "invalid balance", "account already exists").
+
+=== Transfer Funds
+
+==== Inputs
+
+1. A `Transfer` command containing:
+
+* `sender`: The origin of the command.
+* `target`: The intended system (e.g., `vault`).
+* `sendingTime`: Holds when the command was sent as a wall clock timestamp with nanosecond resolution.
+* `from`: The source account number.
+* `to`: The destination account number.
+* `currency`: The currency of the transfer.
+* `amount`: The amount to transfer.
+* `reference`: A reference field for the reason for the transfer or details.
+
+==== Processing
+
+Upon receiving a `Transfer` command:
+
+1. Validate that `target` matches this instance's identifier.
+2. Verify that the `from` account exists and its currency matches the `Transfer.currency`.
+3. Verify that the `to` account exists and its currency matches the `Transfer.currency`.
+4. Check that the `from` account has sufficient funds (`balance + overdraft ≥ amount`).
+5. If validation fails, emit a `transferFailed` event with an appropriate `reason`.
+6. If valid, update both accounts:
+* Deduct the `amount` from the `from` account's balance.
+* Add `amount` to the `to` account's balance.
+7. Emit an `onTransfer` event indicating success.
+
+==== Outputs
+
+* `onTransfer` event on success:
+* `sender`: System ID (e.g., `vault`)
+* `target`: The original `sender` of the `Transfer` command
+* `sendingTime`: The system's current time
+* Embedded `transfer` field containing the original `Transfer` command data.
+
+* `transferFailed` event on failure:
+* `sender`: System ID (e.g., `vault`)
+* `target`: The original `sender` of the `Transfer` command
+* `sendingTime`: The system's current time
+* Embedded `transfer` field containing the original request
+* `reason`: A textual description of the failure (e.g., "from account doesn't exist", "insufficient funds").
+
+=== Checkpoint
+
+==== Inputs
+
+1. A `CheckPoint` command containing:
+* `sender`: The origin of the command.
+* `target`: The intended system (e.g., `vault`).
+* `sendingTime`: The timestamp of when the command was sent.
+
+==== Processing
+
+Upon receiving a `CheckPoint` command:
+
+1. Validate that `target` matches this instance's identifier.
+2. Emit a `startCheckpoint` event.
+3. For every account currently held in the system:
+* Emit an `onCreateAccount` event representing its current state.
+4. Emit an `endCheckpoint` event.
+
+==== Outputs
+
+* `startCheckpoint` event:
+* `sender`: The original `sender` of the `CheckPoint`
+* `target`: The system ID (e.g., `vault`)
+* `sendingTime`: The system's current time
+
+* A series of `onCreateAccount` events for each known account, reflecting their current state at the time of checkpoint.
+
+* `endCheckpoint` event:
+* `sender`: The original `sender` of the `CheckPoint`
+* `target`: The system ID (e.g., `vault`)
+* `sendingTime`: The system's current time
+
+== Non-Functional Requirements
+
+1. **Performance**: The system should handle account lookups and updates in O(1) average time via efficient data structures (e.g., HashMap or LinkedHashMap).
+
+2. **Concurrency**: The system may assume single-threaded inputs.
+
+3. **Error Handling**: All invalid or unexpected command conditions result in failure events rather than exceptions visible to callers.
+
+4. **Time Management**: `sendingTime` should be based on a reliable system clock.
+
+== Validation and Testing
+
+To verify these requirements:
+
+1. Send a `createAccount` command with valid parameters and ensure `onCreateAccount` is emitted.
+2. Send a `createAccount` command with invalid parameters (e.g., negative balance or duplicate account number) and confirm that `createAccountFailed` is emitted.
+3. Perform a valid `transfer` and ensure `onTransfer` is emitted with the updated balances.
+4. Attempt invalid transfers and ensure `transferFailed` events are emitted.
+5. Issue a `checkPoint` command and validate that `startCheckpoint`, multiple `onCreateAccount` events (one per account), and `endCheckpoint` are produced in order.
+
+== Traceability
+
+Each requirement above directly corresponds to a portion of the Java implementation in `AccountManagerImpl.java`:
+
+* Account creation logic: `createAccount(CreateAccount createAccount)`
+* Transfer logic: `transfer(Transfer transfer)`
+* Checkpoint logic: `checkPoint(CheckPoint checkPoint)`
+
+Events and conditions are explicitly handled in private utility methods (e.g., `sendCreateAccountFailed`, `sendOnCreateAccount`, `sendTransferFailed`, `sendOnTransfer`).
+
+== Conclusion
+
+This document provides a high-level specification of the required functionalities and expected behaviours of the Account Management Service.
+Implementing these requirements should align with the Java code structure and produce consistent events for all supported operations.
