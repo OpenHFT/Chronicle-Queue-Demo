@@ -264,9 +264,9 @@ The *hello-world* example illustrates a simple event-driven pipeline:
 
 Experiment with each main class:
 
-* **RecordInputToConsoleMain**: echoes input.
-* **RecordInputAsYamlMain**: logs input as YAML.
-* **ReplayOutputMain**: replays a YAML file.
-* **DirectWithExclamationMain**: adds an exclamation mark.
+RecordInputToConsoleMain :: echoes input.
+RecordInputAsYamlMain :: logs input as YAML.
+ReplayOutputMain :: replays a YAML file.
+DirectWithExclamationMain :: adds an exclamation mark.
 
 This small example demonstrates how Chronicle Queue–based code can handle real-time data flow in a concise, modular way. Once comfortable with these basics, you can explore more advanced modules and features within the repository.

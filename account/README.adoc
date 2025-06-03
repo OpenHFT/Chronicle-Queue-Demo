@@ -16,11 +16,11 @@ It also includes benchmarking and testing utilities for performance evaluation.
 
 == Key Features
 
-* **Low Latency**: Designed for microsecond-level response times, especially when using shared memory transport.
-* **High Throughput**: Capable of handling high transaction volumes with minimal garbage production.
-* **Fault Tolerance & Durability**: All messages persist in a Chronicle Queue, aiding recovery and auditability.
-* **Flexible Communication**: Supports TCP and shared memory transport configurations.
-* **Modular Design**: Separates API, DTOs, and implementations for easier maintenance and extension.
+Low Latency :: Designed for microsecond-level response times, especially when using shared memory transport.
+High Throughput :: Capable of handling high transaction volumes with minimal garbage production.
+Fault Tolerance & Durability :: All messages persist in a Chronicle Queue, aiding recovery and auditability.
+Flexible Communication :: Supports TCP and shared memory transport configurations.
+Modular Design :: Separates API, DTOs, and implementations for easier maintenance and extension.
 
 == System Overview
 
@@ -40,9 +40,9 @@ Emit a snapshot of all accounts' current state at a given time for auditing or r
 
 The service can operate in various configurations:
 
-* **TCP Client to TCP Service**: Offers the most flexibility for distributed deployments, with typical latencies under 20 µs.
-* **TCP Client to Shared Memory Service**: Achieves better performance, typically ~10 µs latency.
-* **Shared Memory Client and Service**: This method achieves the lowest latency, around 1.5 µs for typical operations.
+TCP Client to TCP Service :: Offers the most flexibility for distributed deployments, with typical latencies under 20 µs.
+TCP Client to Shared Memory Service :: Achieves better performance, typically ~10 µs latency.
+Shared Memory Client and Service :: This method achieves the lowest latency, around 1.5 µs for typical operations.
 
 Chronicle Services' `channels` package and Chronicle Queue facilitate fast, low-overhead message passing.
 State changes are persistently recorded for replay or state restoration.
@@ -52,11 +52,11 @@ State changes are persistently recorded for replay or state restoration.
 === Overview
 The system is composed of the following layers:
 
-* **Input/Output Layer**: Handles external requests (e.g., through Chronicle Channels) and emits responses/events.
-* **Service Layer**: Contains domain services (e.g., `AccountService`) that enforce business rules like account creation, validation, currency checks, and balance updates.
-* **DTOs (Data Transfer Objects)**: Represent business events such as `CreateAccount`, `Transfer`, `OnTransfer`, etc. DTOs are validated before processing to ensure data integrity.
-* **Event-Driven Model**: Uses Chronicle’s method readers/writers and queues to handle requests asynchronously and at low latency.
-* **Benchmarking and Testing Tools**: Includes JLBH for microsecond-level latency testing and YAML-driven scenario tests.
+Input/Output Layer :: Handles external requests (e.g., through Chronicle Channels) and emits responses/events.
+Service Layer :: Contains domain services (e.g., `AccountService`) that enforce business rules like account creation, validation, currency checks, and balance updates.
+DTOs (Data Transfer Objects) :: Represent business events such as `CreateAccount`, `Transfer`, `OnTransfer`, etc. DTOs are validated before processing to ensure data integrity.
+Event-Driven Model :: Uses Chronicle’s method readers/writers and queues to handle requests asynchronously and at low latency.
+Benchmarking and Testing Tools :: Includes JLBH for microsecond-level latency testing and YAML-driven scenario tests.
 
 === Key Classes
 * `AccountManagerImpl`: Orchestrates incoming events, delegating domain logic to `AccountService` and communicating results back via `AccountManagerOut`.
@@ -80,13 +80,13 @@ You can measure latency, throughput, and other key metrics to ensure the service
 To further enhance this solution for production environments, consider using https://chronicle.software/services/[Chronicle Services].
 Chronicle Services provides advanced features to ensure high availability, resilience, and smooth operations, including:
 
-* **Failover Support**: If the primary fails, the system automatically switches to a standby service instance, minimizing downtime.
-* **Process Restarting**: Automatically restart services after unexpected terminations or during scheduled maintenance windows.
-* **Live Upgrades**: Deploy updates without halting the entire system, allowing for rolling upgrades with minimal latency impact.
-* **Idempotent Collections**: Simplify restartable event processing by ensuring operations can be safely replayed without side effects.
-* **Acknowledged Replication**: Achieve high availability and real-time distribution across hosts, ensuring data consistency and durability.
-* **Encryption**: Protect sensitive transaction data with on-disk encryption.
-* **Monitoring & Management**: Gain insights into system performance and health, enabling proactive troubleshooting and optimization.
+Failover Support :: If the primary fails, the system automatically switches to a standby service instance, minimizing downtime.
+Process Restarting :: Automatically restart services after unexpected terminations or during scheduled maintenance windows.
+Live Upgrades :: Deploy updates without halting the entire system, allowing for rolling upgrades with minimal latency impact.
+Idempotent Collections :: Simplify restartable event processing by ensuring operations can be safely replayed without side effects.
+Acknowledged Replication :: Achieve high availability and real-time distribution across hosts, ensuring data consistency and durability.
+Encryption :: Protect sensitive transaction data with on-disk encryption.
+Monitoring & Management :: Gain insights into system performance and health, enabling proactive troubleshooting and optimization.
 
 Integrating Chronicle Services allows your account management microservice to meet strict service-level agreements (SLAs), maintain continuous uptime, and adapt to evolving business and technical requirements.
 
@@ -96,11 +96,11 @@ image::img/Chronicle-Services-Diagram.png[]
 
 Consider running the service on a server with:
 
-* **Modern, Fast CPU**: Ensure sufficient but not excessive CPU cores.
-* **High-Performance Storage (NVMe)**: Reduces jitter from IO operations.
-* **Fast Memory**: Memory-intensive operations benefit from faster RAM.
-* **Small Heap Size**: A modest heap (e.g., 2 GB) is sufficient since most data is off-heap.
-* **Tuned Eden Space**: A large Eden space can reduce GC frequency.
+Modern, Fast CPU :: Ensure sufficient but not excessive CPU cores.
+High-Performance Storage (NVMe) :: Reduces jitter from IO operations.
+Fast Memory :: Memory-intensive operations benefit from faster RAM.
+Small Heap Size :: A modest heap (e.g., 2 GB) is sufficient since most data is off-heap.
+Tuned Eden Space :: A large Eden space can reduce GC frequency.
 For modest volumes, ~1 GB Eden size may suffice.
 
 == Network Layouts

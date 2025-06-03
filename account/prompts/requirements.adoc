@@ -1,11 +1,6 @@
 = Account Management Service Requirements
-
-:author: Peter Lawrey
-:revdate: 2024-12-16
-:revnumber: 1.1
-:doctype: book
-:toc: left
-:toclevels: 3
+:toc:
+:lang: en-GB
 
 == Introduction
 

@@ -1,11 +1,7 @@
 = Developer Prompt: Improving Classes for AMS
-
-:author: Peter Lawrey
-:revdate: 2024-12-16
-:revnumber: 1.0
 :doctype: book
-:toc: left
-:toclevels: 3
+:toc:
+:lang: en-GB
 
 You are given a set of requirements and an existing implementation of an Account Management Service (AMS).
 The AMS processes account-related commands (events) such as account creation, fund transfers, and checkpoint requests, and produces corresponding success/failure events.

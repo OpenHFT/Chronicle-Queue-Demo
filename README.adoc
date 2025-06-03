@@ -1,6 +1,6 @@
 = Chronicle Queue Demo - README
+Peter Lawrey
 :toc:
-:toclevels: 3
 
 This repository demonstrates the usage of Chronicle Queue (and related Chronicle libraries) through multiple examples, including an order processor, event routing, and more. Below is a quick start and pointers to further documentation.
 
@@ -36,14 +36,14 @@ Refer to them for details on architecture, usage instructions, testing approache
 
 The modules in this repository include:
 
-* **account**: An Account Management System (AMS) example using Chronicle Queue event-driven logic.
-* **benchmarks**: Scripts and classes demonstrating throughput/latency benchmarks (e.g., LatencyDistributionMain, ThroughputMain).
-* **event-routing**: Showcases how messages can be routed via Chronicle Queues with interfaces like `ViaIn`, `ViaOut`.
-* **hello-world**: A simple introduction to an event-driven microservice using Chronicle Queue (input, exclamation addition, output).
-* **md-pipeline**: A Market Data pipeline example with aggregator, strategy, and an exchange simulator.
-* **message-history-demo**: Demonstrates Chronicle’s `MessageHistory` in bridging or event processing scenarios.
-* **messages-with-text**: An example of writing/reading textual content with minimal garbage creation.
-* **order-processor**: A submodule that acts as a simple OMS (Order Management System), referencing FIX 4.2 concepts.
+account :: An Account Management System (AMS) example using Chronicle Queue event-driven logic.
+benchmarks :: Scripts and classes demonstrating throughput/latency benchmarks (e.g., LatencyDistributionMain, ThroughputMain).
+event-routing :: Showcases how messages can be routed via Chronicle Queues with interfaces like `ViaIn`, `ViaOut`.
+hello-world :: A simple introduction to an event-driven microservice using Chronicle Queue (input, exclamation addition, output).
+md-pipeline :: A Market Data pipeline example with aggregator, strategy, and an exchange simulator.
+message-history-demo :: Demonstrates Chronicle’s `MessageHistory` in bridging or event processing scenarios.
+messages-with-text :: An example of writing/reading textual content with minimal garbage creation.
+order-processor :: A submodule that acts as a simple OMS (Order Management System), referencing FIX 4.2 concepts.
 
 For deeper details on each, see xref:architecture.adoc[Architecture].
 

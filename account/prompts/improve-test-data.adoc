@@ -1,4 +1,5 @@
 = Developer Prompt: Improving Test Cases for AMS
+:lang: en-GB
 
 Your task is to enhance an existing test configuration that utilizes YAML files for initializing system state (`_setup.yaml`), specifying input commands (`in.yaml`), and verifying expected outcomes (`out.yaml`).
 The goal is to produce maintainable, clear, and requirements-aligned test cases.
@@ -129,7 +130,7 @@ Label scenarios (e.g., "Scenario: Insufficient Funds Transfer") to quickly ident
 
 == Sections for Setup and Input Data
 
-- **Setup Section (`_setup.yaml`)**:
+Setup Section (`_setup.yaml`) ::
 Place all initial state operations here.
 Add comments that justify these initial states and their relevance to the upcoming tests.
 
@@ -141,7 +142,7 @@ createAccount: { ... }
 
 ----
 
-- **Input Section (`in.yaml`)**:
+Input Section (`in.yaml`) ::
 Define the sequence of commands tested.
 Include both normal and edge cases, clearly tagging scenarios for quick reference.
 

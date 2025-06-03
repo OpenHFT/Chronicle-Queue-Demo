@@ -4,17 +4,17 @@ This directory contains three YAML files that define and verify specific test sc
 
 == Files Overview
 
-* **_setup.yaml**: Establishes the initial system state before the tests begin.
-* **in.yaml**: Specifies the input commands (events) to be replayed against the AMS.
-* **out.yaml**: Details the expected output events corresponding to each input scenario.
+_setup.yaml :: Establishes the initial system state before the tests begin.
+in.yaml :: Specifies the input commands (events) to be replayed against the AMS.
+out.yaml :: Details the expected output events corresponding to each input scenario.
 
 == _setup.yaml
 
 The `_setup.yaml` file configures a baseline state for testing:
 
-* **Alice (101013, 15 EUR)**: Provides a known starting point for EUR-to-EUR transfers.
-* **Bob (101025, 1000 USD)**: Tests scenarios involving currency mismatch, ensuring that transfers fail when currencies differ.
-* **Charlie (101040, 50 EUR)**: Allows testing successful EUR-to-EUR transfers and verifying proper balance updates.
+Alice (101013, 15 EUR) :: Provides a known starting point for EUR-to-EUR transfers.
+Bob (101025, 1000 USD) :: Tests scenarios involving currency mismatch, ensuring that transfers fail when currencies differ.
+Charlie (101040, 50 EUR) :: Allows testing successful EUR-to-EUR transfers and verifying proper balance updates.
 
 All initial accounts and balances are established here, ensuring that subsequent operations in `in.yaml` have a known and stable starting point.
 

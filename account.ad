@@ -6,30 +6,32 @@ The project is an Account Management System (AMS) leveraging the Chronicle libra
 
 == Key Features
 
-* **Low-Latency and High-Throughput**: Designed for operations with microsecond-level latencies and over 1M messages per second throughput.
-* **Event-Driven Design**: Utilizes Chronicle Queue for durable message persistence and asynchronous operations.
-* **Rich Documentation**: Implements AsciiDoc for capturing requirements, workflows, and style guides to align development with AI tools.
-* **Testing Framework**: YAML-driven scenarios test various operations, including edge cases and invalid inputs, ensuring robust functionality.
+Low-Latency and High-Throughput :: Designed for operations with microsecond-level latencies and over 1M messages per second throughput.
+Event-Driven Design :: Utilizes Chronicle Queue for durable message persistence and asynchronous operations.
+Rich Documentation :: Implements AsciiDoc for capturing requirements, workflows, and style guides to align development with AI tools.
+Testing Framework :: YAML-driven scenarios test various operations, including edge cases and invalid inputs, ensuring robust functionality.
 
 == Functional Components
 
 === Documentation
-* **AIDE Glossary**: Defines project-specific terminology, such as AIDE (Artificial Intelligence Development Environment) and tokens/line ratios.
-* **Style Guide**: Enforces British English conventions and standardizes coding/documentation practices.
-* **Workflow**: Outlines iterative development—document, test, code, review, and repeat—keeping code and requirements synchronized.
+AIDE Glossary :: Defines project-specific terminology, such as AIDE (Artificial Intelligence Development Environment) and tokens/line ratios.
+Style Guide :: Enforces British English conventions and standardizes coding/documentation practices.
+Workflow :: Outlines iterative development—document, test, code, review, and repeat—keeping code and requirements synchronized.
 
 === Code
-* **Core Classes**:
+Core Classes ::
 * `AccountManagerImpl`: Orchestrates incoming events and delegates logic to `AccountService`.
 * `AccountService`: Validates accounts, manages balances, and processes transfers.
 * DTOs (e.g., `CreateAccount`, `Transfer`): Represent operations with fluent setter methods for chaining.
-* **Utilities**:
+
+Utilities ::
 * `LogsAccountManagerOut`: A mock implementation for testing event outputs.
 * `ErrorListener`: Handles JVM-level errors gracefully.
 
 === Testing
-* **Parameterized Tests**: YAML scenarios validate the AMS against predefined inputs and outputs.
-* **Coverage**:
+Parameterized Tests :: YAML scenarios validate the AMS against predefined inputs and outputs.
+
+Coverage ::
 * Account creation, transfers, checkpoints.
 * Edge cases, including invalid currencies, missing fields, and insufficient funds.
 * Performance benchmarks using JLBH for latency testing.

@@ -36,10 +36,10 @@ Once you have cloned the repository, you can open it in your IDE of choice (we r
 
 Before you begin, ensure you have the following installed:
 
-- **Java Development Kit (JDK)**: Java 8 Update 202+, Java 11, Java 17, or Java 21
-- **Apache Maven**: Version 3.6.5 or higher
-- **Integrated Development Environment (IDE)**: IntelliJ IDEA Community Edition (recommended) or any other IDE
-- **Internet Access**: Required for Maven to download necessary dependencies
+Java Development Kit (JDK) :: Java 8 Update 202+, Java 11, Java 17, or Java 21
+Apache Maven :: Version 3.6.5 or higher
+Integrated Development Environment (IDE) :: IntelliJ IDEA Community Edition (recommended) or any other IDE
+Internet Access :: Required for Maven to download necessary dependencies
 
 [#installation]
 == Installation

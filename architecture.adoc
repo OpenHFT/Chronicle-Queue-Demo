@@ -1,6 +1,5 @@
 = Architecture
 :toc:
-:toclevels: 3
 
 This document describes the overall system architecture, focusing on the event-driven design powered by Chronicle Queue, how each module connects, and the core concurrency and data-flow patterns.
 
@@ -22,13 +21,14 @@ This document describes the overall system architecture, focusing on the event-d
 
 At a high level:
 
-```
-   [Producer/Simulator] --> [Chronicle Queue] --> [Consumer/Processor] --> [Potentially Another Queue] --> ...
-```
+[source]
+----
+[Producer/Simulator] --> [Chronicle Queue] --> [Consumer/Processor] --> [Potentially Another Queue] --> ...
+----
 
-- **Producer**: Writes method calls or messages into a queue. Could be an external service, command-line input, or an exchange simulator.
-- **Chronicle Queue**: A durable, zero-GC logging of all events (append-only). Another process or thread can read from it with minimal blocking.
-- **Consumer**: Subscribes via a `MethodReader`, processes the data (e.g., aggregates, transforms), and may write responses or derived events into another queue.
+Producer :: Writes method calls or messages into a queue. Could be an external service, command-line input, or an exchange simulator.
+Chronicle Queue :: A durable, zero-GC logging of all events (append-only). Another process or thread can read from it with minimal blocking.
+Consumer :: Subscribes via a `MethodReader`, processes the data (e.g., aggregates, transforms), and may write responses or derived events into another queue.
 
 Because each queue is independent, you can run each module in a separate process—enabling easy scaling or horizontal distribution.
 
@@ -53,6 +53,7 @@ Some modules (`message-history-demo`) add a small overhead for each message: a `
 
 === Hello World
 A minimal example:
+
 - Reads lines from console (`SaysInput`).
 - Possibly modifies them (e.g., adds an exclamation).
 - Outputs to the console (`SaysOutput`).
@@ -62,8 +63,9 @@ xref:usage-and-tests.adoc#hello-world[See usage instructions →]
 
 === Event Routing
 A scenario where messages (like `Value` objects) get routed or filtered in different ways:
-- **ViaThreeFive**: Demonstrates branching logic (divisible by 3, 5).
-- **SifterImpl**: Checks if a value is even or divisible by 3, sending them to different outputs.
+
+ViaThreeFive :: Demonstrates branching logic (divisible by 3, 5).
+SifterImpl :: Checks if a value is even or divisible by 3, sending them to different outputs.
 
 By abstracting reading/writing behind interfaces (`ViaIn`, `ViaOut`, `ValueMessage`), you decouple the logic from the underlying queue, making it easy to swap in new routing conditions.
 xref:usage-and-tests.adoc#event-routing[See usage instructions →]
@@ -108,9 +110,9 @@ The `message-history-demo` shows how each queue hop can track timing and source 
 
 == Deployment & Scaling Notes
 
-- **Single Host**: You can run multiple modules on the same machine, each pointing to different queue directories, achieving near-zero-latency hops.
-- **Distributed**: Place each module on a separate host or container. Latencies may increase with network overhead, but you still preserve asynchronous queue-based flows.
-- **Auto-Restart**: Because the queue is durable, if a consumer process is restarted, it can resume from the last confirmed index, ensuring no data loss or duplication.
+Single Host :: You can run multiple modules on the same machine, each pointing to different queue directories, achieving near-zero-latency hops.
+Distributed :: Place each module on a separate host or container. Latencies may increase with network overhead, but you still preserve asynchronous queue-based flows.
+Auto-Restart :: Because the queue is durable, if a consumer process is restarted, it can resume from the last confirmed index, ensuring no data loss or duplication.
 
 == Conclusion
 

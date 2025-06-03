@@ -17,8 +17,8 @@ The *event-routing* submodule is a small system that demonstrates how to **route
 
 == 2. Key Concepts
 
-* **Value**: A simple data object (DTO) containing a numeric field (e.g., `val`).
-* **ValueMessage**: An interface that defines one method: `value(Value value)`. This method is where you handle incoming `Value` objects.
+Value :: A simple data object (DTO) containing a numeric field (e.g., `val`).
+ValueMessage :: An interface that defines one method: `value(Value value)`. This method is where you handle incoming `Value` objects.
 * **ViaIn** and **ViaOut**: Interfaces that let you specify how to **name** a route (`via("someName")`) and choose an **input** (`in()`) or **output** (`out()`).
 
 NOTE:
@@ -101,9 +101,9 @@ A `SifterImpl` could check if `val` is even, then direct it to an “evens” ch
 
 == 6. Non-Functional Considerations
 
-* **Performance**: Typically microseconds-level, but you’re free to optimize or benchmark if your scenarios require it.
-* **Simplicity**: This module is intentionally straightforward—one or two conditions to illustrate the concept.
-* **Extensibility**: You can easily add more rules or multiple routing layers without changing core interfaces.
+Performance :: Typically microseconds-level, but you’re free to optimize or benchmark if your scenarios require it.
+Simplicity :: This module is intentionally straightforward—one or two conditions to illustrate the concept.
+Extensibility :: You can easily add more rules or multiple routing layers without changing core interfaces.
 
 == 7. Summary
 

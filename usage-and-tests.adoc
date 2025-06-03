@@ -1,6 +1,5 @@
 = Usage & Tests
 :toc:
-:toclevels: 3
 
 This document explains how to build, run, and test the various modules and demos in this project. It also covers the basic steps for performance benchmarking and troubleshooting common issues.
 
@@ -140,7 +139,7 @@ mvn test
 
 - Many modules use BDD-like YAML files (`in.yaml`, `out.yaml`, `_setup.yaml`) to define inputs and expected outputs.
 - Tools like `YamlTester` or `TextMethodTester` parse these files and compare actual vs. expected queue events.
-- **Example**: `ViaThreeFive2Test` references `three-five/in.yaml` and `three-five/out.yaml`.
+Example :: `ViaThreeFive2Test` references `three-five/in.yaml` and `three-five/out.yaml`.
 - To update or regress outputs:
 ----
 mvn test -Dregress.tests
@@ -158,8 +157,6 @@ This can overwrite `out.yaml` if you’re intentionally changing expected output
 === Coverage & Tools
 
 - (Optional) Use Jacoco or another coverage plugin to measure how thoroughly your tests cover the code.
-
-'''
 
 [#benchmarks]
 == Benchmarking
@@ -185,8 +182,6 @@ mvn exec:java -Dexec.mainClass=chronicle.queue.benchmark.ThroughputMain \
 
 Keep an eye on CPU scaling, GC logs, and whether you’re using shared memory or TCP. Results typically show 1+ million msgs/sec or sub-micro latencies, depending on hardware.
 
-'''
-
 [#troubleshooting]
 == Troubleshooting
 
@@ -201,8 +196,6 @@ If actual vs. expected outputs differ unexpectedly, see if your scenario changed
 
 - **Excessive GC**
 Chronicle aims for minimal allocations, so check if you introduced object churn in custom code. Potentially switch to direct Bytes usage or off-heap.
-
-'''
 
 [#summary]
 == Summary
