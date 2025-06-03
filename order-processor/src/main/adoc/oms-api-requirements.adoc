@@ -2,25 +2,28 @@
 :toc:
 :toclevels: 3
 
-This requirements document provides **sufficient detail to recreate** both the `lost.town.oms.api` and `lost.town.oms.dto` packages. It specifies the interfaces, classes, fields, validation logic, threading assumptions, and testing approach.
+This requirements document provides **sufficient detail to recreate** both the `lost.town.oms.api` and `lost.town.oms.dto` packages.
+It specifies the interfaces, classes, fields, validation logic, threading assumptions, and testing approach.
 
 == Project Context
 
-In this system, an **Order Management System (OMS)** receives inbound events (orders, cancellations) and emits outbound events (execution reports, reject messages). This design uses **Chronicle Queue** for persistence and asynchronous event-driven processing, with **Chronicle Wire** for serialization.
+In this system, an **Order Management System (OMS)** receives inbound events (orders, cancellations) and emits outbound events (execution reports, reject messages).
+This design uses **Chronicle Queue** for persistence and asynchronous event-driven processing, with **Chronicle Wire** for serialization.
 
 NOTE: All event messages in this system (e.g., `NewOrderSingle`, `CancelOrderRequest`, `ExecutionReport`) are conceptually derived from the Financial Information eXchange (FIX) Protocol, version 4.2. See https://www.fixtrading.org/standards/fix-4-2/ for more details on field definitions, message flow, and usage conventions in FIX-based trading systems.
 
-
 == Assumptions
 
-1. **Single-Threaded**: This demo runs in a single-threaded context (e.g., one thread polling events from the queue).  
-2. **Validation**: The *framework* calls each DTO’s `validate()` method before passing it to the `OMSIn` (for inbound) or writing via `OMSOut` (for outbound).  
-3. **Error Handling**: Any thrown exception is caught by the framework, which then calls `OMSOut.jvmError(...)`.  
-4. **Chronicle Wire**: The data transfer objects (DTOs) are compatible with Chronicle Wire for efficient marshalling/unmarshalling. In production, you would use **Chronicle Services** for replication and failover.
+1. **Single-Threaded**: This demo runs in a single-threaded context (e.g., one thread polling events from the queue).
+2. **Validation**: The *framework* calls each DTO’s `validate()` method before passing it to the `OMSIn` (for inbound) or writing via `OMSOut` (for outbound).
+3. **Error Handling**: Any thrown exception is caught by the framework, which then calls `OMSOut.jvmError(...)`.
+4. **Chronicle Wire**: The data transfer objects (DTOs) are compatible with Chronicle Wire for efficient marshalling/unmarshalling.
+In production, you would use **Chronicle Services** for replication and failover.
 
 == `lost.town.oms.api` Package
 
-The `lost.town.oms.api` package declares the contracts (interfaces) for interacting with the OMS. It includes:
+The `lost.town.oms.api` package declares the contracts (interfaces) for interacting with the OMS.
+It includes:
 
 * `ErrorListener`
 * `OMSIn`
@@ -45,8 +48,8 @@ public interface ErrorListener {
 
 ==== Requirements
 
-1. **Single Method**: `jvmError(String msg)` must be provided to handle system-level errors, exceptions, or critical failures.  
-2. **Invocation**: The framework (or other system component) calls `jvmError(msg)` whenever an exception bubbles up unhandled.  
+1. **Single Method**: `jvmError(String msg)` must be provided to handle system-level errors, exceptions, or critical failures.
+2. **Invocation**: The framework (or other system component) calls `jvmError(msg)` whenever an exception bubbles up unhandled.
 3. **Implementors**: Typically, classes implementing `OMSOut` also implement `ErrorListener` so they can publish or log these errors if desired.
 
 === `OMSIn`
@@ -82,13 +85,13 @@ public interface OMSIn {
 
 ==== Requirements
 
-1. **Inbound Contract**: `OMSIn` defines methods for events flowing into the OMS.  
+1. **Inbound Contract**: `OMSIn` defines methods for events flowing into the OMS.
 2. **Methods**:
-   - `newOrderSingle(NewOrderSingle nos)` – for creating a new order.  
-   - `cancelOrderRequest(CancelOrderRequest cor)` – for canceling a single, known order.  
-   - `cancelAll(CancelAll cancelAll)` – for canceling all orders matching a symbol or filter.  
-3. **Validation**: By the time the DTO is passed in, it has already been validated by the framework.  
-4. **Exception Handling**: Any runtime exception inside these methods is caught by the framework, which then calls `jvmError(...)`.  
+- `newOrderSingle(NewOrderSingle nos)` – for creating a new order.
+- `cancelOrderRequest(CancelOrderRequest cor)` – for canceling a single, known order.
+- `cancelAll(CancelAll cancelAll)` – for canceling all orders matching a symbol or filter.
+3. **Validation**: By the time the DTO is passed in, it has already been validated by the framework.
+4. **Exception Handling**: Any runtime exception inside these methods is caught by the framework, which then calls `jvmError(...)`.
 5. **Implementation**: A typical implementation (e.g., `OMSImpl`) will transform inbound DTOs into outbound messages (`ExecutionReport`, `OrderCancelReject`) via `OMSOut`.
 
 === `OMSOut`
@@ -117,12 +120,12 @@ public interface OMSOut extends ErrorListener {
 
 ==== Requirements
 
-1. **Outbound Contract**: `OMSOut` defines methods for events the OMS emits after processing.  
+1. **Outbound Contract**: `OMSOut` defines methods for events the OMS emits after processing.
 2. **Methods**:
-   - `executionReport(ExecutionReport er)` – used to acknowledge or confirm orders.  
-   - `orderCancelReject(OrderCancelReject ocr)` – used to reject cancellations or indicate an error in canceling.  
-3. **ErrorListener**: Inherits `jvmError(String msg)` from `ErrorListener` for system-level exceptions.  
-4. **Validation**: The framework must validate `er` or `ocr` before they are actually written to the Chronicle Queue.  
+- `executionReport(ExecutionReport er)` – used to acknowledge or confirm orders.
+- `orderCancelReject(OrderCancelReject ocr)` – used to reject cancellations or indicate an error in canceling.
+3. **ErrorListener**: Inherits `jvmError(String msg)` from `ErrorListener` for system-level exceptions.
+4. **Validation**: The framework must validate `er` or `ocr` before they are actually written to the Chronicle Queue.
 5. **Implementation**: Typically, this interface is realized by a Chronicle Queue `MethodWriter`, though it can be implemented in other ways if needed.
 
 === `package-info.java`
@@ -148,7 +151,7 @@ package lost.town.oms.api;
 
 ==== Requirements
 
-1. **Overview**: Must describe the role of each interface in the broader system.  
+1. **Overview**: Must describe the role of each interface in the broader system.
 2. **Simplicity**: The package-level docs must clarify that this is a *single-threaded* demonstration and that the framework is responsible for major tasks like validation and error interception.
 
 == `lost.town.oms.dto` Package
@@ -172,10 +175,11 @@ This package provides **Data Transfer Objects** (DTOs) representing orders and a
 
 === Common Requirements
 
-1. **Compatibility**: All classes must be **Chronicle Wire**-friendly (e.g., implement or extend classes like `SelfDescribingMarshallable`, use field-level annotations for marshalling if needed).  
-2. **Validation**: Each class provides a `validate()` method that throws `InvalidMarshallableException` if required fields are missing or invalid. The framework calls this method prior to usage.  
-3. **Timestamp Fields**: Typically stored in nanoseconds (e.g., `sendingTime`, `transactTime`).  
-4. **Symbols and IDs**: Often stored as `long` converted via short-text mechanisms (e.g., `ShortTextLongConverter`).  
+1. **Compatibility**: All classes must be **Chronicle Wire**-friendly (e.g., implement or extend classes like `SelfDescribingMarshallable`, use field-level annotations for marshalling if needed).
+2. **Validation**: Each class provides a `validate()` method that throws `InvalidMarshallableException` if required fields are missing or invalid.
+The framework calls this method prior to usage.
+3. **Timestamp Fields**: Typically stored in nanoseconds (e.g., `sendingTime`, `transactTime`).
+4. **Symbols and IDs**: Often stored as `long` converted via short-text mechanisms (e.g., `ShortTextLongConverter`).
 5. **Extended Fields**: Classes can be extended with extra fields if needed, but existing fields must remain backward compatible.
 
 === `AbstractEvent`
@@ -208,12 +212,12 @@ public class AbstractEvent<E extends AbstractEvent<E>>
 
 ==== Requirements
 
-1. **Generic Parameter**: `<E extends AbstractEvent<E>>` used for fluent-style method chaining in subclasses.  
+1. **Generic Parameter**: `<E extends AbstractEvent<E>>` used for fluent-style method chaining in subclasses.
 2. **Shared Fields**:
-   - `sender`: long ID of who initiated the event  
-   - `target`: long ID of recipient or destination  
-   - `sendingTime`: nanosecond timestamp  
-3. **`validate()`**: Must check these fields are non-zero.  
+- `sender`: long ID of who initiated the event
+- `target`: long ID of recipient or destination
+- `sendingTime`: nanosecond timestamp
+3. **`validate()`**: Must check these fields are non-zero.
 4. **Usage**: Subclassed by all other event objects.
 
 === `NewOrderSingle`
@@ -254,9 +258,9 @@ public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
 
 ==== Requirements
 
-1. **Represents** an inbound order message.  
+1. **Represents** an inbound order message.
 2. **Required Fields**:
-   - `symbol`, `transactTime`, `account`, `orderQty`, `price`, `side`, `clOrdID`, `ordType`, `timeInForce`, `currency`.  
+- `symbol`, `transactTime`, `account`, `orderQty`, `price`, `side`, `clOrdID`, `ordType`, `timeInForce`, `currency`.
 3. **Validation**: Must confirm each field is non-null, non-zero, and appropriately ranged.
 
 === `CancelOrderRequest`
@@ -284,7 +288,7 @@ public class CancelOrderRequest extends AbstractEvent<CancelOrderRequest> {
 
 ==== Requirements
 
-1. **Represents** a request to cancel an existing order.  
+1. **Represents** a request to cancel an existing order.
 2. **Key Fields**: `symbol`, `account`, `clOrdID` (the new cancel request ID), `origClOrdID` (the order to cancel), and `side`.
 
 === `CancelAll`
@@ -306,8 +310,8 @@ public class CancelAll extends AbstractEvent<CancelOrderRequest> {
 
 ==== Requirements
 
-1. **Represents** a mass-cancel request for a `symbol`.  
-2. **Return Type**: Notice the class is declared as `<CancelOrderRequest>` for potential chaining in some frameworks (though not used in basic code).  
+1. **Represents** a mass-cancel request for a `symbol`.
+2. **Return Type**: Notice the class is declared as `<CancelOrderRequest>` for potential chaining in some frameworks (though not used in basic code).
 3. **Validation**: Must ensure `symbol != 0` and `clOrdID` is non-empty.
 
 === `ExecutionReport`
@@ -347,9 +351,10 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
 
 ==== Requirements
 
-1. **Outbound** message describing an order’s status (e.g., partial fill, full fill, acceptance).  
-2. **Key Fields**: `orderID` assigned by the OMS, plus standard fields like `symbol`, `side`, `ordType`.  
-3. **Optional Fields**: `lastPx`, `leavesQty`, `cumQty`, `text` can be set to reflect current execution status. Zero or missing is allowed for partial data.
+1. **Outbound** message describing an order’s status (e.g., partial fill, full fill, acceptance).
+2. **Key Fields**: `orderID` assigned by the OMS, plus standard fields like `symbol`, `side`, `ordType`.
+3. **Optional Fields**: `lastPx`, `leavesQty`, `cumQty`, `text` can be set to reflect current execution status.
+Zero or missing is allowed for partial data.
 
 === `OrderCancelReject`
 
@@ -372,53 +377,40 @@ public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
 
 ==== Requirements
 
-1. **Represents** a rejected cancel request (or some other cancel-related error).  
+1. **Represents** a rejected cancel request (or some other cancel-related error).
 2. **Key Fields**: `symbol`, `clOrdID` (the ID of the request that’s being rejected), and a human-readable `reason`.
 
 === Supporting Enumerations
 
 . `Side`
 ::
-    [source,java]
-    ----
-    public enum Side {
-        BUY(+1), SELL(-1);
-        public final int direction;
-        Side(int direction) { this.direction = direction; }
-    }
-    ----
-    - Represents a **buy** or **sell** order.
+[source,java]
+---- public enum Side {
+BUY(+1), SELL(-1); public final int direction; Side(int direction) { this.direction = direction; } } ----
+- Represents a **buy** or **sell** order.
 
 . `OrderType`
 ::
-    [source,java]
-    ----
-    public enum OrderType {
-        MARKET, LIMIT, PEGGED, FILL_OR_KILL, IMMEDIATE_OR_CANCEL
-    }
-    ----
-    - Defines the **type** of the order (market, limit, etc.).
+[source,java]
+---- public enum OrderType {
+MARKET, LIMIT, PEGGED, FILL_OR_KILL, IMMEDIATE_OR_CANCEL } ----
+- Defines the **type** of the order (market, limit, etc.).
 
 . `TimeInForce`
 ::
-    [source,java]
-    ----
-    public enum TimeInForce {
-        DAY, GTC, IOC, FOK, GTD, GTT, OPG, ATC, GFA, GIS, GTX, SIO
-    }
-    ----
-    - Controls **how long** an order remains active or under what conditions it is executed/canceled.
+[source,java]
+---- public enum TimeInForce {
+DAY, GTC, IOC, FOK, GTD, GTT, OPG, ATC, GFA, GIS, GTX, SIO } ----
+- Controls **how long** an order remains active or under what conditions it is executed/canceled.
 
 . `Ccy`
 ::
-    [source,java]
-    ----
-    public enum Ccy {
-        USD(...), EUR(...), GBP(...), ...
-        // Each enum holds currency name, country, symbol, etc.
-    }
-    ----
-    - Enumerates currencies by ISO 4217 code, with metadata.
+[source,java]
+---- public enum Ccy {
+USD(...), EUR(...), GBP(...), ...
+// Each enum holds currency name, country, symbol, etc.
+} ----
+- Enumerates currencies by ISO 4217 code, with metadata.
 
 === `ValidateUtil`
 
@@ -439,8 +431,8 @@ public final class ValidateUtil {
 
 ==== Requirements
 
-1. **Static Helpers**: Provides commonly used checks (`invalidPrice`, `invalidQuantity`).  
-2. **Integration**: Classes like `NewOrderSingle` might call these helpers in `validate()`.  
+1. **Static Helpers**: Provides commonly used checks (`invalidPrice`, `invalidQuantity`).
+2. **Integration**: Classes like `NewOrderSingle` might call these helpers in `validate()`.
 3. **No Instantiation**: The class is `final` with a private constructor.
 
 === `package-info.java`
@@ -466,22 +458,22 @@ package lost.town.oms.dto;
 
 ==== Requirements
 
-1. **Documentation**: Summarize how each DTO or enum is used.  
+1. **Documentation**: Summarize how each DTO or enum is used.
 2. **Highlight** that the framework ensures validation.
 
 == Testing Approach
 
-1. **YAML-Based BDD**: The project uses directories containing `_setup.yaml`, `in.yaml`, and `out.yaml` to define test scenarios.  
-2. **Single Thread**: The test harness processes events in a single-thread loop, verifying that for each inbound event (`in.yaml`), the system produces the correct outbound event (`out.yaml`).  
+1. **YAML-Based BDD**: The project uses directories containing `_setup.yaml`, `in.yaml`, and `out.yaml` to define test scenarios.
+2. **Single Thread**: The test harness processes events in a single-thread loop, verifying that for each inbound event (`in.yaml`), the system produces the correct outbound event (`out.yaml`).
 3. **Adding Tests**: Add a new directory with appropriate YAML files and reference it in `OMSImplTest` to run new scenarios.
 
 == Conclusion
 
 By following this detailed specification:
 
-* You can **reconstruct** all interfaces (`OMSIn`, `OMSOut`, `ErrorListener`) and **implement** the data models (`NewOrderSingle`, `CancelOrderRequest`, etc.).  
-* **Validate** each DTO to ensure correctness before passing to the OMS or publishing to the queue.  
-* Maintain a **single-threaded** model for simplicity, with the framework capturing exceptions via `jvmError(...)`.  
-* Leverage **YAML-based BDD tests** to verify end-to-end behavior.  
+* You can **reconstruct** all interfaces (`OMSIn`, `OMSOut`, `ErrorListener`) and **implement** the data models (`NewOrderSingle`, `CancelOrderRequest`, etc.).
+* **Validate** each DTO to ensure correctness before passing to the OMS or publishing to the queue.
+* Maintain a **single-threaded** model for simplicity, with the framework capturing exceptions via `jvmError(...)`.
+* Leverage **YAML-based BDD tests** to verify end-to-end behavior.
 
 These packages form the **foundation** for an event-driven Order Management System using Chronicle technologies. 
