@@ -1,23 +1,33 @@
-= Event Driven Program Demo
+= Event-Driven Program Demo
+:toc:
+:toclevels: 3
 
-This demo steps through event driven program development, testing and writing a simple microservice which operates a simple function on input events.
-In this demo event driven systems have been modeled so that, the event driven core systems has input and output gateways connecting to external systems that might not be event driven and the business logic is placed in the core event driven system.
-Figure 1 shows a general sketch of the introduced model with a simple business logic that adds exclamation mark to input messages (events) and then sends them to the output gateway.
+This module demonstrates event-driven program development using Chronicle Queue.
+It provides a series of small microservices that showcase how to read incoming events (strings), process or transform those events (e.g., by appending an exclamation mark), and then output the results.
 
-.An event driven system based on the introduced model, the system adds exclamation mark to input messages and sends them to output
-image::../docs/images/hello-world-fig1.png[]
+image::../docs/images/hello-world-fig1.png[An event-driven system adds an exclamation mark to input messages and sends them to output, align="center"]
 
-== Implementation
+== Overview
 
-In the following sections several event driven systems with the general structured shown in Figure 1 are implemented.
-All the implementations use the same input and output gateways.
+In this demo, we assume an *event-driven* architecture with:
 
-=== Input and Output Gateways
+* An **input gateway** that reads incoming lines from the console (or another source).
+* An **output gateway** that writes lines to the console (or logs them).
+* A **microservice** in between that applies any required business logic (e.g., adding an exclamation mark).
 
-The input and output gateways used in this demo are implementations of the functional interface link:../hello-world/src/main/java/event/driven/program/api/Says.java[Says].
-The input gateway reads each input line and calls say(input line) method.
+The figure above gives a high-level sketch of how these components connect.
+This design can be extended to larger, more complex systems with multiple inputs and outputs.
 
-.Input gateway
+== 1. Implementation Walkthrough
+
+All implementations in this module rely on the same input and output gateways. Below, we describe each example in detail.
+
+=== 1.1 Input and Output Gateways
+
+The gateways used here are built on the link:../hello-world/src/main/java/event/driven/program/api/Says.java[Says] interface.
+- **Input Gateway (`SaysInput`)** reads lines from `System.in` and calls `says.say(line)` for each line.
+- **Output Gateway (`SaysOutput`)** receives text via `say(String words)` and prints it to `System.out`.
+
 [source,java]
 ----
 public class SaysInput {
@@ -28,10 +38,8 @@ public class SaysInput {
     }
 }
 ----
+^ Input gateway: reads from the console and invokes `say(...)` on each line.
 
-The output gateway prints out the received messages.
-
-.Output gateway
 [source,java]
 ----
 public class SaysOutput implements Says {
@@ -40,28 +48,25 @@ public class SaysOutput implements Says {
     }
 }
 ----
+^ Output gateway: prints each received message to the console.
 
-In the following section several event driven examples are implemented using the above gateways.
+=== 1.2 Relaying Input Events to Output
 
-=== Relaying Input Events to Output
+The simplest approach wires the input gateway directly to the output gateway: each incoming line is immediately relayed to the console. This is implemented in `RecordInputToConsoleMain`.
 
-This system simply relays input events to output thus it can be implemented easily as the output of one gateway is wired to the input of the other.
-This is implemented in `RecordInputToConsoleMain` class.
-
-.RecordInputToConsoleMain
 [source,java]
 ----
 public class RecordInputToConsoleMain {
     public static void main(String[] args) throws IOException {
-        // Writes text in each call to say(line) to the console
+        // Create an output gateway
         final Says says = new SaysOutput();
-        // Takes each line input and calls say(line) each time
+        // Pass it to the input gateway so that each line is echoed
         SaysInput.input(says);
     }
 }
 ----
 
-By running `RecordInputToConsoleMain` (right click on the class and select Run), each line of input will be echoed on the console:
+When you run `RecordInputToConsoleMain`, each line of input is echoed back:
 
 [source,text]
 ----
@@ -73,58 +78,65 @@ Three            // input event
 Three            // output event
 ----
 
-=== Log Input Events in Yaml Format
+=== 1.3 Logging Input Events as YAML
 
-`RecordInputAsYamlMain` implements an event driven system so that input messages are logged as Yaml on the console. `Wires.recordAsYaml` creates and returns a proxy of `Says` interface which writes inputs into the specified PrintStream in Yaml format.
-//TODO add link to Wires.recordAsYaml when it approved and merged
+`RecordInputAsYamlMain` demonstrates how to transform input lines into YAML output.
+Chronicle Wire’s `Wires.recordAsYaml` creates a proxy of the `Says` interface that writes method calls in YAML format to a specified `PrintStream`.
 
-.RecordInputAsYamlMain
 [source,java]
 ----
 public class RecordInputAsYamlMain {
     public static void main(String[] args) throws IOException {
-        // obtains a proxy that writes to the PrintStream the method calls and their arguments
+        // Creates a proxy that logs calls to System.out in YAML format
         final Says says = Wires.recordAsYaml(Says.class, System.out);
-        // Takes each line input and calls say(theLine) each time
+        // Reads lines from the console and logs them
         SaysInput.input(says);
     }
 }
 ----
 
-To run `RecordInputAsYamlMain` right click on `RecordInputAsYamlMain` and select "Modify Run Configuration ...".
-In the pop-up window in the "program arguments" field write the input file name (ie says.yaml) then click on OK and run the program, the following can be observed on console.
+.Run RecordInputAsYamlMain
+1. Right-click on `RecordInputAsYamlMain` in your IDE.
+2. Modify run configuration if needed.
+3. Provide an argument for the input file name (e.g., `says.yaml`), though optional if you only want console logs.
 
+Example console output:
 [source,text]
 ----
-One                    // input event
-say: One               // output event
+One                    // input
+say: One               // logged as YAML
 ...
-Two                    // input event
-say: Two               // output event
+Two                    // input
+say: Two               // logged as YAML
 ...
-Three                  // input event
-say: Three             // output event
+Three                  // input
+say: Three             // logged as YAML
 ...
 ----
 
-=== Replaying Logged Outputs from a Yaml File
+=== 1.4 Replaying Logged Outputs from a YAML File
 
-For this example the outputs from the above section have been logged into resources/says.yaml file.
-The file is read and replayed to `SaysOutput` by Wire.replay method.
-//TODO add link to Wires.replay method.
+We can replay the recorded YAML lines with `ReplayOutputMain`. This reads a YAML file (e.g., `says.yaml`) and invokes the `SaysOutput` gateway to print each event.
 
-.ReplayOutputMain
 [source,java]
 ----
 public class ReplayOutputMain {
     public static void main(String[] args) throws IOException {
-     // Reads the content of a Yaml file specified in args[0] and feeds it to SaysOutput.
-      Wires.replay(args[0], new SaysOutput());
+        // The first argument is the YAML file path
+        Wires.replay(args[0], new SaysOutput());
     }
 }
 ----
 
-By running `ReplayOutputMain` the following output will be printed out on the console.
+If your YAML file (`says.yaml`) has lines like:
+[source,text]
+----
+say: One
+say: Two
+say: Three
+...
+----
+`ReplayOutputMain` prints them out as:
 
 [source,text]
 ----
@@ -133,22 +145,25 @@ Two
 Three
 ----
 
-.DirectWithExclamationMain
+=== 1.5 Adding an Exclamation Mark
+
+`DirectWithExclamationMain` shows how to insert a small piece of logic between reading and printing:
+It uses `AddsExclamation` to append `"!"` to each line before passing it to the output gateway.
+
 [source,java]
 ----
 public class DirectWithExclamationMain {
     public static void main(String[] args) throws IOException {
-        // Adds exclamation mark to input messages
+        // Decorate the output with an exclamation
         SaysInput.input(new AddsExclamation(new SaysOutput()));
     }
 }
 ----
 
-=== Adding a Microservice
+=== 1.6 The AddsExclamation Microservice
 
-Now the intermediate block in Figure 1 is implemented using a microservice that appends an exclamation mark to input messages and passes it to the output gateway.
+This microservice is a straightforward implementation of `Says`, wrapping another `Says` object:
 
-.AddsExclamation microservice
 [source,java]
 ----
 public class AddsExclamation implements Says {
@@ -158,29 +173,30 @@ public class AddsExclamation implements Says {
         this.out = out;
     }
 
+    @Override
     public void say(String words) {
-        this.out.say(words + "!");
+        out.say(words + "!");
     }
 }
 ----
-
-`DirectWithExclamationMain` integrates the three components (Input/Output gateway and `AddsExclalation`) in Figure 1. By running `DirectWithExclamationMain`, an exclamation mark is appended to each input and then will be printed out on the console.
+When combined with the input and output gateways (e.g., in `DirectWithExclamationMain`), each input line is printed with an exclamation mark:
 
 [source,text]
 ----
-One              // input event
-One!             // output event
-Two              // input event
-Two!             // output event
-Three            // input event
-Three!           // output event
+One              // input
+One!             // output
+Two              // input
+Two!             // output
+Three            // input
+Three!           // output
 ----
 
-=== Testing the Microservice
+== 2. Testing the Microservice
 
-To test the microservice, link:https://github.com/OpenHFT/Chronicle-Wire/blob/ea/src/main/java/net/openhft/chronicle/wire/TextMethodTester.java[TextMethodTester] is used that can read input (resources/in.yaml) and expected output (resources/out.yaml) files of the microservice and compares it to the actual output.
+The link:https://github.com/OpenHFT/Chronicle-Wire/blob/ea/src/main/java/net/openhft/chronicle/wire/TextMethodTester.java[TextMethodTester] allows you to define input (`in.yaml`) and expected output (`out.yaml`) for your microservice, then compare them automatically.
 
-.Testing the microservice
+For example:
+
 [source,java]
 ----
 public class AddsExclamationTest {
@@ -190,12 +206,15 @@ public class AddsExclamationTest {
                 "says/in.yaml",
                 AddsExclamation::new,
                 Says.class,
-                "says/out.yaml");
+                "says/out.yaml"
+        );
         tester.run();
         assertEquals(tester.expected(), tester.actual());
     }
 }
 ----
+If the test fails, you can see the difference between expected and actual outputs in your IDE’s comparison viewer.
+
 
 Running the test should log "Process finished with exit code 0" on the console which shows the test has passed.
 Change the second input in in.yaml to Hello World and run the test again, to see the test fails.
@@ -210,9 +229,10 @@ By clicking on the <click to see difference> link, you will see the difference b
 .Difference between expected and actual test result
 image::../docs/images/hello-world-fig3.png[]
 
-== Running the Demo from Maven
 
-Open a shell and from the example directory, hello-world, run the following. commands.
+== 3. Running the Demo from Maven
+
+Below are common commands for building and running each class:
 
 .Building the code
 [source,sh]
@@ -234,3 +254,19 @@ mvn install exec:java@ReplayOutputMain
 [source,sh]
 mvn install exec:java@DirectWithExclamationMark
 
+== Summary
+
+The *hello-world* example illustrates a simple event-driven pipeline:
+
+- **Read** lines (input gateway).
+- **Process** them if needed (e.g., add punctuation).
+- **Output** them (console or YAML).
+
+Experiment with each main class:
+
+RecordInputToConsoleMain :: echoes input.
+RecordInputAsYamlMain :: logs input as YAML.
+ReplayOutputMain :: replays a YAML file.
+DirectWithExclamationMain :: adds an exclamation mark.
+
+This small example demonstrates how Chronicle Queue–based code can handle real-time data flow in a concise, modular way. Once comfortable with these basics, you can explore more advanced modules and features within the repository.

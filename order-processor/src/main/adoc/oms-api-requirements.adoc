@@ -12,6 +12,9 @@ This design uses **Chronicle Queue** for persistence and asynchronous event-driv
 
 NOTE: All event messages in this system (e.g., `NewOrderSingle`, `CancelOrderRequest`, `ExecutionReport`) are conceptually derived from the Financial Information eXchange (FIX) Protocol, version 4.2. See https://www.fixtrading.org/standards/fix-4-2/ for more details on field definitions, message flow, and usage conventions in FIX-based trading systems.
 
+NOTE: All event messages in this system (e.g., `NewOrderSingle`, `CancelOrderRequest`, `ExecutionReport`) are conceptually derived from the Financial Information eXchange (FIX) Protocol, version 4.2. See https://www.fixtrading.org/standards/fix-4-2/ for more details on field definitions, message flow, and usage conventions in FIX-based trading systems.
+
+
 == Assumptions
 
 1. **Single-Threaded**: This demo runs in a single-threaded context (e.g., one thread polling events from the queue).
@@ -176,8 +179,7 @@ This package provides **Data Transfer Objects** (DTOs) representing orders and a
 === Common Requirements
 
 1. **Compatibility**: All classes must be **Chronicle Wire**-friendly (e.g., implement or extend classes like `SelfDescribingMarshallable`, use field-level annotations for marshalling if needed).
-2. **Validation**: Each class provides a `validate()` method that throws `InvalidMarshallableException` if required fields are missing or invalid.
-The framework calls this method prior to usage.
+2. **Validation**: Each class provides a `validate()` method that throws `InvalidMarshallableException` if required fields are missing or invalid. The framework calls this method prior to usage.
 3. **Timestamp Fields**: Typically stored in nanoseconds (e.g., `sendingTime`, `transactTime`).
 4. **Symbols and IDs**: Often stored as `long` converted via short-text mechanisms (e.g., `ShortTextLongConverter`).
 5. **Extended Fields**: Classes can be extended with extra fields if needed, but existing fields must remain backward compatible.
@@ -351,10 +353,9 @@ public class ExecutionReport extends AbstractEvent<ExecutionReport> {
 
 ==== Requirements
 
-1. **Outbound** message describing an order’s status (e.g., partial fill, full fill, acceptance).
+1. **Outbound** message describing an order’s status (e.g., partial fill, full fill, acceptance).  
 2. **Key Fields**: `orderID` assigned by the OMS, plus standard fields like `symbol`, `side`, `ordType`.
-3. **Optional Fields**: `lastPx`, `leavesQty`, `cumQty`, `text` can be set to reflect current execution status.
-Zero or missing is allowed for partial data.
+3. **Optional Fields**: `lastPx`, `leavesQty`, `cumQty`, `text` can be set to reflect current execution status. Zero or missing is allowed for partial data.
 
 === `OrderCancelReject`
 
@@ -384,33 +385,46 @@ public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
 
 . `Side`
 ::
-[source,java]
----- public enum Side {
-BUY(+1), SELL(-1); public final int direction; Side(int direction) { this.direction = direction; } } ----
-- Represents a **buy** or **sell** order.
+    [source,java]
+    ----
+    public enum Side {
+        BUY(+1), SELL(-1);
+        public final int direction;
+        Side(int direction) { this.direction = direction; }
+    }
+    ----
+    - Represents a **buy** or **sell** order.
 
 . `OrderType`
 ::
-[source,java]
----- public enum OrderType {
-MARKET, LIMIT, PEGGED, FILL_OR_KILL, IMMEDIATE_OR_CANCEL } ----
-- Defines the **type** of the order (market, limit, etc.).
+    [source,java]
+    ----
+    public enum OrderType {
+        MARKET, LIMIT, PEGGED, FILL_OR_KILL, IMMEDIATE_OR_CANCEL
+    }
+    ----
+    - Defines the **type** of the order (market, limit, etc.).
 
 . `TimeInForce`
 ::
-[source,java]
----- public enum TimeInForce {
-DAY, GTC, IOC, FOK, GTD, GTT, OPG, ATC, GFA, GIS, GTX, SIO } ----
-- Controls **how long** an order remains active or under what conditions it is executed/canceled.
+    [source,java]
+    ----
+    public enum TimeInForce {
+        DAY, GTC, IOC, FOK, GTD, GTT, OPG, ATC, GFA, GIS, GTX, SIO
+    }
+    ----
+    - Controls **how long** an order remains active or under what conditions it is executed/canceled.
 
 . `Ccy`
 ::
-[source,java]
----- public enum Ccy {
-USD(...), EUR(...), GBP(...), ...
-// Each enum holds currency name, country, symbol, etc.
-} ----
-- Enumerates currencies by ISO 4217 code, with metadata.
+    [source,java]
+    ----
+    public enum Ccy {
+        USD(...), EUR(...), GBP(...), ...
+        // Each enum holds currency name, country, symbol, etc.
+    }
+    ----
+    - Enumerates currencies by ISO 4217 code, with metadata.
 
 === `ValidateUtil`
 

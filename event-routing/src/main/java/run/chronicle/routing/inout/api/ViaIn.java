@@ -1,8 +1,11 @@
 package run.chronicle.routing.inout.api;
 
 /**
- * This is a ViaIn interface.
- * It provides a generic contract for classes that need to specify a route ("via") and an input source ("in").
+ * An interface for specifying a route ("via") and obtaining
+ * an input source ("in").
+ *
+ * Typically, you'd call via("someName") to define a route,
+ * then in() to start reading from that route as a ValueMessage.
  *
  * @param <V> the type returned by the {@code via} method
  * @param <I> the type returned by the {@code in} method

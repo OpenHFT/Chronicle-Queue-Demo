@@ -1,0 +1,146 @@
+# This operation creates an account for Charlie with account number 101045.
+# override balance: 5000 to balance: -1
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: balance must be positive or zero"
+...
+# This operation creates an account for Dania with account number 101055.
+# override balance: 3500 to balance: -1
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: balance must be positive or zero"
+...
+# This operation represents a transfer of 500 EUR from Charlie to Dania.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:07,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:06:00,
+    from: 101045,
+    to: 101055,
+    currency: EUR,
+    amount: 500.0,
+    reference: Grocery Shopping
+  },
+  reason: from account doesn't exist
+}
+...
+# This operation attempts to make a transfer from a non-existent account to Charlie.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:08,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:07:00,
+    from: 2,
+    to: 101045,
+    currency: EUR,
+    amount: 500.0,
+    reference: Unexpected Income
+  },
+  reason: from account doesn't exist
+}
+...
+# This operation attempts to transfer 1000 EUR from Dania to a non-existent account.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:09,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:08:00,
+    from: 101055,
+    to: 9999,
+    currency: EUR,
+    amount: 1E3,
+    reference: Rent
+  },
+  reason: from account doesn't exist
+}
+...
+# This operation creates an account for Alice with account number 101013.
+# override balance: 15 to balance: -1
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: balance must be positive or zero"
+...
+# This operation creates an account for Bob with account number 101025.
+# override balance: 1000 to balance: -1
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: balance must be positive or zero"
+...
+# This operation represents a transfer of 10 EUR from Alice to Bob.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:10,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:01:00,
+    from: 101013,
+    to: 101025,
+    currency: EUR,
+    amount: 10.0,
+    reference: Dog food
+  },
+  reason: insufficient funds
+}
+...
+# This operation attempts to make a transfer from a non-existent account to Bob.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:11,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:02:00,
+    from: 1,
+    to: 101025,
+    currency: EUR,
+    amount: 10.0,
+    reference: Junk food
+  },
+  reason: from account doesn't exist
+}
+...
+# This operation attempts to transfer 10 EUR from Alice to a non-existent account.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:12,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:03:00,
+    from: 101013,
+    to: 9999,
+    currency: EUR,
+    amount: 10.0,
+    reference: Cat food
+  },
+  reason: insufficient funds
+}
+...
+# This operation creates an account for Alice with account number 101013.
+# override balance: 15.0 to balance: -1
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: balance must be positive or zero"
+...
+# This operation creates an account for Bob with account number 101025.
+# override balance: 1E3 to balance: -1
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: balance must be positive or zero"
+...
+# This operation creates an account for Charlie with account number 101040.
+# override balance: 60.0 to balance: -1
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: balance must be positive or zero"
+...
+# This operation creates an account for Alice with account number 101013.
+# override balance: 15.0 to balance: -1
+jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: balance must be positive or zero"
+...

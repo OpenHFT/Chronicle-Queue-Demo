@@ -1,0 +1,65 @@
+= Project Summary
+
+== Overview
+
+The project is an Account Management System (AMS) leveraging the Chronicle libraries for high-performance, low-latency event-driven operations. It emphasizes documentation-driven development with AI integration for streamlined engineering. The AMS manages account creation, transfers, and state snapshots through a comprehensive suite of YAML-based tests, detailed functional requirements, and a modular architecture.
+
+== Key Features
+
+Low-Latency and High-Throughput :: Designed for operations with microsecond-level latencies and over 1M messages per second throughput.
+Event-Driven Design :: Utilizes Chronicle Queue for durable message persistence and asynchronous operations.
+Rich Documentation :: Implements AsciiDoc for capturing requirements, workflows, and style guides to align development with AI tools.
+Testing Framework :: YAML-driven scenarios test various operations, including edge cases and invalid inputs, ensuring robust functionality.
+
+== Functional Components
+
+=== Documentation
+AIDE Glossary :: Defines project-specific terminology, such as AIDE (Artificial Intelligence Development Environment) and tokens/line ratios.
+Style Guide :: Enforces British English conventions and standardizes coding/documentation practices.
+Workflow :: Outlines iterative development—document, test, code, review, and repeat—keeping code and requirements synchronized.
+
+=== Code
+Core Classes ::
+* `AccountManagerImpl`: Orchestrates incoming events and delegates logic to `AccountService`.
+* `AccountService`: Validates accounts, manages balances, and processes transfers.
+* DTOs (e.g., `CreateAccount`, `Transfer`): Represent operations with fluent setter methods for chaining.
+
+Utilities ::
+* `LogsAccountManagerOut`: A mock implementation for testing event outputs.
+* `ErrorListener`: Handles JVM-level errors gracefully.
+
+=== Testing
+Parameterized Tests :: YAML scenarios validate the AMS against predefined inputs and outputs.
+
+Coverage ::
+* Account creation, transfers, checkpoints.
+* Edge cases, including invalid currencies, missing fields, and insufficient funds.
+* Performance benchmarks using JLBH for latency testing.
+
+=== Benchmark Results
+Demonstrated latencies:
+
+* Shared Memory: ~1.5 µs
+* TCP: ~20 µs
+* End-to-End Variance: Minimal under high load conditions.
+
+== Directories and Files
+
+All directories here are under `account` directory
+
+=== Code
+* `src/main/java`: Implementation of AMS.
+* `AccountManagerImpl.java`: Main orchestration logic.
+* `AccountService.java`: Domain operations.
+
+=== Tests
+* `src/test/java`: Unit and integration tests.
+* YAML files: Input (`in.yaml`), expected output (`out.yaml`), and setup (`_setup.yaml`) configurations.
+
+=== Utilities
+* `list_files_asciidoc.sh`: Script to generate directory content summaries.
+* `benchmark-results.txt`: Performance insights.
+
+== Summary
+
+The AMS is a modular, high-performance system underpinned by comprehensive documentation, rigorous testing, and cutting-edge Chronicle technologies. This structure ensures maintainability, scalability, and alignment with evolving requirements.

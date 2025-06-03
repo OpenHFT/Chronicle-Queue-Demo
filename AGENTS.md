@@ -74,28 +74,28 @@ This tight loop informs the AI accurately and creates immediate clarity for all 
 
 ### Benefits of Real-Time Documentation
 
-* **Confidence in documentation**: Accurate docs prevent miscommunications that derail real-world outcomes.
-* **Reduced drift**: Real-time updates keep requirements, tests and code aligned.
-* **Faster feedback**: AI can quickly highlight inconsistencies when everything is in sync.
-* **Better quality**: Frequent checks align the implementation with the specified behaviour.
-* **Smoother onboarding**: Up-to-date AsciiDoc clarifies the system for new developers.
-* **Incremental changes**: AIDE flags newly updated files so you can keep the documentation synchronised.
+Confidence in documentation :: Accurate docs prevent miscommunications that derail real-world outcomes.
+Reduced drift :: Real-time updates keep requirements, tests and code aligned.
+Faster feedback :: AI can quickly highlight inconsistencies when everything is in sync.
+Better quality :: Frequent checks align the implementation with the specified behaviour.
+Smoother onboarding :: Up-to-date AsciiDoc clarifies the system for new developers.
+Incremental changes :: AIDE flags newly updated files so you can keep the documentation synchronised.
 
 ### Best Practices
 
-* **Maintain Sync**: Keep documentation (AsciiDoc), tests, and code synchronised in version control. Changes in one area should prompt reviews and potential updates in the others.
-* **Doc-First for New Work**: For *new* features or requirements, aim to update documentation first, then use AI to help produce or refine corresponding code and tests. For refactoring or initial bootstrapping, updates might flow from code/tests back to documentation, which should then be reviewed and finalised.
-* **Small Commits**: Each commit should ideally relate to a single requirement or coherent change, making reviews easier for humans and AI analysis tools.
-- **Team Buy-In**: Encourage everyone to review AI outputs critically and contribute to maintaining the synchronicity of all artefacts.
+Maintain Sync :: Keep documentation (AsciiDoc), tests, and code synchronised in version control. Changes in one area should prompt reviews and potential updates in the others.
+Doc-First for New Work :: For *new* features or requirements, aim to update documentation first, then use AI to help produce or refine corresponding code and tests. For refactoring or initial bootstrapping, updates might flow from code/tests back to documentation, which should then be reviewed and finalised.
+Small Commits :: Each commit should ideally relate to a single requirement or coherent change, making reviews easier for humans and AI analysis tools.
+Team Buy-In :: Encourage everyone to review AI outputs critically and contribute to maintaining the synchronicity of all artefacts.
 
 ## AI Agent Guidelines
 
 When using AI agents to assist with development, please adhere to the following guidelines:
 
-* **Respect the Language & Character-set Policy**: Ensure all AI-generated content follows the British English and ASCII-7 guidelines outlined above.
+Respect the Language & Character-set Policy :: Ensure all AI-generated content follows the British English and ASCII-7 guidelines outlined above.
 Focus on Clarity: AI-generated documentation should be clear and concise and add value beyond what is already present in the code or existing documentation.
-* **Avoid Redundancy**: Do not generate content that duplicates existing documentation or code comments unless it provides additional context or clarification.
-* **Review AI Outputs**: Always review AI-generated content for accuracy, relevance, and adherence to the project's documentation standards before committing it to the repository.
+Avoid Redundancy :: Do not generate content that duplicates existing documentation or code comments unless it provides additional context or clarification.
+Review AI Outputs :: Always review AI-generated content for accuracy, relevance, and adherence to the project's documentation standards before committing it to the repository.
 
 ## Company-Wide Tagging
 

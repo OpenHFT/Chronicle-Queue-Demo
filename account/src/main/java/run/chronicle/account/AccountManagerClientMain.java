@@ -14,6 +14,7 @@ import run.chronicle.account.dto.*;
 import run.chronicle.account.util.LogsAccountManagerOut;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * This class acts as the main entry point for the AccountManagerClient.
  * It creates a client which connects to a Chronicle server and performs various actions.

@@ -27,7 +27,7 @@ public class InputMain {
             GenericRecord user = avro.getGenericRecord();
             user.put("name", "Ben");
             user.put("favorite_number", 7);
-            user.put("favorite_color", "red");
+            user.put("favorite_colour", "red");
             avro.writeToOS(user, dc.wire().bytes().outputStream());
         }
 

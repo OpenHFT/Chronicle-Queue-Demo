@@ -1,0 +1,271 @@
+# This operation creates an account for Charlie with account number 101045.
+# missing balance: 5000
+---
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:07,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:05:00,
+    name: charlie,
+    account: 101045,
+    currency: EUR,
+    balance: 0.0,
+    overdraft: 0.0
+  }
+}
+...
+# This operation creates an account for Dania with account number 101055.
+# missing balance: 3500
+---
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:08,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:05:01,
+    name: Dania,
+    account: 101055,
+    currency: EUR,
+    balance: 0.0,
+    overdraft: 0.0
+  }
+}
+...
+# This operation represents a transfer of 500 EUR from Charlie to Dania.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:09,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:06:00,
+    from: 101045,
+    to: 101055,
+    currency: EUR,
+    amount: 500.0,
+    reference: Grocery Shopping
+  },
+  reason: insufficient funds
+}
+...
+# This operation attempts to make a transfer from a non-existent account to Charlie.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:10,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:07:00,
+    from: 2,
+    to: 101045,
+    currency: EUR,
+    amount: 500.0,
+    reference: Unexpected Income
+  },
+  reason: from account doesn't exist
+}
+...
+# This operation attempts to transfer 1000 EUR from Dania to a non-existent account.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:11,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:08:00,
+    from: 101055,
+    to: 9999,
+    currency: EUR,
+    amount: 1E3,
+    reference: Rent
+  },
+  reason: insufficient funds
+}
+...
+# This operation creates an account for Alice with account number 101013.
+# missing balance: 15
+---
+createAccountFailed: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:12,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:00,
+    name: alice,
+    account: 101013,
+    currency: EUR,
+    balance: 0.0,
+    overdraft: 0.0
+  },
+  reason: account already exists
+}
+...
+# This operation creates an account for Bob with account number 101025.
+# missing balance: 1000
+---
+createAccountFailed: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:13,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:01,
+    name: bob,
+    account: 101025,
+    currency: EUR,
+    balance: 0.0,
+    overdraft: 0.0
+  },
+  reason: account already exists
+}
+...
+# This operation represents a transfer of 10 EUR from Alice to Bob.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:14,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:01:00,
+    from: 101013,
+    to: 101025,
+    currency: EUR,
+    amount: 10.0,
+    reference: Dog food
+  },
+  reason: insufficient funds
+}
+...
+# This operation attempts to make a transfer from a non-existent account to Bob.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:15,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:02:00,
+    from: 1,
+    to: 101025,
+    currency: EUR,
+    amount: 10.0,
+    reference: Junk food
+  },
+  reason: from account doesn't exist
+}
+...
+# This operation attempts to transfer 10 EUR from Alice to a non-existent account.
+---
+transferFailed: {
+  sender: vault,
+  target: gw2,
+  sendingTime: 2023-01-21T11:00:16,
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: 2023-01-20T10:03:00,
+    from: 101013,
+    to: 9999,
+    currency: EUR,
+    amount: 10.0,
+    reference: Cat food
+  },
+  reason: insufficient funds
+}
+...
+# This operation creates an account for Alice with account number 101013.
+# missing balance: 15.0,
+---
+createAccountFailed: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:17,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:00,
+    name: alice,
+    account: 101013,
+    currency: EUR,
+    balance: 0.0,
+    overdraft: 0.0
+  },
+  reason: account already exists
+}
+...
+# This operation creates an account for Bob with account number 101025.
+# missing balance: 1E3,
+---
+createAccountFailed: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:18,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:01,
+    name: bob,
+    account: 101025,
+    currency: USD,
+    balance: 0.0,
+    overdraft: 0.0
+  },
+  reason: account already exists
+}
+...
+# This operation creates an account for Charlie with account number 101040.
+# missing balance: 60.0,
+---
+onCreateAccount: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:19,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:02,
+    name: charlie,
+    account: 101040,
+    currency: EUR,
+    balance: 0.0,
+    overdraft: 0.0
+  }
+}
+...
+# This operation creates an account for Alice with account number 101013.
+# missing balance: 15.0,
+---
+createAccountFailed: {
+  sender: vault,
+  target: gw1,
+  sendingTime: 2023-01-21T11:00:20,
+  createAccount: {
+    sender: gw1,
+    target: vault,
+    sendingTime: 2023-01-20T10:00:00,
+    name: alice,
+    account: 101013,
+    currency: EUR,
+    balance: 0.0,
+    overdraft: 0.0
+  },
+  reason: account already exists
+}
+...

@@ -1,0 +1,99 @@
+= Reference
+:toc:
+:toclevels: 3
+
+This document compiles various reference materials relevant to this project, such as coding style guidelines, development workflow steps, terminology, and domain-specific mappings (e.g., FIX 4.2 tags).
+
+== Style Guide
+
+This section outlines the coding conventions and documentation standards the team follows.
+
+=== Language and Wording
+* **British English** for code comments, doc text, and commit messages.
+* Maintain a concise, professional tone. Avoid slang or overly informal expressions.
+
+=== Code Formatting
+Indentation :: 4 spaces, no tabs.
+Line Length :: Typically 128 characters or fewer if possible.
+Braces ::
+- Open brace on the same line (`if (condition) {`).
+- Close brace on a new line.
+Blank Lines ::
+- One blank line between method definitions.
+- Group related lines logically for readability.
+
+=== Naming Conventions
+Classes :: PascalCase (e.g., `OrderService`).
+Methods and Variables :: camelCase (e.g., `processOrder`, `userName`).
+Constants :: ALL_CAPS_WITH_UNDERSCORES (e.g., `MAX_BUFFER_SIZE`).
+Packages :: all lowercase, possibly with dots (`com.example.myproject`).
+
+=== Comments and Documentation
+* Use Javadoc (`/** ... */`) for public classes/methods, describing purpose, parameters, return values, and exceptions.
+* Avoid excessive inline comments; code should largely speak for itself.
+* Keep commit messages in present tense, referencing issue IDs where relevant.
+
+=== Additional Points
+* Some modules rely on `.ad` or `.adoc` files for large code or doc summaries, especially if token constraints apply for AI usage.
+* Use xref where possible to link sections in AsciiDoc.
+
+== Workflow
+
+This project embraces an AI-assisted, documentation-first process known as AIDE (Artificial Intelligence Development Environment).
+
+=== Iterative Stages
+1. **Document Requirements**
+- Write or update `.adoc` content reflecting new features or changes.
+- This serves as the “single source of truth.”
+2. **Write or Update Tests**
+- Create or refine unit, integration, or YAML-based scenario tests, mirroring the documented requirements.
+3. **Write or Update Code**
+- Let AI or standard IDE tools generate stubs, boilerplate, or scaffolding based on the docs and tests.
+- Manually refine logic where needed.
+4. **Review**
+- AI highlights discrepancies between docs/tests/code. Humans validate correctness.
+5. **Repeat**
+- Each change in requirements triggers this loop again, keeping everything in sync.
+
+=== Document-First Benefits
+
+Minimal Drift :: Fewer mismatches between code and docs.
+Faster Onboarding :: Updated documentation clarifies system design.
+Better Quality :: Frequent iteration on specs → more thorough testing.
+
+== FIX 4.2 Mapping
+
+For modules referencing FIX protocol (like the Order Processor), the following table maps relevant fields to standard FIX 4.2 tags. Adjust the table to your actual usage:
+
+[cols="1,1,2", options="header"]
+|===
+|FIX Tag |Field/DTO Property |Description
+|35=D    |`NewOrderSingle`   |Message type for new orders
+|11      |`clOrdID`          |Unique client order ID
+|54      |`side`             |Side of the trade (`buy`/`sell`)
+|38      |`orderQty`         |Quantity of the order
+|44      |`price`            |Price for limit orders
+|39      |`ordStatus`        |Order status (e.g., `new`, `filled`)
+|150     |`execType`         |Execution type (partial fill, fill, canceled)
+|**...** |**(others as needed)**|Expand based on your system’s data
+|===
+
+== Additional References
+
+Below are some advanced or miscellaneous notes not covered elsewhere.
+
+=== Large File Summaries
+- Certain `.ad` or `.adoc` summaries exist for very large classes or resources that rarely change.
+- This practice keeps token usage low for AI processes, while preserving essential context in a succinct form.
+
+=== Performance Insights
+- Typical latencies can reach ~1.5µs (shared memory) or ~20µs (TCP) under load.
+- For more detailed throughput or latency data, see xref:usage-and-tests.adoc#benchmarks[Usage & Tests → Benchmarking].
+
+=== AI Prompt Templates
+- If your build includes scripts or templated prompts for the AI, store them in version control as well.
+- Keep track of prompt changes to maintain consistency across feature expansions.
+
+== Closing Notes
+
+Refer back to xref:architecture.adoc[Architecture] for design overviews or xref:usage-and-tests.adoc[Usage & Tests] for instructions on running modules and tests. By maintaining these references, the project stays coherent and approachable to both new and returning contributors.

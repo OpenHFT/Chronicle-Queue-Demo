@@ -16,15 +16,15 @@ createAccount: {
 ---
 # Starting from account number 10, we initiate 10 transfers to the next account
 {% for i in range(10, 20-1) %} {# -1 because the last account won't have a next account to transfer to #}
-transfer: {
-  sender: gw2,
-  target: vault,
-  sendingTime: "2023-01-21T11:{{ i }}:00",
-  from: {{ i }},
-  to: {{ i|add(1) }},
-  currency: EUR,
-  amount: 100,
-  reference: Transfer {{ i }} to {{ i|add(1) }}
-}
+  transfer: {
+    sender: gw2,
+    target: vault,
+    sendingTime: "2023-01-21T11:{{ i }}:00",
+    from: {{ i }},
+    to: {{ i|add(1) }},
+    currency: EUR,
+    amount: 100,
+    reference: Transfer {{ i }} to {{ i|add(1) }}
+  }
 {% endfor %}
 ...

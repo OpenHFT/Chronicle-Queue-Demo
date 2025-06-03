@@ -6,7 +6,10 @@ import run.chronicle.routing.inout.api.ViaIn;
 import run.chronicle.routing.inout.api.ViaOut;
 
 /**
- * Routes {@link Value} messages from multiple sources to multiple destinations based on specific criteria.
+ * A simple router that checks if a Value's 'val' is divisible by 3 and/or 5.
+ * - If val % 3 == 0 -> route to "three"
+ * - If val % 5 == 0 -> route to "five"
+ * If negative or zero doesn't match, we either skip or log an error.
  *
  * <p>This class implements {@link ViaIn} and {@link ValueMessage} to process incoming {@code Value} messages.
  * It checks if the name contains the character 'e', and if so, routes the value to different
@@ -61,7 +64,10 @@ public class ViaThreeFive implements ViaIn<ValueMessage, ValueMessage>, ValueMes
      */
     @Override
     public void value(Value value) {
-        if (name.contains("e")) {
+        if (value.val() < 0)
+            out.via("error")
+                    .value(value);
+        else if (name.contains("e")) {
             if (value.val() % 3 == 0)
                 out.via("three")
                         .value(value);
