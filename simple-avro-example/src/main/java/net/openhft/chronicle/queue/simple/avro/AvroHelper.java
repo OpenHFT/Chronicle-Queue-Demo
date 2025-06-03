@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 Chronicle Software
+ * Copyright 2014-2025 chronicle.software
  *
  * http://chronicle.software
  *
