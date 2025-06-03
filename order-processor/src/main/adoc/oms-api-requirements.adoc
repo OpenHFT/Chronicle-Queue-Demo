@@ -1,0 +1,479 @@
+= Detailed Functional Requirements for `lost.town.oms.api` and `lost.town.oms.dto`
+:toc:
+:toclevels: 3
+
+This requirements document provides **sufficient detail to recreate** both the `lost.town.oms.api` and `lost.town.oms.dto` packages.
+It specifies the interfaces, classes, fields, validation logic, threading assumptions, and testing approach.
+
+== Project Context
+
+In this system, an **Order Management System (OMS)** receives inbound events (orders, cancellations) and emits outbound events (execution reports, reject messages).
+This design uses **Chronicle Queue** for persistence and asynchronous event-driven processing, with **Chronicle Wire** for serialization.
+
+NOTE: All event messages in this system (e.g., `NewOrderSingle`, `CancelOrderRequest`, `ExecutionReport`) are conceptually derived from the Financial Information eXchange (FIX) Protocol, version 4.2. See https://www.fixtrading.org/standards/fix-4-2/ for more details on field definitions, message flow, and usage conventions in FIX-based trading systems.
+
+== Assumptions
+
+1. **Single-Threaded**: This demo runs in a single-threaded context (e.g., one thread polling events from the queue).
+2. **Validation**: The *framework* calls each DTO’s `validate()` method before passing it to the `OMSIn` (for inbound) or writing via `OMSOut` (for outbound).
+3. **Error Handling**: Any thrown exception is caught by the framework, which then calls `OMSOut.jvmError(...)`.
+4. **Chronicle Wire**: The data transfer objects (DTOs) are compatible with Chronicle Wire for efficient marshalling/unmarshalling.
+In production, you would use **Chronicle Services** for replication and failover.
+
+== `lost.town.oms.api` Package
+
+The `lost.town.oms.api` package declares the contracts (interfaces) for interacting with the OMS.
+It includes:
+
+* `ErrorListener`
+* `OMSIn`
+* `OMSOut`
+* `package-info.java` (provides overview documentation)
+
+=== `ErrorListener`
+
+[source,java]
+----
+package lost.town.oms.api;
+
+public interface ErrorListener {
+    /**
+     * Called when any exception or critical error occurs.
+     *
+     * @param msg A descriptive message about the JVM error or exception
+     */
+    void jvmError(String msg);
+}
+----
+
+==== Requirements
+
+1. **Single Method**: `jvmError(String msg)` must be provided to handle system-level errors, exceptions, or critical failures.
+2. **Invocation**: The framework (or other system component) calls `jvmError(msg)` whenever an exception bubbles up unhandled.
+3. **Implementors**: Typically, classes implementing `OMSOut` also implement `ErrorListener` so they can publish or log these errors if desired.
+
+=== `OMSIn`
+
+[source,java]
+----
+package lost.town.oms.api;
+
+import town.lost.oms.dto.CancelAll;
+import town.lost.oms.dto.CancelOrderRequest;
+import town.lost.oms.dto.NewOrderSingle;
+
+public interface OMSIn {
+    /**
+     * Handles a new order request.
+     * @param nos the DTO with new order details
+     */
+    void newOrderSingle(NewOrderSingle nos);
+
+    /**
+     * Handles a cancellation request for a specific order.
+     * @param cor the DTO with cancellation details
+     */
+    void cancelOrderRequest(CancelOrderRequest cor);
+
+    /**
+     * Handles a request to cancel all orders for a given symbol or filter.
+     * @param cancelAll the DTO with cancel-all details
+     */
+    void cancelAll(CancelAll cancelAll);
+}
+----
+
+==== Requirements
+
+1. **Inbound Contract**: `OMSIn` defines methods for events flowing into the OMS.
+2. **Methods**:
+- `newOrderSingle(NewOrderSingle nos)` – for creating a new order.
+- `cancelOrderRequest(CancelOrderRequest cor)` – for canceling a single, known order.
+- `cancelAll(CancelAll cancelAll)` – for canceling all orders matching a symbol or filter.
+3. **Validation**: By the time the DTO is passed in, it has already been validated by the framework.
+4. **Exception Handling**: Any runtime exception inside these methods is caught by the framework, which then calls `jvmError(...)`.
+5. **Implementation**: A typical implementation (e.g., `OMSImpl`) will transform inbound DTOs into outbound messages (`ExecutionReport`, `OrderCancelReject`) via `OMSOut`.
+
+=== `OMSOut`
+
+[source,java]
+----
+package lost.town.oms.api;
+
+import town.lost.oms.dto.ExecutionReport;
+import town.lost.oms.dto.OrderCancelReject;
+
+public interface OMSOut extends ErrorListener {
+    /**
+     * Called to publish an execution report.
+     * @param er the DTO containing execution details
+     */
+    void executionReport(ExecutionReport er);
+
+    /**
+     * Called to publish an order-cancel-reject event.
+     * @param ocr the DTO containing rejection details
+     */
+    void orderCancelReject(OrderCancelReject ocr);
+}
+----
+
+==== Requirements
+
+1. **Outbound Contract**: `OMSOut` defines methods for events the OMS emits after processing.
+2. **Methods**:
+- `executionReport(ExecutionReport er)` – used to acknowledge or confirm orders.
+- `orderCancelReject(OrderCancelReject ocr)` – used to reject cancellations or indicate an error in canceling.
+3. **ErrorListener**: Inherits `jvmError(String msg)` from `ErrorListener` for system-level exceptions.
+4. **Validation**: The framework must validate `er` or `ocr` before they are actually written to the Chronicle Queue.
+5. **Implementation**: Typically, this interface is realized by a Chronicle Queue `MethodWriter`, though it can be implemented in other ways if needed.
+
+=== `package-info.java`
+
+[source,java]
+----
+/**
+ * This package defines the inbound (OMSIn) and outbound (OMSOut) interfaces
+ * for an Order Management System, plus an ErrorListener interface for
+ * handling exceptions at a system level.
+ *
+ * <p>The framework:
+ * <ul>
+ *     <li>Validates all DTOs before passing to OMSIn or writing via OMSOut.</li>
+ *     <li>Catches exceptions, calling jvmError() on the relevant ErrorListener implementation.</li>
+ *     <li>Operates in a single-threaded environment for this demo.</li>
+ * </ul>
+ *
+ * <p>See also the lost.town.oms.dto package for the message objects used.
+ */
+package lost.town.oms.api;
+----
+
+==== Requirements
+
+1. **Overview**: Must describe the role of each interface in the broader system.
+2. **Simplicity**: The package-level docs must clarify that this is a *single-threaded* demonstration and that the framework is responsible for major tasks like validation and error interception.
+
+== `lost.town.oms.dto` Package
+
+This package provides **Data Transfer Objects** (DTOs) representing orders and associated messages.
+
+=== Contents
+
+* `AbstractEvent` (base class)
+* `CancelAll`
+* `CancelOrderRequest`
+* `Ccy`
+* `ExecutionReport`
+* `NewOrderSingle`
+* `OrderCancelReject`
+* `OrderType`
+* `Side`
+* `TimeInForce`
+* `ValidateUtil`
+* `package-info.java`
+
+=== Common Requirements
+
+1. **Compatibility**: All classes must be **Chronicle Wire**-friendly (e.g., implement or extend classes like `SelfDescribingMarshallable`, use field-level annotations for marshalling if needed).
+2. **Validation**: Each class provides a `validate()` method that throws `InvalidMarshallableException` if required fields are missing or invalid.
+The framework calls this method prior to usage.
+3. **Timestamp Fields**: Typically stored in nanoseconds (e.g., `sendingTime`, `transactTime`).
+4. **Symbols and IDs**: Often stored as `long` converted via short-text mechanisms (e.g., `ShortTextLongConverter`).
+5. **Extended Fields**: Classes can be extended with extra fields if needed, but existing fields must remain backward compatible.
+
+=== `AbstractEvent`
+
+[source,java]
+----
+package lost.town.oms.dto;
+
+import net.openhft.chronicle.core.io.InvalidMarshallableException;
+import net.openhft.chronicle.wire.SelfDescribingMarshallable;
+import net.openhft.chronicle.core.io.Validatable;
+
+public class AbstractEvent<E extends AbstractEvent<E>>
+        extends SelfDescribingMarshallable
+        implements Validatable {
+
+    protected long sender;
+    protected long target;
+    protected long sendingTime;
+
+    @Override
+    public void validate() throws InvalidMarshallableException {
+        if (sender == 0) throw new InvalidMarshallableException("sender is required");
+        if (target == 0) throw new InvalidMarshallableException("target is required");
+        if (sendingTime == 0) throw new InvalidMarshallableException("sendingTime is required");
+    }
+    // ... Setters, getters, etc.
+}
+----
+
+==== Requirements
+
+1. **Generic Parameter**: `<E extends AbstractEvent<E>>` used for fluent-style method chaining in subclasses.
+2. **Shared Fields**:
+- `sender`: long ID of who initiated the event
+- `target`: long ID of recipient or destination
+- `sendingTime`: nanosecond timestamp
+3. **`validate()`**: Must check these fields are non-zero.
+4. **Usage**: Subclassed by all other event objects.
+
+=== `NewOrderSingle`
+
+[source,java]
+----
+package lost.town.oms.dto;
+
+public class NewOrderSingle extends AbstractEvent<NewOrderSingle> {
+    private long symbol;
+    private long transactTime;
+    private long account;
+    private double orderQty;
+    private double price;
+    private Side side;
+    private String clOrdID = "";
+    private OrderType ordType;
+    private TimeInForce timeInForce;
+    private Ccy currency;
+
+    @Override
+    public void validate() throws InvalidMarshallableException {
+        super.validate();
+        if (symbol == 0) throw new InvalidMarshallableException("symbol is required");
+        if (transactTime == 0) throw new InvalidMarshallableException("transactTime is required");
+        if (account == 0) throw new InvalidMarshallableException("account is required");
+        if (orderQty <= 0) throw new InvalidMarshallableException("orderQty must be > 0");
+        if (!Double.isFinite(price) || price <= 0) throw new InvalidMarshallableException("invalid price");
+        if (side == null) throw new InvalidMarshallableException("side is required");
+        if (ordType == null) throw new InvalidMarshallableException("ordType is required");
+        if (clOrdID == null || clOrdID.isEmpty()) throw new InvalidMarshallableException("clOrdID is required");
+        if (timeInForce == null) throw new InvalidMarshallableException("timeInForce is required");
+        if (currency == null) throw new InvalidMarshallableException("currency is required");
+    }
+    // ... Setters, getters, etc.
+}
+----
+
+==== Requirements
+
+1. **Represents** an inbound order message.
+2. **Required Fields**:
+- `symbol`, `transactTime`, `account`, `orderQty`, `price`, `side`, `clOrdID`, `ordType`, `timeInForce`, `currency`.
+3. **Validation**: Must confirm each field is non-null, non-zero, and appropriately ranged.
+
+=== `CancelOrderRequest`
+
+[source,java]
+----
+public class CancelOrderRequest extends AbstractEvent<CancelOrderRequest> {
+    private long symbol;
+    private long account;
+    private String clOrdID = "";
+    private String origClOrdID = "";
+    private Side side;
+    // ...
+    @Override
+    public void validate() throws InvalidMarshallableException {
+        super.validate();
+        if (symbol == 0) throw new InvalidMarshallableException("symbol is required");
+        if (account == 0) throw new InvalidMarshallableException("account is required");
+        if (clOrdID == null || clOrdID.isEmpty()) throw new InvalidMarshallableException("clOrdID required");
+        if (origClOrdID == null || origClOrdID.isEmpty()) throw new InvalidMarshallableException("origClOrdID required");
+        if (side == null) throw new InvalidMarshallableException("side required");
+    }
+}
+----
+
+==== Requirements
+
+1. **Represents** a request to cancel an existing order.
+2. **Key Fields**: `symbol`, `account`, `clOrdID` (the new cancel request ID), `origClOrdID` (the order to cancel), and `side`.
+
+=== `CancelAll`
+
+[source,java]
+----
+public class CancelAll extends AbstractEvent<CancelOrderRequest> {
+    private long symbol;
+    private String clOrdID = "";
+
+    @Override
+    public void validate() throws InvalidMarshallableException {
+        super.validate();
+        if (symbol == 0) throw new InvalidMarshallableException("symbol required");
+        if (clOrdID == null || clOrdID.isEmpty()) throw new InvalidMarshallableException("clOrdID required");
+    }
+}
+----
+
+==== Requirements
+
+1. **Represents** a mass-cancel request for a `symbol`.
+2. **Return Type**: Notice the class is declared as `<CancelOrderRequest>` for potential chaining in some frameworks (though not used in basic code).
+3. **Validation**: Must ensure `symbol != 0` and `clOrdID` is non-empty.
+
+=== `ExecutionReport`
+
+[source,java]
+----
+public class ExecutionReport extends AbstractEvent<ExecutionReport> {
+    private long symbol;
+    private long transactTime;
+    private double orderQty;
+    private double price;
+    private long orderID;
+    private double lastPx;
+    private double leavesQty;
+    private double cumQty;
+    private double avgPx;
+    private Side side;
+    private OrderType ordType;
+    private String clOrdID = "";
+    private String text;
+    // ...
+    @Override
+    public void validate() throws InvalidMarshallableException {
+        super.validate();
+        if (symbol == 0) throw new InvalidMarshallableException("symbol required");
+        if (transactTime == 0) throw new InvalidMarshallableException("transactTime required");
+        if (orderQty <= 0) throw new InvalidMarshallableException("orderQty must be > 0");
+        if (price <= 0) throw new InvalidMarshallableException("price must be > 0");
+        if (orderID == 0) throw new InvalidMarshallableException("orderID required");
+        if (side == null) throw new InvalidMarshallableException("side required");
+        if (ordType == null) throw new InvalidMarshallableException("ordType required");
+        if (clOrdID == null || clOrdID.isEmpty()) throw new InvalidMarshallableException("clOrdID required");
+        // lastPx, leavesQty, cumQty, avgPx can be zero or positive
+    }
+}
+----
+
+==== Requirements
+
+1. **Outbound** message describing an order’s status (e.g., partial fill, full fill, acceptance).
+2. **Key Fields**: `orderID` assigned by the OMS, plus standard fields like `symbol`, `side`, `ordType`.
+3. **Optional Fields**: `lastPx`, `leavesQty`, `cumQty`, `text` can be set to reflect current execution status.
+Zero or missing is allowed for partial data.
+
+=== `OrderCancelReject`
+
+[source,java]
+----
+public class OrderCancelReject extends AbstractEvent<OrderCancelReject> {
+    private long symbol;
+    private String clOrdID = "";
+    private String reason = "";
+    // ...
+    @Override
+    public void validate() throws InvalidMarshallableException {
+        super.validate();
+        if (symbol == 0) throw new InvalidMarshallableException("symbol required");
+        if (clOrdID == null || clOrdID.isEmpty()) throw new InvalidMarshallableException("clOrdID required");
+        if (reason == null || reason.isEmpty()) throw new InvalidMarshallableException("reason required");
+    }
+}
+----
+
+==== Requirements
+
+1. **Represents** a rejected cancel request (or some other cancel-related error).
+2. **Key Fields**: `symbol`, `clOrdID` (the ID of the request that’s being rejected), and a human-readable `reason`.
+
+=== Supporting Enumerations
+
+. `Side`
+::
+[source,java]
+---- public enum Side {
+BUY(+1), SELL(-1); public final int direction; Side(int direction) { this.direction = direction; } } ----
+- Represents a **buy** or **sell** order.
+
+. `OrderType`
+::
+[source,java]
+---- public enum OrderType {
+MARKET, LIMIT, PEGGED, FILL_OR_KILL, IMMEDIATE_OR_CANCEL } ----
+- Defines the **type** of the order (market, limit, etc.).
+
+. `TimeInForce`
+::
+[source,java]
+---- public enum TimeInForce {
+DAY, GTC, IOC, FOK, GTD, GTT, OPG, ATC, GFA, GIS, GTX, SIO } ----
+- Controls **how long** an order remains active or under what conditions it is executed/canceled.
+
+. `Ccy`
+::
+[source,java]
+---- public enum Ccy {
+USD(...), EUR(...), GBP(...), ...
+// Each enum holds currency name, country, symbol, etc.
+} ----
+- Enumerates currencies by ISO 4217 code, with metadata.
+
+=== `ValidateUtil`
+
+[source,java]
+----
+public final class ValidateUtil {
+    private ValidateUtil() {}
+
+    public static boolean invalidPrice(double price) {
+        return !Double.isFinite(price) || price <= 0;
+    }
+
+    public static boolean invalidQuantity(double quantity) {
+        return !Double.isFinite(quantity) || quantity < 0;
+    }
+}
+----
+
+==== Requirements
+
+1. **Static Helpers**: Provides commonly used checks (`invalidPrice`, `invalidQuantity`).
+2. **Integration**: Classes like `NewOrderSingle` might call these helpers in `validate()`.
+3. **No Instantiation**: The class is `final` with a private constructor.
+
+=== `package-info.java`
+
+[source,java]
+----
+/**
+ * The DTOs for the OMS. Each class extends {@link AbstractEvent} or is an enum of possible values.
+ *
+ * <p>All DTOs require a call to {@code validate()} to ensure fields are properly set.
+ * The framework is responsible for calling validate() before using them.
+ *
+ * <p>Includes:
+ * <ul>
+ *   <li>{@link NewOrderSingle}, {@link CancelOrderRequest}, {@link CancelAll} (inbound requests)</li>
+ *   <li>{@link ExecutionReport}, {@link OrderCancelReject} (outbound events)</li>
+ *   <li>{@link Side}, {@link OrderType}, {@link TimeInForce}, {@link Ccy} (enums)</li>
+ *   <li>{@link ValidateUtil} (static validation helpers)</li>
+ * </ul>
+ */
+package lost.town.oms.dto;
+----
+
+==== Requirements
+
+1. **Documentation**: Summarize how each DTO or enum is used.
+2. **Highlight** that the framework ensures validation.
+
+== Testing Approach
+
+1. **YAML-Based BDD**: The project uses directories containing `_setup.yaml`, `in.yaml`, and `out.yaml` to define test scenarios.
+2. **Single Thread**: The test harness processes events in a single-thread loop, verifying that for each inbound event (`in.yaml`), the system produces the correct outbound event (`out.yaml`).
+3. **Adding Tests**: Add a new directory with appropriate YAML files and reference it in `OMSImplTest` to run new scenarios.
+
+== Conclusion
+
+By following this detailed specification:
+
+* You can **reconstruct** all interfaces (`OMSIn`, `OMSOut`, `ErrorListener`) and **implement** the data models (`NewOrderSingle`, `CancelOrderRequest`, etc.).
+* **Validate** each DTO to ensure correctness before passing to the OMS or publishing to the queue.
+* Maintain a **single-threaded** model for simplicity, with the framework capturing exceptions via `jvmError(...)`.
+* Leverage **YAML-based BDD tests** to verify end-to-end behavior.
+
+These packages form the **foundation** for an event-driven Order Management System using Chronicle technologies. 

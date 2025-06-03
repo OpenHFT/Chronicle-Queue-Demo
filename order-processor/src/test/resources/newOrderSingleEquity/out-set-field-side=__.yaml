@@ -1,8 +1,10 @@
+# Scenario: Submit a new AAPL equity order
 # Sample `NewOrderSingle` message representing a client's new order sent to the Order Management System (OMS).
-# override side: buy to side: ''
+# override side: BUY to side: ''
 jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: side is required"
 ...
+# Scenario: Submit a new GOOGL equity order
 # Sample `NewOrderSingle` message representing another client's new order sent to the Order Management System (OMS).
-# override side: sell to side: ''
+# override side: SELL to side: ''
 jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: side is required"
 ...
