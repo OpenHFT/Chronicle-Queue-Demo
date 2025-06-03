@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Chronicle Software Ltd
+ * Copyright 2016-2025 chronicle.software
  */
 
 package org.trading.dto;
