@@ -4,9 +4,12 @@
 
 == Introduction
 
-The `OMSImpl` class is the core implementation of the `OMSIn` interface, responsible for handling inbound order-related messages and producing appropriate outbound responses. It serves as the "business logic" portion of the Order Management System (OMS), transforming inbound messages (`NewOrderSingle`, `CancelOrderRequest`, `CancelAll`) into outbound messages (`ExecutionReport`, `OrderCancelReject`).
+The `OMSImpl` class is the core implementation of the `OMSIn` interface, responsible for handling inbound order-related messages and producing appropriate outbound responses.
+It serves as the "business logic" portion of the Order Management System (OMS), transforming inbound messages (`NewOrderSingle`, `CancelOrderRequest`, `CancelAll`) into outbound messages (`ExecutionReport`, `OrderCancelReject`).
 
-This component is designed to operate within an **event-driven framework**. Each inbound event is read from a Chronicle Queue, and each outbound event is written to another Chronicle Queue. This approach provides *traceability*, as all inbound and outbound events are persisted.
+This component is designed to operate within an **event-driven framework**.
+Each inbound event is read from a Chronicle Queue, and each outbound event is written to another Chronicle Queue.
+This approach provides *traceability*, as all inbound and outbound events are persisted.
 
 == Purpose and Scope
 
@@ -17,7 +20,8 @@ The primary purposes of `OMSImpl` are:
 3. **Generate** outbound messages (e.g., execution reports, cancellation rejects).
 4. **Publish** outbound events to a Chronicle Queue, after validation via `validate()`.
 
-The scope of `OMSImpl` includes creating new orders, rejecting cancellations, and responding to mass-cancel requests with a single rejection message in this simple example. State management (e.g., actual order book) is not within the scope of this demonstration.
+The scope of `OMSImpl` includes creating new orders, rejecting cancellations, and responding to mass-cancel requests with a single rejection message in this simple example.
+State management (e.g., actual order book) is not within the scope of this demonstration.
 
 == Event-Driven Interaction Model
 
@@ -36,7 +40,8 @@ The scope of `OMSImpl` includes creating new orders, rejecting cancellations, an
 === Validation
 
 All inbound DTOs are validated by the framework before calling `OMSImpl`.
-Similarly, `OMSImpl` constructs outbound DTOs (e.g., `ExecutionReport`, `OrderCancelReject`), and these are also validated before being written to the Chronicle Queue. Any validation failure triggers a path where `jvmError` is called or a rejection message is published.
+Similarly, `OMSImpl` constructs outbound DTOs (e.g., `ExecutionReport`, `OrderCancelReject`), and these are also validated before being written to the Chronicle Queue.
+Any validation failure triggers a path where `jvmError` is called or a rejection message is published.
 
 === newOrderSingle
 
@@ -67,13 +72,15 @@ Similarly, `OMSImpl` constructs outbound DTOs (e.g., `ExecutionReport`, `OrderCa
 - Contains fields such as `symbol` and `clOrdID`, representing which orders to cancel.
 
 * **Process**:
-- Similar to `cancelOrderRequest`, no orders are tracked. The system publishes an `OrderCancelReject` with `"No orders to cancel"`.
+- Similar to `cancelOrderRequest`, no orders are tracked.
+The system publishes an `OrderCancelReject` with `"No orders to cancel"`.
 
 * **Output**: `OrderCancelReject`
 
 == Error Handling
 
-When an **exception is thrown** during processing (e.g., a validation or runtime error), the event-driven framework captures the exception and calls `OMSOut.jvmError(msg)`. This ensures system-level errors are tracked in the same queue-based workflow.
+When an **exception is thrown** during processing (e.g., a validation or runtime error), the event-driven framework captures the exception and calls `OMSOut.jvmError(msg)`.
+This ensures system-level errors are tracked in the same queue-based workflow.
 
 == Performance Requirements
 
@@ -86,7 +93,8 @@ When an **exception is thrown** during processing (e.g., a validation or runtime
 2. **Order Rejection**: Returns an `OrderCancelReject` for both single-order and mass-cancel requests, or if validation fails.
 3. **DTO Mapping**: Maps inbound DTO fields to outbound DTO fields (`sender ↔ target`, `symbol`, `clOrdID`, etc.).
 4. **Time/ID Generation**: Uses `SystemTimeProvider.CLOCK.currentTimeNanos()` to assign `orderID`.
-5. **Validation Flow**: Relies on the framework to call `validate()` on input and output DTOs. If invalid, the framework or `OMSImpl` triggers appropriate rejection/error handling.
+5. **Validation Flow**: Relies on the framework to call `validate()` on input and output DTOs.
+If invalid, the framework or `OMSImpl` triggers appropriate rejection/error handling.
 
 == Sample Implementation
 
@@ -178,4 +186,7 @@ mvn clean install
 
 == Conclusion
 
-The `OMSImpl` class is a simple yet illustrative component in an event-driven OMS framework. It showcases how to ingest inbound FIX-like messages from a Chronicle Queue, validate them, process the logic (create an `ExecutionReport` or `OrderCancelReject`), and publish results back to a Chronicle Queue. It must handle 100k msgs/s with low jitter at or better than the 99% latency target. This design ensures robust traceability, minimal coupling, and a clean separation of inbound versus outbound workflows.
+The `OMSImpl` class is a simple yet illustrative component in an event-driven OMS framework.
+It showcases how to ingest inbound FIX-like messages from a Chronicle Queue, validate them, process the logic (create an `ExecutionReport` or `OrderCancelReject`), and publish results back to a Chronicle Queue.
+It must handle 100k msgs/s with low jitter at or better than the 99% latency target.
+This design ensures robust traceability, minimal coupling, and a clean separation of inbound versus outbound workflows.

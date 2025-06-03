@@ -2,7 +2,9 @@
 Peter Lawrey
 :lang: en-GB
 
-The Order Processor Demo showcases the implementation of services using messages based on the Financial Information Exchange (FIX) protocol. This project simulates an order processing system, including features such as creating new orders, cancelling specific orders, and cancelling all orders. The project is designed to mimic real-world financial trading systems, demonstrating how such a system can be built using Java.
+The Order Processor Demo showcases the implementation of services using messages based on the Financial Information Exchange (FIX) protocol.
+This project simulates an order processing system, including features such as creating new orders, cancelling specific orders, and cancelling all orders.
+The project is designed to mimic real-world financial trading systems, demonstrating how such a system can be built using Java.
 
 == Table of Contents
 
@@ -20,12 +22,14 @@ The Order Processor Demo has the following requirements documents:
 - link:src/main/adoc/test-requirements.adoc[Test Requirements]: This document outlines the requirements for testing the project.
 - link:src/main/adoc/selected-fix-4.2.adoc[Selected FIX 4.2]: This document outlines the selected FIX 4.2 messages and their corresponding DTO classes used in the project.
 
-This project uses link:aide/README.adoc[AIDE] to maintain consistency between requirements, tests, and code. See https://github.com/peter-lawrey/aide[AIDE Project] for more information.
+This project uses link:aide/README.adoc[AIDE] to maintain consistency between requirements, tests, and code.
+See https://github.com/peter-lawrey/aide[AIDE Project] for more information.
 
 [#getting-started]
 == Getting Started
 
-To get started with the Order Processor Demo, you need to clone the repository to your local machine. Once you have cloned the repository, you can open it in your IDE of choice (we recommend IntelliJ CE for this project).
+To get started with the Order Processor Demo, you need to clone the repository to your local machine.
+Once you have cloned the repository, you can open it in your IDE of choice (we recommend IntelliJ CE for this project).
 
 [#prerequisites]
 == Prerequisites
@@ -74,7 +78,9 @@ You can run these classes directly from your IDE, or you can use `mvn compile ex
 [#contributing]
 == Contributing
 
-We appreciate any contributions to the Order Processor Demo. If you find any bugs or issues, please open an issue in the repository. If you want to contribute to the code, please fork the repository, make your changes, and open a pull request.
+We appreciate any contributions to the Order Processor Demo.
+If you find any bugs or issues, please open an issue in the repository.
+If you want to contribute to the code, please fork the repository, make your changes, and open a pull request.
 
 [#acknowledgments]
 == Acknowledgments
