@@ -7,13 +7,13 @@ import run.chronicle.routing.inout.api.ViaOut;
 
 /**
  * A simple router that checks if a Value's 'val' is divisible by 3 and/or 5.
- * - If val % 3 == 0 -> route to "three"
- * - If val % 5 == 0 -> route to "five"
+ * - If val % 3 == 0 -&gt; route to "three"
+ * - If val % 5 == 0 -&gt; route to "five"
  * If negative or zero doesn't match, we either skip or log an error.
- *
- * <p>This class implements {@link ViaIn} and {@link ValueMessage} to process incoming {@code Value} messages.
+ * <p>
+ * This class implements {@link ViaIn} and {@link ValueMessage} to process incoming {@code Value} messages.
  * It checks if the name contains the character 'e', and if so, routes the value to different
- * destinations depending on whether the value is divisible by 3 or 5.</p>
+ * destinations depending on whether the value is divisible by 3 or 5.
  */
 public class ViaThreeFive implements ViaIn<ValueMessage, ValueMessage>, ValueMessage {
 

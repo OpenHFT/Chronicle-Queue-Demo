@@ -9,9 +9,9 @@ import run.chronicle.routing.out.api.Triple;
 /**
  * SifterImpl checks if val is even or divisible by 3 (or both),
  * then routes to different destinations. For example:
- * - Even -> 'evens()'
- * - Multiple of 3 -> 'triples()'
- *
+ * - Even -&gt; 'evens()'
+ * - Multiple of 3 -&gt; 'triples()'
+ * <p>
  * * The SifterImpl class is an implementation of the SifterIn interface.
  * This class implements the logic for processing a Value object.
  * The Value object is processed based on whether its val property is an even number or divisible by 3.
