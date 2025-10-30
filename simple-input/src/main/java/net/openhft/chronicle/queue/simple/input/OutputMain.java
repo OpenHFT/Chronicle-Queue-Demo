@@ -13,8 +13,8 @@ public class OutputMain {
         // Allow the queue path to be specified via command-line arguments
         String path = (args.length > 0) ? args[0] : "queue";
 
-        // Use try-with-resources for proper resource management
-        try (ChronicleQueue queue = ChronicleQueue.single(path)) {
+        ChronicleQueue queue = ChronicleQueue.single(path);
+        try {
             ExcerptTailer tailer = queue.createTailer();
 
             System.out.println("Starting OutputMain. Waiting for messages...");
@@ -28,6 +28,8 @@ public class OutputMain {
                     System.out.println("Read from queue: " + text);
                 }
             }
+        } finally {
+            queue.close();
         }
     }
 }

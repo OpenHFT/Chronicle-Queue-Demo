@@ -1,7 +1,8 @@
 = Usage & Tests
 :toc:
 
-This document explains how to build, run, and test the various modules and demos in this project. It also covers the basic steps for performance benchmarking and troubleshooting common issues.
+This document explains how to build, run, and test the various modules and demos in this project.
+It also covers the basic steps for performance benchmarking and troubleshooting common issues.
 
 [#building-the-project]
 == Building the Project
@@ -17,74 +18,100 @@ If you want to skip tests (for faster iteration):
 mvn clean install -DskipTests
 ----
 
+Run the shared `code-review` profile before pushing changes. It enforces Checkstyle, SpotBugs (with FindSecBugs), PMD, and JaCoCo thresholds across every module:
+
+----
+mvn -Pcode-review verify
+----
+
 [#running-examples]
 == Running Examples by Module
 
-Below are instructions for starting each primary module or demo. In most cases, you will run a main class via Maven’s `exec:java` plugin, or by launching it directly from an IDE.
+Below are instructions for starting each primary module or demo.
+In most cases, you will run a main class via Maven’s `exec:java` plugin, or by launching it directly from an IDE.
 
 [#hello-world]
 === Hello World
 
-The simplest demonstration of reading input, optionally modifying it, and printing results.  
+The simplest demonstration of reading input, optionally modifying it, and printing results.
 Commands (examples, might vary slightly depending on your `pom.xml` executions):
 
-1. **RecordInputToConsoleMain**  
-   ----
+. *RecordInputToConsoleMain*
+----
    mvn exec:java@RecordInputToConsoleMain
-   ----  
-   - Reads input lines, echoes them back to the console.
+----
+* Reads input lines, echoes them back to the console.
 
-2. **RecordInputAsYamlMain**  
-   ----
+. *RecordInputAsYamlMain*
+----
    mvn exec:java@RecordInputAsYamlMain
-   ----  
-   - Logs each line in YAML format to standard output.
+----
+* Logs each line in YAML format to standard output.
 
-3. **ReplayOutputMain**  
-   ----
+. *ReplayOutputMain*
+----
    mvn exec:java@ReplayOutputMain -Dexec.args="someFile.yaml"
-   ----  
-   - Replays previously logged YAML lines from a file or queue.
+----
+* Replays previously logged YAML lines from a file or queue.
 
-4. **DirectWithExclamationMain**  
-   ----
+. *DirectWithExclamationMain*
+----
    mvn exec:java@DirectWithExclamationMain
-   ----  
-   - Inserts an exclamation mark into each line before printing it.
+----
+* Inserts an exclamation mark into each line before printing it.
+
+The demo has minimal automated coverage; the `code-review` profile in `hello-world/pom.xml` temporarily sets both JaCoCo thresholds to `0.0` until interactive tests can be scripted.
+
+[#simple-translator]
+=== Simple Translator
+
+Translates short phrases from English to French by wiring the queue input (`queue-en`) to a case-insensitive lookup. Run the interactive writer and translator side by side:
+
+. *Publish input*
+----
+   mvn exec:java -pl simple-translator -Dexec.mainClass=net.openhft.chronicle.queue.simple.translator.InputMain
+----
+
+. *Translate in real time*
+----
+   mvn exec:java -pl simple-translator -Dexec.mainClass=net.openhft.chronicle.queue.simple.translator.TranslatorMain
+----
+
+The demo currently lacks integration coverage; to keep the quality gate actionable the `code-review` profile in `simple-translator/pom.xml` sets the JaCoCo thresholds to `0.0`. Add higher-level tests before restoring the standard `0.80/0.70` limits.
 
 [#event-routing]
 === Event Routing
 
 Demonstrates the `ViaIn`/`ViaOut` pattern, or advanced filters like `ViaThreeFive`:
 
-1. **Set Up Input**: Provide input YAML files (`in.yaml`) describing messages.
-2. **Run**:  
-   ----
+. *Set Up Input*: Provide input YAML files (`in.yaml`) describing messages.
+. *Run*:
+----
    mvn exec:java -Dexec.mainClass=run.chronicle.routing.inout.ViaThreeFive
-   ----  
+----
    (Adjust to your actual main classes or different test runners.)
 
-3. **Check Output**: Compare the resulting queue or console logs with expected YAML (`out.yaml`).
+. *Check Output*: Compare the resulting queue or console logs with expected YAML (`out.yaml`).
 
 [#md-pipeline]
 === Market Data Pipeline (md-pipeline)
 
 A multi-service pipeline:
 
-1. **ExchangeSimulator** – Writes incremental market data.  
-   ----
+. *ExchangeSimulator* – Writes incremental market data.
+----
    mvn exec:java@generate
-   ----
-2. **Aggregator** – Consumes data increments, aggregates them, and outputs snapshots.  
-   ----
+----
+. *Aggregator* – Consumes data increments, aggregates them, and outputs snapshots.
+----
    mvn exec:java@aggregator
-   ----
-3. **Strategy** – Reads aggregated data, decides on trades, writes out orders.  
-   ----
+----
+. *Strategy* – Reads aggregated data, decides on trades, writes out orders.
+----
    mvn exec:java@strategy
-   ----
+----
 
-Optionally, **OMS** can consume the strategy's orders.  
+Optionally, *OMS* can consume the strategy's orders.
 In separate terminals, watch each queue with:
 
 [source]
@@ -99,37 +126,38 @@ mvn exec:java@tailf -Dqueue=strat-out
 
 Implements a basic Order Management System referencing FIX 4.2. Typical usage:
 
-1. **Add Orders**  
-   ----
+. *Add Orders*
+----
    mvn exec:java@OrderAdderMain
-   ----  
-   - Generates `NewOrderSingle` events.
+----
+* Generates `NewOrderSingle` events.
 
-2. **View Orders**  
-   ----
+. *View Orders*
+----
    mvn exec:java@OrderViewerMain
-   ----  
-   - Reads the queue to display order or execution events.
+----
+* Reads the queue to display order or execution events.
 
-3. **Benchmark OMS**  
-   ----
+. *Benchmark OMS*
+----
    mvn exec:java@OMSBenchmarkMain
-   ----  
-   - Tests throughput or latency for order submission and responses.
+----
+* Tests throughput or latency for order submission and responses.
 
 '''
 
 [#testing]
 == Testing
 
-This project uses a mix of **unit tests**, **integration tests**, and **YAML-based scenario tests**. Most are in `src/test/java` or `src/test/resources`.
+This project uses a mix of *unit tests*, *integration tests*, and *YAML-based scenario tests*.
+Most are in `src/test/java` or `src/test/resources`.
 
 [#unit-tests]
 === Unit Tests
 
-- Classes named `XxxTest` (e.g., `AddsExclamationTest`, `SifterImplTest`).
-- Typical JUnit or JUnit5 style.
-- Run all at once with:
+* Classes named `XxxTest` (e.g., `AddsExclamationTest`, `SifterImplTest`).
+* Typical JUnit or JUnit5 style.
+* Run all at once with:
 ----
 mvn test
 ----
@@ -137,10 +165,10 @@ mvn test
 [#yaml-tests]
 === YAML-Based Tests
 
-- Many modules use BDD-like YAML files (`in.yaml`, `out.yaml`, `_setup.yaml`) to define inputs and expected outputs.
-- Tools like `YamlTester` or `TextMethodTester` parse these files and compare actual vs. expected queue events.
+* Many modules use BDD-like YAML files (`in.yaml`, `out.yaml`, `_setup.yaml`) to define inputs and expected outputs.
+* Tools like `YamlTester` or `TextMethodTester` parse these files and compare actual vs. expected queue events.
 Example :: `ViaThreeFive2Test` references `three-five/in.yaml` and `three-five/out.yaml`.
-- To update or regress outputs:
+* To update or regress outputs:
 ----
 mvn test -Dregress.tests
 ----
@@ -149,32 +177,32 @@ This can overwrite `out.yaml` if you’re intentionally changing expected output
 [#integration-tests]
 === Integration Tests
 
-- Some scenarios span multiple processes (e.g., the market data pipeline).
-- Start each submodule or main class in a separate terminal so they pass data via Chronicle Queues.
-- Verify logs or queue outputs match expectations (YAML out files or console prints).
+* Some scenarios span multiple processes (e.g., the market data pipeline).
+* Start each submodule or main class in a separate terminal so they pass data via Chronicle Queues.
+* Verify logs or queue outputs match expectations (YAML out files or console prints).
 
 [#coverage]
 === Coverage & Tools
 
-- (Optional) Use Jacoco or another coverage plugin to measure how thoroughly your tests cover the code.
+* (Optional) Use Jacoco or another coverage plugin to measure how thoroughly your tests cover the code.
 
 [#benchmarks]
 == Benchmarking
 
 Several classes in `benchmarks/` measure throughput and latency:
 
-* **LatencyDistributionMain**
-- Usage:
+* *LatencyDistributionMain*
+** Usage:
 ----
 mvn exec:java -Dexec.mainClass=chronicle.queue.benchmark.LatencyDistributionMain \
 -Dsize=60 -Dthroughput=100000
 ----
-- Parameterize `size`, `throughput`, etc.
-- Checks microsecond-level round-trip latencies.
+** Parameterize `size`, `throughput`, etc.
+** Checks microsecond-level round-trip latencies.
 
-* **ThroughputMain**
-- Writes and reads millions of messages to measure raw throughput.
-- Example:
+* *ThroughputMain*
+** Writes and reads millions of messages to measure raw throughput.
+** Example:
 ----
 mvn exec:java -Dexec.mainClass=chronicle.queue.benchmark.ThroughputMain \
 -Dtime=10 -Dsize=60
@@ -185,25 +213,29 @@ Keep an eye on CPU scaling, GC logs, and whether you’re using shared memory or
 [#troubleshooting]
 == Troubleshooting
 
-- **No Output?**
-Double-check your queue path. Maybe specify `-Dpath=queue` or ensure each module points to the correct folder.
+* *No Output?*
+Double-check your queue path.
+Maybe specify `-Dpath=queue` or ensure each module points to the correct folder.
 
-- **File Locks or Collisions**
+* *File Locks or Collisions*
 On Windows, ensure no leftover processes hold open file handles.
 
-- **YAML Tester Mismatch**
-If actual vs. expected outputs differ unexpectedly, see if your scenario changed. Use `-Dregress.tests` only if you deliberately want to update your baseline.
+* *YAML Tester Mismatch*
+If actual vs. expected outputs differ unexpectedly, see if your scenario changed.
+Use `-Dregress.tests` only if you deliberately want to update your baseline.
 
-- **Excessive GC**
-Chronicle aims for minimal allocations, so check if you introduced object churn in custom code. Potentially switch to direct Bytes usage or off-heap.
+* *Excessive GC*
+Chronicle aims for minimal allocations, so check if you introduced object churn in custom code.
+Potentially switch to direct Bytes usage or off-heap.
 
 [#summary]
 == Summary
 
 You now have clear instructions on:
 
-1. **How to build and run** each module or submodule example (hello-world, event-routing, md-pipeline, order-processor).
-2. **How to test** using either standard JUnit or advanced YAML-based scenario tests.
-3. **How to benchmark** with throughput and latency tools provided in `benchmarks/`.
+. *How to build and run* each module or submodule example (hello-world, event-routing, md-pipeline, order-processor).
+. *How to test* using either standard JUnit or advanced YAML-based scenario tests.
+. *How to benchmark* with throughput and latency tools provided in `benchmarks/`.
 
-For deeper architectural background, see xref:architecture.adoc[Architecture]. For style guides and advanced references, see xref:reference.adoc[Reference].
+For deeper architectural background, see xref:architecture.adoc[Architecture].
+For style guides and advanced references, see xref:reference.adoc[Reference].

@@ -2,7 +2,8 @@
 Peter Lawrey
 :toc:
 
-This repository demonstrates the usage of Chronicle Queue (and related Chronicle libraries) through multiple examples, including an order processor, event routing, and more. Below is a quick start and pointers to further documentation.
+This repository demonstrates the usage of Chronicle Queue (and related Chronicle libraries) through multiple examples, including an order processor, event routing, and more.
+Below is a quick start and pointers to further documentation.
 
 == Quick Start
 
@@ -11,6 +12,12 @@ This repository demonstrates the usage of Chronicle Queue (and related Chronicle
 git clone https://github.com/OpenHFT/Chronicle-Queue-Demo.git
 cd Chronicle-Queue-Demo
 mvn clean install
+----
+
+Before raising a review request, run the shared quality gate. This activates Checkstyle, SpotBugs, PMD, and JaCoCo with the Chronicle ruleset:
+
+----
+mvn -Pcode-review verify
 ----
 
 To run a simple example, like the hello-world module:
@@ -24,11 +31,11 @@ mvn install exec:java@RecordInputToConsoleMain
 
 The project’s documentation is consolidated in five AsciiDoc files:
 
-1. xref:architecture.adoc[Architecture]
-2. xref:usage-and-tests.adoc[Usage & Tests]
-3. xref:reference.adoc[Reference, Style & Glossary]
-4. xref:account/README.adoc[Account Management System (AMS)]
-5. xref:order-processor/README.adoc[Order Processor]
+. xref:architecture.adoc[Architecture]
+. xref:usage-and-tests.adoc[Usage & Tests]
+. xref:reference.adoc[Reference, Style & Glossary]
+. xref:account/README.adoc[Account Management System (AMS)]
+. xref:order-processor/README.adoc[Order Processor]
 
 Refer to them for details on architecture, usage instructions, testing approaches, style guides, and advanced references.
 
@@ -65,13 +72,15 @@ This is under `Development` and you need to click `skip` so it says to `install`
 
 image::images/gitpack.png[]
 
-Open IntelliJ or your favorite https://en.wikipedia.org/wiki/Integrated_development_environment[Integrated Development Environment (IDE)]. If you haven't installed an IDE, we recommend https://www.jetbrains.com/idea/download/#section=windows[IntelliJ], which we'll use for this tutorial.
+Open IntelliJ or your favorite https://en.wikipedia.org/wiki/Integrated_development_environment[Integrated Development Environment (IDE)].
+If you haven't installed an IDE, we recommend https://www.jetbrains.com/idea/download/#section=windows[IntelliJ], which we'll use for this tutorial.
 
 In IntelliJ, select `Get from VCS` to clone the Chronicle Queue Sample code.
 
 image::images/homegit.png[]
 
-Then, copy the following URL into the `Git Repository URL` field and remember the `Parent Directory`. Click `Clone` to get the code.
+Then, copy the following URL into the `Git Repository URL` field and remember the `Parent Directory`.
+Click `Clone` to get the code.
 
 [source]
 ----
@@ -80,7 +89,8 @@ https://github.com/OpenHFT/Chronicle-Queue-Demo.git
 
 image::images/Clone.png[]
 
-If you close the project, you can reopen it by going to `File -> Open`. You'll find the repository in the directory where you saved it.
+If you close the project, you can reopen it by going to `File -> Open`.
+You'll find the repository in the directory where you saved it.
 
 image::images/directory.png[]
 

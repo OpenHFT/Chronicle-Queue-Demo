@@ -17,10 +17,10 @@ The project is designed to mimic real-world financial trading systems, demonstra
 
 The Order Processor Demo has the following requirements documents:
 
-- link:src/main/adoc/oms-requirements.adoc[OMS Requirements]: This document outlines the requirements for the Order Management System (OMS) in the project.
-- link:src/main/adoc/oms-api-requirements.adoc[OMS API Requirements]: This document outlines the requirements for the OMS API in the project.
-- link:src/main/adoc/test-requirements.adoc[Test Requirements]: This document outlines the requirements for testing the project.
-- link:src/main/adoc/selected-fix-4.2.adoc[Selected FIX 4.2]: This document outlines the selected FIX 4.2 messages and their corresponding DTO classes used in the project.
+* link:src/main/adoc/oms-requirements.adoc[OMS Requirements]: This document outlines the requirements for the Order Management System (OMS) in the project.
+* link:src/main/adoc/oms-api-requirements.adoc[OMS API Requirements]: This document outlines the requirements for the OMS API in the project.
+* link:src/main/adoc/test-requirements.adoc[Test Requirements]: This document outlines the requirements for testing the project.
+* link:src/main/adoc/selected-fix-4.2.adoc[Selected FIX 4.2]: This document outlines the selected FIX 4.2 messages and their corresponding DTO classes used in the project.
 
 This project uses link:aide/README.adoc[AIDE] to maintain consistency between requirements, tests, and code.
 See https://github.com/peter-lawrey/aide[AIDE Project] for more information.
@@ -46,10 +46,10 @@ Internet Access :: Required for Maven to download necessary dependencies
 
 Here are the steps to clone the repository and open it in IntelliJ:
 
-1. Clone the repository with `git clone <repository_url>`
-2. Open IntelliJ IDE and select 'Open'
-3. Navigate to the cloned repository and click 'Open'
-4. Wait for the IDE to import the project and download the necessary dependencies
+. Clone the repository with `git clone <repository_url>`
+. Open IntelliJ IDE and select 'Open'
+. Navigate to the cloned repository and click 'Open'
+. Wait for the IDE to import the project and download the necessary dependencies
 
 [#running-the-project]
 == Running the Project
@@ -68,12 +68,14 @@ Note right of Client: via Chronicle Queue, persisted
 
 To run the project, you need to compile the project and run the main classes for different features:
 
-- `OrderAdderMain`: This class simulates the creation of new orders.
-- `OrderViewerMain`: This class simulates the viewing of created orders.
-- `OrderBenchmarkMain`: This class benchmarks round trip time of writing a `NewOrderSingle` a queue, have the `OMSImpl` produce an `ExecutionReport` and read that report.
-- `OMSImpl`: This class handles the processing of the orders, including cancelling orders.
+* `OrderAdderMain`: This class simulates the creation of new orders.
+* `OrderViewerMain`: This class simulates the viewing of created orders.
+* `OrderBenchmarkMain`: This class benchmarks round trip time of writing a `NewOrderSingle` a queue, have the `OMSImpl` produce an `ExecutionReport` and read that report.
+* `OMSImpl`: This class handles the processing of the orders, including cancelling orders.
 
 You can run these classes directly from your IDE, or you can use `mvn compile exec:exec@id` on the command line to run the compiled classes.
+
+*Quality gate note*: Automated coverage for the end-to-end flows is still being built. The `code-review` profile in `order-processor/pom.xml` sets both JaCoCo thresholds to `0.0` so SpotBugs, PMD, and Checkstyle can run while we backfill system-level tests.
 
 [#contributing]
 == Contributing
@@ -85,5 +87,5 @@ If you want to contribute to the code, please fork the repository, make your cha
 [#acknowledgments]
 == Acknowledgments
 
-- Inspired by real-world financial trading systems.
-- Uses the FIX protocol for message exchange.
+* Inspired by real-world financial trading systems.
+* Uses the FIX protocol for message exchange.

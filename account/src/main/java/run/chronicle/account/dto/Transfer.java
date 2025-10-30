@@ -17,6 +17,7 @@
 package run.chronicle.account.dto;
 
 import net.openhft.chronicle.bytes.Bytes;
+import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 import net.openhft.chronicle.wire.converter.ShortText;
 
@@ -131,7 +132,8 @@ public class Transfer extends AbstractEvent<Transfer> {
      * @return the transaction reference
      */
     public Bytes<?> reference() {
-        return reference;
+        BytesStore<?, ?> copy = reference.copy();
+        return copy.bytesForRead();
     }
 
     /**

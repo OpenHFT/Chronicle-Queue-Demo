@@ -3,13 +3,13 @@
 
 == Overview
 
-The **order-processor** submodule is a demonstration of an Order Management System (OMS) implementation.
+The *order-processor* submodule is a demonstration of an Order Management System (OMS) implementation.
 It integrates Chronicle Queue for high-performance message handling and leverages the FIX protocol (4.2) for financial message semantics.
 The submodule includes:
 
-- Functional implementations for creating, modifying, and canceling orders.
-- Test coverage using unit tests and YAML-based Behavior-Driven Development (BDD) scenarios.
-- Utilities for benchmarking and order viewing.
+* Functional implementations for creating, modifying, and canceling orders.
+* Test coverage using unit tests and YAML-based Behavior-Driven Development (BDD) scenarios.
+* Utilities for benchmarking and order viewing.
 
 == Directory Structure
 
@@ -27,22 +27,22 @@ src/test :: Unit tests and YAML-based test scenarios.
 
 Defines inbound (`OMSIn`) and outbound (`OMSOut`) interfaces:
 
-- `OMSIn`: Handles incoming order-related events such as `NewOrderSingle` and `CancelOrderRequest`.
-- `OMSOut`: Publishes responses like `ExecutionReport` and `OrderCancelReject`.
+* `OMSIn`: Handles incoming order-related events such as `NewOrderSingle` and `CancelOrderRequest`.
+* `OMSOut`: Publishes responses like `ExecutionReport` and `OrderCancelReject`.
 
 === OMS Implementation
 
 OMSImpl :: Implements `OMSIn` and processes messages.
-- Generates unique `orderID` using a nanosecond timestamp.
-- Outputs responses via `OMSOut`.
-- Designed for single-threaded operation.
+* Generates unique `orderID` using a nanosecond timestamp.
+* Outputs responses via `OMSOut`.
+* Designed for single-threaded operation.
 
 === Data Transfer Objects (DTOs)
 
 Encapsulates order-related data:
 
-- Examples: `NewOrderSingle`, `CancelOrderRequest`, `ExecutionReport`.
-- Validated before processing using `validate()` methods.
+* Examples: `NewOrderSingle`, `CancelOrderRequest`, `ExecutionReport`.
+* Validated before processing using `validate()` methods.
 
 === Utilities
 
@@ -56,38 +56,38 @@ OMSBenchmarkMain :: Benchmarks message throughput and latency.
 
 AsciiDoc files outline the OMS requirements:
 
-- `oms-requirements.adoc`: Functional requirements for `OMSImpl`.
-- `oms-api-requirements.adoc`: API specifications.
-- `test-requirements.adoc`: Guidelines for unit and YAML-based tests.
+* `oms-requirements.adoc`: Functional requirements for `OMSImpl`.
+* `oms-api-requirements.adoc`: API specifications.
+* `test-requirements.adoc`: Guidelines for unit and YAML-based tests.
 
 === FIX 4.2 Mappings
 
-- `selected-fix-4.2.adoc`: Maps DTO fields to FIX tags.
+* `selected-fix-4.2.adoc`: Maps DTO fields to FIX tags.
 
 == Testing
 
 Unit Tests :: Cover edge cases (e.g., negative quantities, missing fields).
 BDD Tests :: YAML files specify inputs and expected outputs:
-- `newOrderSingle`: Test for `NewOrderSingle` events.
-- `cancelOrderRequest`: Test for cancel requests.
-- `cancelAll`: Test for mass cancel scenarios.
+* `newOrderSingle`: Test for `NewOrderSingle` events.
+* `cancelOrderRequest`: Test for cancel requests.
+* `cancelAll`: Test for mass cancel scenarios.
 
 == Performance
 
-- Benchmarking with **OMSBenchmarkMain**.
-- Handles 100,000 messages/second with sub-microsecond latencies.
+* Benchmarking with *OMSBenchmarkMain*.
+* Handles 100,000 messages/second with sub-microsecond latencies.
 
 == Usage
 
-1. Clone the repository.
-2. Build the project with Maven:
+. Clone the repository.
+. Build the project with Maven:
 
    mvn clean install
 
-3. Run examples:
-- `OrderAdderMain` to create orders.
-- `OrderViewerMain` to view queue messages.
-- `OMSBenchmarkMain` for performance testing.
+. Run examples:
+* `OrderAdderMain` to create orders.
+* `OrderViewerMain` to view queue messages.
+* `OMSBenchmarkMain` for performance testing.
 
 == Conclusion
 

@@ -5,122 +5,122 @@
 
 == Introduction
 
-This document defines **how** we approach testing in this project and the **assumptions** made by the framework.
+This document defines *how* we approach testing in this project and the *assumptions* made by the framework.
 It covers two main testing layers:
 
-1. **Unit Tests** for individual classes or components (e.g., `OMSImplEdgeCaseTest`).
-2. **YAML-Based Event-Driven Tests** for end-to-end scenarios (often referred to as Behavior-Driven Development, or BDD-style tests).
+. *Unit Tests* for individual classes or components (e.g., `OMSImplEdgeCaseTest`).
+. *YAML-Based Event-Driven Tests* for end-to-end scenarios (often referred to as Behavior-Driven Development, or BDD-style tests).
 
 By following these guidelines, we ensure consistency, clarity, and good coverage for all key features and edge cases.
 
 == 1. Overall Testing Goals
 
-1. We aim for **80% or higher coverage** of business logic in critical classes like `OMSImpl`.
-2. We must confirm that inbound events (such as `NewOrderSingle` or `CancelOrderRequest`) result in correct outbound messages (`ExecutionReport`, `OrderCancelReject`) or errors (`jvmError(...)`) under normal and exceptional conditions.
-3. The tests must be easy to extend and maintain, reflecting changes in the system’s requirements.
+. We aim for *80% or higher coverage* of business logic in critical classes like `OMSImpl`.
+. We must confirm that inbound events (such as `NewOrderSingle` or `CancelOrderRequest`) result in correct outbound messages (`ExecutionReport`, `OrderCancelReject`) or errors (`jvmError(...)`) under normal and exceptional conditions.
+. The tests must be easy to extend and maintain, reflecting changes in the system’s requirements.
 
 == 2. Assumptions Made by the Framework
 
-Several tasks are handled by the broader **event-driven framework**, not directly in the application code.
+Several tasks are handled by the broader *event-driven framework*, not directly in the application code.
 Specifically:
 
-1. **Validation Calls**:
-- The framework calls `dto.validate()` *before* handing an event (like `NewOrderSingle`) to `OMSImpl`.
-- The framework calls `validate()` on any outbound message (e.g., `ExecutionReport`) before it is actually persisted to the outbound queue.
+. *Validation Calls*:
+* The framework calls `dto.validate()` _before_ handing an event (like `NewOrderSingle`) to `OMSImpl`.
+* The framework calls `validate()` on any outbound message (e.g., `ExecutionReport`) before it is actually persisted to the outbound queue.
 
-2. **Single-Threaded Operation**:
-   - The system runs in a single-threaded loop for demonstration purposes. No concurrency issues are tested here.
+. *Single-Threaded Operation*:
+* The system runs in a single-threaded loop for demonstration purposes. No concurrency issues are tested here.
 
-3. **Exception Handling**:
-- If `OMSImpl` throws an unhandled exception, the framework intercepts it and calls `OMSOut.jvmError(...)`.
-- This means the `OMSImpl` class itself does not usually handle or catch exceptions directly.
+. *Exception Handling*:
+* If `OMSImpl` throws an unhandled exception, the framework intercepts it and calls `OMSOut.jvmError(...)`.
+* This means the `OMSImpl` class itself does not usually handle or catch exceptions directly.
 
-4. **Queue Persistence**:
-- All inbound and outbound events are persisted automatically by the framework (Chronicle Queue usage).
-- Tests can rely on replay or tailers for verifying message flows.
+. *Queue Persistence*:
+* All inbound and outbound events are persisted automatically by the framework (Chronicle Queue usage).
+* Tests can rely on replay or tailers for verifying message flows.
 
 == 3. Unit Testing Requirements
 
 === 3.1 Purpose
 
-Unit tests focus on **individual classes** (e.g., `OMSImpl`, utility classes, DTO logic) to ensure correctness in isolation.
+Unit tests focus on *individual classes* (e.g., `OMSImpl`, utility classes, DTO logic) to ensure correctness in isolation.
 We do not require full queue-based flows in these tests; rather, we rely on mocks or stubs for any external interactions.
 
 === 3.2 Key Requirements
 
-1. **Test Coverage of Edge Cases**
-- Negative or zero `orderQty`
-- Null or empty strings for mandatory fields
-- Invalid enumerations (e.g., unknown `Side`)
-- Large numeric values (boundary testing)
+. *Test Coverage of Edge Cases*
+* Negative or zero `orderQty`
+* Null or empty strings for mandatory fields
+* Invalid enumerations (e.g., unknown `Side`)
+* Large numeric values (boundary testing)
 
-2. **Mocking External Interfaces**
-- Use a mock of `OMSOut` when testing `OMSImpl`.
-- Capture or inspect the outbound messages (like `ExecutionReport`) to verify correctness.
+. *Mocking External Interfaces*
+* Use a mock of `OMSOut` when testing `OMSImpl`.
+* Capture or inspect the outbound messages (like `ExecutionReport`) to verify correctness.
 
-3. **Deterministic Timestamps**
-- If `OMSImpl` or related classes generate timestamps or IDs based on time, tests must control or mock the clock (e.g., `SystemTimeProvider.CLOCK`) so the results are repeatable.
+. *Deterministic Timestamps*
+* If `OMSImpl` or related classes generate timestamps or IDs based on time, tests must control or mock the clock (e.g., `SystemTimeProvider.CLOCK`) so the results are repeatable.
 
-4. **Consistent Error and Reject Logic**
-- Where relevant, confirm that the correct method (`executionReport` vs. `orderCancelReject` vs. `jvmError`) is called under erroneous conditions.
+. *Consistent Error and Reject Logic*
+* Where relevant, confirm that the correct method (`executionReport` vs. `orderCancelReject` vs. `jvmError`) is called under erroneous conditions.
 
-5. **No Assumed Validation**
-   - Even though the framework calls `validate()`, unit tests can optionally explore what happens if a `DTO` with invalid fields reaches `OMSImpl`. This ensures robust handling or clarifies the contract.
+. *No Assumed Validation*
+* Even though the framework calls `validate()`, unit tests can optionally explore what happens if a `DTO` with invalid fields reaches `OMSImpl`. This ensures robust handling or clarifies the contract.
 
 === 3.3 Example Tests
 
-- `OMSImplEdgeCaseTest`
-- Confirms how `OMSImpl` processes or rejects invalid `NewOrderSingle`.
-- Ensures that “no such order” paths produce `orderCancelReject`.
-- Demonstrates correct behavior if exceptions occur in the outbound interface.
+* `OMSImplEdgeCaseTest`
+* Confirms how `OMSImpl` processes or rejects invalid `NewOrderSingle`.
+* Ensures that “no such order” paths produce `orderCancelReject`.
+* Demonstrates correct behavior if exceptions occur in the outbound interface.
 
 == 4. YAML-Based Event-Driven Tests
 
 === 4.1 Purpose and Structure
 
-These tests simulate **end-to-end** flows:
-- *Given* some optional setup in `_setup.yaml` (if needed),
-- *When* inbound events are described in `in.yaml`,
-- *Then* the system is expected to produce matching events in `out.yaml`.
+These tests simulate *end-to-end* flows:
+* _Given_ some optional setup in `_setup.yaml` (if needed),
+* _When_ inbound events are described in `in.yaml`,
+* _Then_ the system is expected to produce matching events in `out.yaml`.
 
 They are typically used with a runner (e.g., `YamlTester`) that replays the inbound events through `OMSImpl` and verifies the generated output events line-by-line or field-by-field.
 
 === 4.2 File Organization
 
-*Each test scenario* is typically contained in a directory, e.g.:
-- `cancelOrderRequest/`
-- `in.yaml`  (describes the request events)
-- `out.yaml` (describes the expected system responses)
-- `newOrderSingle/`
-- `in.yaml`
-- `out.yaml`
+_Each test scenario_ is typically contained in a directory, e.g.:
+* `cancelOrderRequest/`
+* `in.yaml`  (describes the request events)
+* `out.yaml` (describes the expected system responses)
+* `newOrderSingle/`
+* `in.yaml`
+* `out.yaml`
 
 Additional subdirectories (e.g., `cancelAll`, `newOrderSingleEquity`) handle specialized scenarios.
 
 === 4.3 Requirements for YAML Scenarios
 
-1. **Scenario Headings**
-- Each event block in `in.yaml` and `out.yaml` should have a short heading comment describing what the test block does.
+. *Scenario Headings*
+* Each event block in `in.yaml` and `out.yaml` should have a short heading comment describing what the test block does.
 
-2. **Consistent Field Names and Enum Cases**
-- Maintain the same naming conventions (`side: BUY` vs. `SELL` in uppercase, `ordType: MARKET` vs. `LIMIT`).
+. *Consistent Field Names and Enum Cases*
+* Maintain the same naming conventions (`side: BUY` vs. `SELL` in uppercase, `ordType: MARKET` vs. `LIMIT`).
 
-3. **Timestamps**
-- Use consistent date/time formats (e.g., `yyyy-MM-dd'T'HH:mm:ss.SSSSSS`) and avoid timezones if not needed.
+. *Timestamps*
+* Use consistent date/time formats (e.g., `yyyy-MM-dd'T'HH:mm:ss.SSSSSS`) and avoid timezones if not needed.
 
-4. **One-to-One Input/Output**
-- Each event in `in.yaml` should correspond to exactly one or more events in `out.yaml` (depending on the scenario).
-- The test harness compares these systematically to confirm correctness.
+. *One-to-One Input/Output*
+* Each event in `in.yaml` should correspond to exactly one or more events in `out.yaml` (depending on the scenario).
+* The test harness compares these systematically to confirm correctness.
 
-5. **Edge Case Coverage**
-- Some directories should highlight boundary or invalid data (like missing fields or negative numbers) to confirm the system returns correct `orderCancelReject` or calls `jvmError`.
+. *Edge Case Coverage*
+* Some directories should highlight boundary or invalid data (like missing fields or negative numbers) to confirm the system returns correct `orderCancelReject` or calls `jvmError`.
 
 === 4.4 Running YAML Tests
 
-1. **YamlTester** picks up each directory listed in `OMSImplTest` (see `paths = Arrays.asList("newOrderSingle", "cancelOrderRequest", ...)`).
-2. **in.yaml** events are fed into a new instance of `OMSImpl`.
-3. The results are captured and compared against the contents of `out.yaml`.
-4. If there is any mismatch, the test fails.
+. *YamlTester* picks up each directory listed in `OMSImplTest` (see `paths = Arrays.asList("newOrderSingle", "cancelOrderRequest", ...)`).
+. *in.yaml* events are fed into a new instance of `OMSImpl`.
+. The results are captured and compared against the contents of `out.yaml`.
+. If there is any mismatch, the test fails.
 
 == 5. Additional Considerations
 
@@ -132,20 +132,20 @@ If concurrency were required, we would add specialized integration or load tests
 === 5.2 Maintaining Requirements Sync
 
 Whenever the code or the domain logic changes:
-- Update or add new YAML scenarios demonstrating the revised behavior.
-- Update unit tests with new edge cases or coverage.
-- Reflect these changes in the AsciiDoc requirements, ensuring that tests remain a **living** specification.
+* Update or add new YAML scenarios demonstrating the revised behavior.
+* Update unit tests with new edge cases or coverage.
+* Reflect these changes in the AsciiDoc requirements, ensuring that tests remain a *living* specification.
 
 === 5.3 Future Enhancements
 
-1. **Integration with Chronicle Services**
-- For advanced failover or multi-threading, we may create new YAML tests that simulate node crashes or queue replication scenarios.
+. *Integration with Chronicle Services*
+* For advanced failover or multi-threading, we may create new YAML tests that simulate node crashes or queue replication scenarios.
 
-2. **CI Pipeline**
-- We can add steps to lint YAML for syntax errors and to run all tests automatically after each code commit.
+. *CI Pipeline*
+* We can add steps to lint YAML for syntax errors and to run all tests automatically after each code commit.
 
 == 6. Summary
 
-This document outlines how to structure both **unit tests** and **YAML-based event-driven tests**, ensuring they align with the **framework assumptions** (validation, single-threaded design, exception interception).
+This document outlines how to structure both *unit tests* and *YAML-based event-driven tests*, ensuring they align with the *framework assumptions* (validation, single-threaded design, exception interception).
 By maintaining consistent naming, timestamps, and enumerations, the tests remain clear and consistent with the domain logic.
-Each new feature or bug fix should be accompanied by **at least one** new YAML scenario or unit test to preserve coverage and maintain system quality.
+Each new feature or bug fix should be accompanied by *at least one* new YAML scenario or unit test to preserve coverage and maintain system quality.

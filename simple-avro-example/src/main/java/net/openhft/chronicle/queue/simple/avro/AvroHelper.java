@@ -17,7 +17,6 @@
  */
 package net.openhft.chronicle.queue.simple.avro;
 
-import net.openhft.chronicle.core.Jvm;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
@@ -31,22 +30,13 @@ import java.io.OutputStream;
 
 class AvroHelper {
 
-    private Schema schema;
-    private DatumWriter<GenericRecord> datumWriter;
-    private DatumReader<GenericRecord> datumReader;
+    private static final Schema SCHEMA = loadSchema();
 
-    AvroHelper() {
-        try {
-            schema = new Schema.Parser().parse(getClass().getClassLoader().getResourceAsStream("user.avsc"));
-            datumWriter = new GenericDatumWriter<>(schema);
-            datumReader = new GenericDatumReader<>(schema);
-        } catch (IOException ex) {
-            Jvm.rethrow(ex);
-        }
-    }
+    private final DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(SCHEMA);
+    private final DatumReader<GenericRecord> datumReader = new GenericDatumReader<>(SCHEMA);
 
     GenericRecord getGenericRecord() {
-        return new GenericData.Record(schema);
+        return new GenericData.Record(SCHEMA);
     }
 
     void writeToOS(GenericRecord r, OutputStream os) throws IOException {
@@ -56,9 +46,23 @@ class AvroHelper {
 
     GenericRecord readFromIS(InputStream is) throws IOException {
         BinaryDecoder decoder = DecoderFactory.get().directBinaryDecoder(is, null);
-        GenericRecord res = new GenericData.Record(schema);
+        GenericRecord res = new GenericData.Record(SCHEMA);
         datumReader.read(res, decoder);
         return res;
+    }
+
+    private static Schema loadSchema() {
+        InputStream resource = AvroHelper.class
+                .getClassLoader()
+                .getResourceAsStream("user.avsc");
+        if (resource == null) {
+            throw new IllegalStateException("Missing Avro schema resource: user.avsc");
+        }
+        try (InputStream schemaStream = resource) {
+            return new Schema.Parser().parse(schemaStream);
+        } catch (IOException ex) {
+            throw new IllegalStateException("Unable to parse Avro schema: user.avsc", ex);
+        }
     }
 
 }

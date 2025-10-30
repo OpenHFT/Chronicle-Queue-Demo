@@ -28,6 +28,9 @@ public class DumpOutMain {
                     }
                     last = System.currentTimeMillis();
                     Wire wire = dc.wire();
+                    if (wire == null) {
+                        continue;
+                    }
                     wire.read(key).object(mh, VanillaMessageHistory.class);
 
                     // read the event number

@@ -21,7 +21,7 @@ public class ViaThreeFive implements ViaIn<ValueMessage, ValueMessage>, ValueMes
     final ViaOut<ValueMessage, ValueMessage> out;
 
     // The name of this instance of ViaThreeFive. Can be used for identification or routing purposes
-    String name;
+    String name = "";
 
     /**
      * Constructs a new {@code ViaThreeFive} instance with the specified output destination.

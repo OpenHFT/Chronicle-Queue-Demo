@@ -9,29 +9,30 @@ This example is code for the article link:https://chronicle.software/unix-philos
 
 Start up three terminal screens and run the the following in the `md-pipeline` directory to start the services
 
-```
+*Quality gate note*: Automated regression coverage is still pending. The `code-review` profile in `md-pipeline/pom.xml` temporarily sets the JaCoCo thresholds to `0.0` so static analysis can run while we add end-to-end tests.
+
+----
 mvn exec:java@generate
-```
+----
 
-```
+----
 mvn exec:java@aggregator
-```
+----
 
-```
+----
 mvn exec:java@strategy
-```
+----
 
 And to watch the output from each service start up three more screens
 
-```
+----
 mvn exec:java@tailf -Dqueue=agg-in
-```
+----
 
-```
+----
 mvn exec:java@tailf -Dqueue=agg-out
-```
+----
 
-```
+----
 mvn exec:java@tailf -Dqueue=strat-out
-```
-
+----

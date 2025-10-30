@@ -12,8 +12,8 @@ public class Message extends BytesInBinaryMarshallable {
     private long timeStamp;
 
     //Getters and Setters
-    public Bytes<?> getText() {
-        return text;
+    public String getText() {
+        return text.toString();
     }
 
     public void setText(CharSequence text) {

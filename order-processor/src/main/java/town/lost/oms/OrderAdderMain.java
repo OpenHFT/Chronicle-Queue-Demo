@@ -18,6 +18,7 @@ import town.lost.oms.dto.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 /**
  * The {@code OrderAdderMain} class is a utility application that allows users to add new orders to the Order Management System (OMS).
@@ -67,7 +68,7 @@ public class OrderAdderMain {
             System.out.println("\nHit blank line to add an order, anything else to exit");
 
             // Initialise a BufferedReader to read user input
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
             int orderCounter = 0;
             while ("".equals(br.readLine())) {
                 // For each blank line read, add a new order

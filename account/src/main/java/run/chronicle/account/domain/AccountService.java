@@ -4,6 +4,7 @@ import net.openhft.chronicle.core.io.InvalidMarshallableException;
 import run.chronicle.account.dto.CreateAccount;
 import run.chronicle.account.dto.Transfer;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -89,6 +90,6 @@ public class AccountService {
      * Provides access to all accounts for checkpoint operations.
      */
     public Map<Long, CreateAccount> getAllAccounts() {
-        return accountsMap;
+        return Collections.unmodifiableMap(new LinkedHashMap<>(accountsMap));
     }
 }

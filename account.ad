@@ -2,7 +2,9 @@
 
 == Overview
 
-The project is an Account Management System (AMS) leveraging the Chronicle libraries for high-performance, low-latency event-driven operations. It emphasizes documentation-driven development with AI integration for streamlined engineering. The AMS manages account creation, transfers, and state snapshots through a comprehensive suite of YAML-based tests, detailed functional requirements, and a modular architecture.
+The project is an Account Management System (AMS) leveraging the Chronicle libraries for high-performance, low-latency event-driven operations.
+It emphasizes documentation-driven development with AI integration for streamlined engineering.
+The AMS manages account creation, transfers, and state snapshots through a comprehensive suite of YAML-based tests, detailed functional requirements, and a modular architecture.
 
 == Key Features
 
@@ -62,4 +64,5 @@ All directories here are under `account` directory
 
 == Summary
 
-The AMS is a modular, high-performance system underpinned by comprehensive documentation, rigorous testing, and cutting-edge Chronicle technologies. This structure ensures maintainability, scalability, and alignment with evolving requirements.
+The AMS is a modular, high-performance system underpinned by comprehensive documentation, rigorous testing, and cutting-edge Chronicle technologies.
+This structure ensures maintainability, scalability, and alignment with evolving requirements.

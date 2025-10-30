@@ -14,9 +14,6 @@ import org.trading.dto.NewOrderSingle;
  */
 public class OMSImpl implements OMSIn {
 
-    // This is the output interface for the OMS
-    private final OMSOut out;
-
     /**
      * This is the constructor for the OMSImpl class.
      * It initialises the out instance variable with the provided OMSOut object.
@@ -24,7 +21,7 @@ public class OMSImpl implements OMSIn {
      * @param out An instance of the OMSOut interface that will handle the output of the OMS.
      */
     public OMSImpl(OMSOut out) {
-        this.out = out;
+        // Output channel provided for future order acknowledgements
     }
 
     /**

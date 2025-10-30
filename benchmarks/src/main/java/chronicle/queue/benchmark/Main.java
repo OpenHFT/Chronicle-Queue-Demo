@@ -3,6 +3,13 @@ package chronicle.queue.benchmark;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.OS;
 import net.openhft.chronicle.queue.BufferMode;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Centos 7.5 i7-7820X, using SSD.
@@ -38,6 +45,23 @@ public class Main {
     static final BufferMode BUFFER_MODE = getBufferMode();
 
     static final int WARMUP = 500_000;
+
+    @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN", justification = "Benchmark directory constrained to sanitized sub-folder under OS tmp")
+    static Path safeBasePath() {
+        Path defaultRoot = Paths.get(OS.TMP).toAbsolutePath().normalize();
+        String candidate = path == null ? "" : path;
+        String sanitized = candidate.replaceAll("[^A-Za-z0-9._-]", "");
+        if (sanitized.isEmpty()) {
+            sanitized = "chronicle-benchmark";
+        }
+        Path requested = defaultRoot.resolve(sanitized).normalize();
+        try {
+            Files.createDirectories(requested);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Unable to create benchmark directory " + requested, e);
+        }
+        return requested;
+    }
 
     private static BufferMode getBufferMode() {
         String bufferMode = System.getProperty("bufferMode");

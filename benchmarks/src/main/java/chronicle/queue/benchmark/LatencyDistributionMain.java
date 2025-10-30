@@ -24,7 +24,6 @@ import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.io.IOTools;
 import net.openhft.chronicle.core.util.Histogram;
-import net.openhft.chronicle.core.util.Time;
 import net.openhft.chronicle.queue.BufferMode;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptAppender;
@@ -34,9 +33,15 @@ import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+import static chronicle.queue.benchmark.Main.safeBasePath;
+import static chronicle.queue.benchmark.Main.size;
 
 import static chronicle.queue.benchmark.Main.*;
 
@@ -131,9 +136,9 @@ public class LatencyDistributionMain {
     }
 
     public void run(String[] args) throws InterruptedException {
-        File tmpDir = getTmpDir();
+        Path tmpDir = createTempDir();
         SingleChronicleQueueBuilder builder = SingleChronicleQueueBuilder
-                .binary(tmpDir)
+                .binary(tmpDir.toString())
                 .blockSize(128 << 20);
         try (ChronicleQueue queue = builder
                 .writeBufferMode(BUFFER_MODE)
@@ -146,11 +151,15 @@ public class LatencyDistributionMain {
 
             runTest(queue, queue2);
         }
-        IOTools.deleteDirWithFiles(tmpDir, 2);
+        IOTools.deleteDirWithFiles(tmpDir.toString(), 2);
     }
 
-    private File getTmpDir() {
-        return new File(Main.path + "/delete-" + Time.uniqueId() + ".me");
+    private Path createTempDir() {
+        try {
+            return Files.createTempDirectory(safeBasePath(), "delete-");
+        } catch (IOException e) {
+            throw new UncheckedIOException("Unable to create temporary benchmark directory", e);
+        }
     }
 
     protected void runTest(@NotNull ChronicleQueue queue, @NotNull ChronicleQueue queue2) throws InterruptedException {
@@ -166,8 +175,9 @@ public class LatencyDistributionMain {
                     Jvm.pause(50);
                 }
             } catch (Exception e) {
-                if (!appender.isClosed())
-                    e.printStackTrace();
+                if (!appender.isClosed()) {
+                    Jvm.warn().on(LatencyDistributionMain.class, "Pretoucher stopped unexpectedly");
+                }
             }
         });
         pretoucher.setDaemon(true);
@@ -177,7 +187,6 @@ public class LatencyDistributionMain {
         // two queues as most like in a different process.
         ExcerptTailer tailer = queue2.createTailer();
 
-        String name = getClass().getName();
         Thread tailerThread = new Thread(() -> {
             AffinityLock lock = null;
             try {
@@ -186,28 +195,30 @@ public class LatencyDistributionMain {
                 }
                 int counter = 0;
                 while (!Thread.currentThread().isInterrupted()) {
-                    try {
-                        boolean found;
-                        try (DocumentContext dc = tailer.readingDocument()) {
-                            found = dc.isPresent();
-                            if (found) {
-                                int count = counter++;
-                                if (count == WARMUP) {
-                                    histogramCo.reset();
-                                    histogramIn.reset();
-                                    histogramWr.reset();
-                                }
-                                Bytes<?> bytes = dc.wire().bytes();
-                                long startCo = bytes.readLong();
-                                long startIn = bytes.readLong();
-                                long now = System.nanoTime();
-                                histogramCo.sample(now - startCo);
-                                histogramIn.sample(now - startIn);
-                                if (count % INTLOG_INTERVAL == 0) System.out.println("read  " + count);
+                    boolean found;
+                    try (DocumentContext dc = tailer.readingDocument()) {
+                        found = dc.isPresent();
+                        if (found) {
+                            Wire wire = dc.wire();
+                            if (wire == null) {
+                                continue;
                             }
+                            Bytes<?> bytes = Objects.requireNonNull(wire.bytes(), "Tailer bytes");
+                            int count = counter++;
+                            if (count == WARMUP) {
+                                histogramCo.reset();
+                                histogramIn.reset();
+                                histogramWr.reset();
+                            }
+                            long startCo = bytes.readLong();
+                            long startIn = bytes.readLong();
+                            long now = System.nanoTime();
+                            histogramCo.sample(now - startCo);
+                            histogramIn.sample(now - startIn);
+                            if (count % INTLOG_INTERVAL == 0) System.out.println("read  " + count);
                         }
-
-                    } catch (Exception e) {
+                    } catch (IllegalStateException e) {
+                        Thread.currentThread().interrupt();
                         break;
                     }
                 }
@@ -228,24 +239,28 @@ public class LatencyDistributionMain {
                 long next = System.nanoTime();
                 long interval = 1_000_000_000 / throughput;
                 Map<String, Integer> stackCount = new LinkedHashMap<>();
-                BytesStore<?, ?> bytes24 = BytesStore.nativeStoreFrom(new byte[Main.size - 16]);
+                BytesStore<?, ?> bytes24 = BytesStore.nativeStoreFrom(new byte[size - 16]);
                 for (int i = -WARMUP; i < iterations; i++) {
                     long s0 = System.nanoTime();
                     if (s0 < next) {
-                        do ; while (System.nanoTime() < next);
+                        while (System.nanoTime() < next) {
+                            Jvm.nanoPause();
+                        }
                         next = System.nanoTime(); // if we failed to come out of the spin loop on time, reset next.
                     }
 
                     long start = System.nanoTime();
                     try (@NotNull DocumentContext dc = appender.writingDocument(false)) {
                         Wire wire = dc.wire();
-                        Bytes<?> bytes2 = wire.bytes();
+                        if (wire == null) {
+                            continue;
+                        }
+                        Bytes<?> bytes2 = Objects.requireNonNull(wire.bytes(), "Appender bytes");
                         bytes2.writeLong(next); // when it should have started
                         bytes2.writeLong(start); // when it actually started.
                         bytes2.write(bytes24);
                         ThroughputMain.addToEndOfCache(wire);
                     }
-                    long time = System.nanoTime() - start;
                     histogramWr.sample(start - next);
 
                     next += interval;
@@ -254,8 +269,8 @@ public class LatencyDistributionMain {
                 stackCount.entrySet().stream()
                         .filter(e -> e.getValue() > 1)
                         .forEach(System.out::println);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (RuntimeException e) {
+                Jvm.error().on(getClass(), "Appender stopping", e);
             } finally {
                 if (lock != null) {
                     lock.release();

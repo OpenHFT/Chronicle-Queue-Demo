@@ -96,34 +96,34 @@ sequenceDiagram
 
 == Guidelines
 
-1. **Clarity and Context**:
+. *Clarity and Context*:
 Add descriptive comments to `_setup.yaml` and `in.yaml` to explain each operation’s intent.
 In `out.yaml`, reference the input event that caused the output.
 This makes it easier for other developers to understand the test scenarios at a glance.
 
-2. **Time Management**:
+. *Time Management*:
 Document that real-time tests should use `SystemTimeProvider.CLOCK.currentTimeNanos()` for `sendingTime`.
 Though test files may use fixed timestamps, emphasize in comments that production environments rely on `SystemTimeProvider` for consistent, nanosecond-precision timestamps.
 
-3. **Validation Checks**:
+. *Validation Checks*:
 Introduce failure scenarios:
 * A `createAccount` command with an invalid balance (e.g., negative balance) to produce `createAccountFailed`.
 * A `transfer` from a non-existent account or with insufficient funds to produce `transferFailed`.
 
    In `in.yaml`, comment these scenarios and in `out.yaml`, show the expected failure outputs, including a `reason` field that aligns with the system’s requirements.
 
-4. **Reusability and Maintenance**:
+. *Reusability and Maintenance*:
 If your setup becomes complex, consider YAML anchors, aliases, or splitting large scenarios into multiple files.
 Add comments linking tricky scenarios to relevant sections of the requirements document, ensuring future maintainers understand the rationale behind each test.
 
-5. **Coverage**:
+. *Coverage*:
 Include scenarios that cover:
 * Multiple successful account creations and transfers.
 * At least one invalid `createAccount` scenario.
 * At least one invalid `transfer` scenario.
 * A `checkPoint` command to verify the sequence of `startCheckpoint`, `onCreateAccount` for each known account, and `endCheckpoint` events.
 
-6. **Naming and Organization**:
+. *Naming and Organization*:
 Use meaningful and specific operation descriptions.
 Instead of generic comments, specify the exact accounts, currencies, and reasons.
 Label scenarios (e.g., "Scenario: Insufficient Funds Transfer") to quickly identify their purpose.

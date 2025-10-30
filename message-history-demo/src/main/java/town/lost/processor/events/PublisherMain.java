@@ -1,5 +1,6 @@
 package town.lost.processor.events;
 
+import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.time.UniqueMicroTimeProvider;
 import net.openhft.chronicle.queue.ChronicleQueue;
 
@@ -17,8 +18,9 @@ public class PublisherMain {
             EventTwo two = new EventTwo();
 
             for (int i = 0; i < EVENTS; i++) {
-                while (System.nanoTime() < start)
-                    ;
+                while (System.nanoTime() < start) {
+                    Jvm.pause(1);
+                }
                 publish(build, two, "Hello World");
                 start += interval;
             }

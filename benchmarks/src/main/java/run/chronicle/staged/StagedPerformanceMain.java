@@ -15,9 +15,15 @@ import net.openhft.chronicle.values.Values;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /*
 -Dstages=10 on an 8 core desktop with HT & NVMe drive
@@ -41,7 +47,7 @@ public class StagedPerformanceMain {
     static int THROUGHPUT = Integer.getInteger("throughput", 0);
     static int COUNT = Integer.getInteger("count", 30 * THROUGHPUT);
     static int REPORT_INTERVAL;
-    static String DIR;
+    static Path DIR;
     static boolean WARMUP;
     private static ChronicleQueue q0;
 
@@ -72,12 +78,21 @@ public class StagedPerformanceMain {
     private static void runBenchmark(int count, int interval, boolean warmup) {
         String run = Long.toString(System.nanoTime(), 36);
         WARMUP = warmup;
-        DIR = PATH + "/run-" + run;
+        Path basePath = basePath();
+        Path runDir = basePath.resolve("run-" + run).normalize();
+        if (!runDir.startsWith(basePath)) {
+            throw new IllegalArgumentException("Benchmark run directory escaped base path");
+        }
+        try {
+            Files.createDirectories(runDir);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Unable to create benchmark directory " + runDir, e);
+        }
+        DIR = runDir;
 
-        new File(DIR).mkdirs();
         REPORT_INTERVAL = (int) (60e9 / interval); // every 60 seconds.
 
-        try (ChronicleQueue queue = SingleChronicleQueueBuilder.binary(DIR + "/data").build()) {
+        try (ChronicleQueue queue = SingleChronicleQueueBuilder.binary(DIR.resolve("data").toString()).build()) {
             q0 = queue;
 
             List<Runnable> runnables = new ArrayList<>();
@@ -93,7 +108,7 @@ public class StagedPerformanceMain {
             reportLatenciesForStage(STAGES, latencies);
 
         }
-        IOTools.deleteDirWithFiles(DIR, 3);
+        IOTools.deleteDirWithFiles(DIR.toString(), 3);
     }
 
     @SuppressWarnings( "unchecked")
@@ -122,8 +137,11 @@ public class StagedPerformanceMain {
 
                 try (DocumentContext dc = appender.writingDocument()) {
                     Wire wire = dc.wire();
+                    if (wire == null) {
+                        throw new IllegalStateException("Missing wire in producer");
+                    }
                     wire.write("data");
-                    Bytes<?> bytes = wire.bytes();
+                    Bytes<?> bytes = Objects.requireNonNull(wire.bytes(), "Producer bytes");
                     long wp = bytes.writePosition();
                     int paddingToAdd = (int) (-wp & 7);
                     wire.addPadding(paddingToAdd);
@@ -138,18 +156,19 @@ public class StagedPerformanceMain {
             try {
                 pretoucher.join(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
+                Jvm.warn().on(StagedPerformanceMain.class, "Pretoucher interrupted", e);
             }
         }
         long time = System.nanoTime() - start;
         if (!WARMUP) {
-            System.out.println("Producer wrote " + count + " messages in " + time / 1000 / 1e6 + " seconds");
+            System.out.println("Producer wrote " + count + " messages in " + (time / 1e9d) + " seconds");
         }
     }
 
     private static void populateDatum(int count, IFacadeAll datum, int i) {
         final int left = count - i;
-        if (left % REPORT_INTERVAL == 0 & !WARMUP & left > 0)
+        if (left % REPORT_INTERVAL == 0 && !WARMUP && left > 0)
             System.out.println("producer " + left + " left");
         datum.setValue3(left); // the number remaining.
         datum.setTimestampAt(0, System.nanoTime());
@@ -163,7 +182,7 @@ public class StagedPerformanceMain {
 
             while (true) {
                 final long index;
-                try (final DocumentContext dc = tailer.readingDocument()) {
+                try (DocumentContext dc = tailer.readingDocument()) {
                     if (!dc.isPresent()) {
                         Jvm.nanoPause();
                         continue;
@@ -187,11 +206,14 @@ public class StagedPerformanceMain {
     @SuppressWarnings("unchecked")
     private static void applyFlyweight(IFacadeAll datum, long datumSize, DocumentContext dc) {
         Wire wire = dc.wire();
-        String event = wire.readEvent(String.class);
+        if (wire == null) {
+            throw new IllegalStateException("Missing wire in document context");
+        }
+        String event = Objects.requireNonNull(wire.readEvent(String.class), "Event name");
         if (!event.equals("data"))
             throw new IllegalStateException("Expected ata not " + event);
         wire.consumePadding();
-        Bytes<?> bytes = wire.bytes();
+        Bytes<?> bytes = Objects.requireNonNull(wire.bytes(), "Wire bytes");
         datum.bytesStore(bytes, bytes.readPosition(), datumSize);
     }
 
@@ -203,7 +225,7 @@ public class StagedPerformanceMain {
              LongValue stage = q0.indexForId("stage" + s)) {
 
             while (true) {
-                try (final DocumentContext dc = tailer.readingDocument()) {
+                try (DocumentContext dc = tailer.readingDocument()) {
                     if (!dc.isPresent()) {
                         Jvm.nanoPause();
                         continue;
@@ -236,7 +258,7 @@ public class StagedPerformanceMain {
         try (ExcerptTailer tailer = q0.createTailer()) {
 
             while (true) {
-                try (final DocumentContext dc = tailer.readingDocument()) {
+                try (DocumentContext dc = tailer.readingDocument()) {
                     if (!dc.isPresent())
                         break;
 
@@ -251,5 +273,22 @@ public class StagedPerformanceMain {
             long p99 = Math.round(latencies.percentile(0.99) / 1000);
             System.out.println("End to end 99%ile latency " + p99 / 1e3 + " ms " + latencies.toMicrosFormat());
         }
+    }
+
+    @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN", justification = "Benchmark directory constrained to sanitized sub-folder under OS tmp")
+    private static Path basePath() {
+        Path defaultRoot = Paths.get(OS.TMP).toAbsolutePath().normalize();
+        String candidate = PATH == null ? "" : PATH;
+        String sanitized = candidate.replaceAll("[^A-Za-z0-9._-]", "");
+        if (sanitized.isEmpty()) {
+            sanitized = "staged-benchmark";
+        }
+        Path requested = defaultRoot.resolve(sanitized).normalize();
+        try {
+            Files.createDirectories(requested);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Unable to create benchmark directory " + requested, e);
+        }
+        return requested;
     }
 }

@@ -29,15 +29,16 @@ public class OrderViewerMain {
         System.out.println("\nWaiting for messages...");
 
         // Establish connection with the queue
-        try (ChronicleQueue q = SingleChronicleQueueBuilder.binary("in")
+        ChronicleQueue queue = SingleChronicleQueueBuilder.binary("in")
                 .rollCycle(TestRollCycles.TEST8_DAILY)
-                .build()) {
+                .build();
+        try {
 
             // Create a logging mock for OMSIn
             OMSIn logging = Mocker.logging(OMSIn.class, "read - ", System.out);
 
             // Create a MethodReader from the tail of the queue
-            MethodReader reader = q.createTailer().methodReader(logging);
+            MethodReader reader = queue.createTailer().methodReader(logging);
 
             // Continuously read messages from the queue
             while (true) {
@@ -46,6 +47,8 @@ public class OrderViewerMain {
                     Jvm.pause(50);
                 }
             }
+        } finally {
+            queue.close();
         }
     }
 }

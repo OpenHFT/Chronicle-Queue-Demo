@@ -5,7 +5,8 @@
 :toc: left
 :toclevels: 3
 
-An event-driven account management system utilising Chronicle libraries for high-performance and low-latency operations. This project demonstrates a reference architecture for creating accounts, performing transfers, and capturing checkpoints of system state, supported by comprehensive testing and benchmarking tools.
+An event-driven account management system utilising Chronicle libraries for high-performance and low-latency operations.
+This project demonstrates a reference architecture for creating accounts, performing transfers, and capturing checkpoints of system state, supported by comprehensive testing and benchmarking tools.
 
 This project showcases a low-latency, high-performance account management microservice accessible via TCP or shared memory.
 Each inbound and outbound message is persisted in a Chronicle Queue, ensuring durability and traceability.
@@ -26,14 +27,14 @@ Modular Design :: Separates API, DTOs, and implementations for easier maintenanc
 
 === Core Operations
 
-. **Account Creation**:
+. *Account Creation*:
 Create new accounts with specified details (name, account ID, currency, initial balance, and optional overdraft).
 
-. **Fund Transfers**:
+. *Fund Transfers*:
 Transfer funds between accounts, validating currencies, balances, and overdrafts.
 Produces events indicating success or failure.
 
-. **Checkpointing**:
+. *Checkpointing*:
 Emit a snapshot of all accounts' current state at a given time for auditing or recovery.
 
 === Architecture and Communication
@@ -65,10 +66,10 @@ Benchmarking and Testing Tools :: Includes JLBH for microsecond-level latency te
 * `BenchmarkMain Classes`: Run performance tests and measure end-to-end latencies under various throughput settings.
 
 A typical flow:
-1. A request (e.g., `createAccount`) arrives via a Chronicle channel.
-2. `AccountManagerImpl` receives the request, delegates validation and business logic to `AccountService`.
-3. `AccountService` returns success or a failure reason.
-4. `AccountManagerImpl` emits corresponding events (e.g., `onCreateAccount` or `createAccountFailed`).
+. A request (e.g., `createAccount`) arrives via a Chronicle channel.
+. `AccountManagerImpl` receives the request, delegates validation and business logic to `AccountService`.
+. `AccountService` returns success or a failure reason.
+. `AccountManagerImpl` emits corresponding events (e.g., `onCreateAccount` or `createAccountFailed`).
 
 === Testability and Benchmarking
 

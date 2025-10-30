@@ -17,7 +17,8 @@ import org.trading.dto.NewOrderSingle;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Random;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 
 /**
  * This class, ExchangeSimulatorImpl, simulates an exchange by generating market data and sending it to an aggregator.
@@ -25,6 +26,8 @@ import java.util.Random;
  * and sent through the system. It continues to send market data until the user decides to exit.
  */
 public class ExchangeSimulatorImpl {
+
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     /**
      * The main method of ExchangeSimulatorImpl, responsible for setting up the simulation and running it.
@@ -50,21 +53,19 @@ public class ExchangeSimulatorImpl {
                     .symbol("BTCUSD");
 
             System.out.println("\nHit blank line to send market data, anything else to exit");
-            Random random = new Random();
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
             // Main loop for the interactive simulation
             while ("".equals(br.readLine())) {
                 // Simulating a small change in the mid-price
-                mid += random.nextDouble() - 0.5;
+                mid += RANDOM.nextDouble() - 0.5;
 
                 // Setting transaction time to the current time in microseconds
                 mdi.transactTime(SystemTimeProvider.INSTANCE.currentTimeMicros())
-                        .side(random.nextBoolean() ? BuySell.buy : BuySell.sell);
+                        .side(RANDOM.nextBoolean() ? BuySell.buy : BuySell.sell);
                         // Randomly selecting Buy or Sell
 
                 // Randomly generating a half spread, adjusted based on the side of the trade
-                double halfSpread = random.nextDouble();
+                double halfSpread = RANDOM.nextDouble();
                 halfSpread *= mdi.side().direction;
 
                 // Adjusting the price of the market data increment

@@ -8,6 +8,7 @@ import net.openhft.chronicle.queue.ChronicleQueue;
 public class MessageMain {
     private static final int COUNT = Integer.getInteger("count", 10_000_000);
 
+    @SuppressWarnings("PMD.EmptyControlStatement")
     public static void main(String[] args) {
         for (int t = 0; t < 5; t++) {
             long start = System.nanoTime();
@@ -15,8 +16,11 @@ public class MessageMain {
             try (ChronicleQueue queue = ChronicleQueue.single(test)) {
                 Messages messages = queue.methodWriter(Messages.class);
                 Message message = new Message();
+                StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < COUNT; i++) {
-                    message.getText().clear().append("Hello ").append(i);
+                    builder.setLength(0);
+                    builder.append("Hello ").append(i);
+                    message.setText(builder);
                     message.setTimeStamp(System.currentTimeMillis());
                     messages.mesg(message);
                 }

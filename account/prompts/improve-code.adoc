@@ -12,33 +12,33 @@ Consider the following options and guidelines:
 
 == Guidelines
 
-1. **Adhere to the Provided Requirements**:
+. *Adhere to the Provided Requirements*:
 The code must continue to fulfill the requirements specified in the `Account Management Service Requirements` document.
 Any changes should not break the contract defined there.
 
-2. **Validation and Error Handling**:
+. *Validation and Error Handling*:
 Assume that the framework validates that DTOs (Data Transfer Objects) before use.
 Add a comment showing where validation would otherwise occur.
 If a command is missing critical fields or contains invalid values, handle it gracefully by producing failure events rather than exceptions visible to callers.
 
-3. **Time Management**:
+. *Time Management*:
 All events should use `SystemTimeProvider.CLOCK.currentTimeNanos()` to set their `sendingTime` fields, ensuring nanosecond-precision wall clock timestamps.
 
-4. **Logging and Comments**:
+. *Logging and Comments*:
 Add meaningful comments where appropriate to explain the rationale behind certain decisions, especially if the code deviates from typical patterns.
 Consider using `Jvm.debug()`, `Jvm.warn()`, and `Jvm.error()` for logging.
 Comments should clarify non-obvious logic, error handling decisions, or performance trade-offs.
 Do not add comments for trivial logic.
 
-5. **Fluent Interfaces and Deep Copies**:
+. *Fluent Interfaces and Deep Copies*:
 Preserve the fluent interface style for DTO setters to allow method chaining.
 When storing new accounts, ensure that `CreateAccount` objects are deep copied before saving them to the internal map, as per the requirements.
 
-6. **Checkpoints and State Serialization**:
+. *Checkpoints and State Serialization*:
 During checkpoint processing, ensure that all currently known accounts are emitted as `onCreateAccount` events.
 Consider how to handle any edge cases (e.g., empty account lists).
 
-7. **Readability and Maintainability**:
+. *Readability and Maintainability*:
 Consider extracting common logic (e.g., target checks, currency checks, funds checks) into separate helper methods to reduce code repetition.
 Make sure your class-level and method-level documentation provides a clear picture of what the code does, why, and how it aligns with the requirements.
 

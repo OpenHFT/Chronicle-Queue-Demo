@@ -5,6 +5,7 @@ import event.driven.program.api.Says;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 /**
  * This is a SaysInput class.
@@ -21,9 +22,9 @@ public class SaysInput {
      */
     public static void input(Says says) throws IOException {
         // Creates a BufferedReader to read lines from the standard input
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
         // Continuously reads lines from the standard input until reaching the end
-        for (String line; ((line = br.readLine()) != null); )
+        for (String line; (line = br.readLine()) != null; )
             // Calls the say method of the provided Says object with the read line
             says.say(line);
     }

@@ -1,8 +1,10 @@
 package net.openhft.chronicle.queue.simple.input;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptAppender;
-import java.util.Scanner;
 
 /**
  * Created by catherine on 17/07/2016.
@@ -14,7 +16,7 @@ public class InputMain {
 
         // Use try-with-resources for proper resource management
         try (ChronicleQueue queue = ChronicleQueue.single(path);
-             Scanner scanner = new Scanner(System.in)) {
+             Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8.name())) {
 
             ExcerptAppender appender = queue.createAppender();
             System.out.println("Starting InputMain. Type your input (empty line to exit).");

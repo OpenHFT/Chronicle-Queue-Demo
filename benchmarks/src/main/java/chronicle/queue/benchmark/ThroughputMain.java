@@ -7,7 +7,6 @@ import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.OS;
 import net.openhft.chronicle.core.UnsafeMemory;
 import net.openhft.chronicle.core.io.IOTools;
-import net.openhft.chronicle.core.util.Time;
 import net.openhft.chronicle.queue.ChronicleQueue;
 import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.queue.ExcerptTailer;
@@ -15,8 +14,14 @@ import net.openhft.chronicle.queue.RollCycles;
 import net.openhft.chronicle.wire.DocumentContext;
 import net.openhft.chronicle.wire.Wire;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
+import static chronicle.queue.benchmark.Main.safeBasePath;
 
 import static chronicle.queue.benchmark.Main.*;
 
@@ -35,7 +40,7 @@ public class ThroughputMain {
                 "-DfullWrite=" + fullWrite);
 
         long start = System.nanoTime();
-        String base = path + "/delete-" + Time.uniqueId() + ".me.";
+        Path runDirectory = createRunDirectory();
 
         long blockSize = OS.is64Bit()
                 ? OS.isLinux()
@@ -47,8 +52,14 @@ public class ThroughputMain {
         IntStream.range(0, threads).parallel().forEach(i -> {
             long count2 = 0;
             BytesStore<?, Void> nbs = BytesStore.nativeStoreWithFixedCapacity(size);
+            Path threadDir = runDirectory.resolve("queue-" + i);
+            try {
+                Files.createDirectories(threadDir);
+            } catch (IOException e) {
+                throw new UncheckedIOException("Unable to create queue directory " + threadDir, e);
+            }
 
-            try (ChronicleQueue q = ChronicleQueue.singleBuilder(base + i)
+            try (ChronicleQueue q = ChronicleQueue.singleBuilder(threadDir.toString())
                     .rollCycle(RollCycles.FAST_HOURLY)
                     .blockSize(blockSize)
                     .build()) {
@@ -60,7 +71,11 @@ public class ThroughputMain {
                     Wire wire = appender.wire();
                     int writeCount = (int) (defaultIndexSpacing - (lastIndex & (defaultIndexSpacing - 1)) - 1);
                     if (!fullWrite && wire != null && writeCount > 0) {
-                        MappedBytes bytes = (MappedBytes) wire.bytes();
+                        Bytes<?> bytesRef = wire.bytes();
+                        if (!(bytesRef instanceof MappedBytes)) {
+                            continue;
+                        }
+                        MappedBytes bytes = (MappedBytes) bytesRef;
                         long address = bytes.addressForWrite(bytes.writePosition());
                         long bstart = bytes.start();
                         long bcap = bytes.realCapacity();
@@ -73,7 +88,11 @@ public class ThroughputMain {
                     } else {
                         try (DocumentContext dc = appender.writingDocument()) {
                             Wire wire2 = dc.wire();
-                            wire2.bytes().write(nbs);
+                            if (wire2 == null) {
+                                continue;
+                            }
+                        Bytes<?> target = Objects.requireNonNull(wire2.bytes(), "Appender bytes");
+                        target.write(nbs);
                             addToEndOfCache(wire2);
                         }
                         lastIndex = appender.lastIndexAppended();
@@ -91,7 +110,8 @@ public class ThroughputMain {
         IntStream.range(0, threads).parallel().forEach(i -> {
 
             Bytes<?> bytes = Bytes.allocateElasticDirect(64);
-            try (ChronicleQueue q = ChronicleQueue.singleBuilder(base + i)
+            Path threadDir = runDirectory.resolve("queue-" + i);
+            try (ChronicleQueue q = ChronicleQueue.singleBuilder(threadDir.toString())
                     .rollCycle(RollCycles.FAST_HOURLY)
                     .blockSize(blockSize)
                     .build()) {
@@ -100,8 +120,13 @@ public class ThroughputMain {
                     try (DocumentContext dc = tailer.readingDocument()) {
                         if (!dc.isPresent()) break;
 
+                        Wire wire = dc.wire();
+                        if (wire == null) {
+                            continue;
+                        }
+                        Bytes<?> source = Objects.requireNonNull(wire.bytes(), "Tailer bytes");
                         bytes.clear();
-                        bytes.write(dc.wire().bytes());
+                        bytes.write(source);
                     }
                 }
             }
@@ -117,8 +142,16 @@ public class ThroughputMain {
 
         Jvm.pause(200);
         System.gc(); // make sure its cleaned up for windows to delete.
-        IntStream.range(0, threads).forEach(i ->
-                IOTools.deleteDirWithFiles(base + i, 2));
+        IOTools.deleteDirWithFiles(runDirectory.toString(), 2);
+    }
+
+    private static Path createRunDirectory() {
+        Path basePath = safeBasePath();
+        try {
+            return Files.createTempDirectory(basePath, "delete-");
+        } catch (IOException e) {
+            throw new UncheckedIOException("Unable to create benchmark run directory", e);
+        }
     }
 
     static void addToEndOfCache(Wire wire2) {

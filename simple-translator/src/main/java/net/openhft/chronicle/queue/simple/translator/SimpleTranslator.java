@@ -2,7 +2,9 @@ package net.openhft.chronicle.queue.simple.translator;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.logging.Level;
@@ -99,13 +101,10 @@ public class SimpleTranslator implements MessageConsumer {
      * Constructs a {@code SimpleTranslator} with the specified {@link MessageConsumer}.
      *
      * @param out the {@code MessageConsumer} to which the translated message is sent; must not be {@code null}
-     * @throws IllegalArgumentException if {@code out} is {@code null}
+     * @throws NullPointerException if {@code out} is {@code null}
      */
     public SimpleTranslator(MessageConsumer out) {
-        if (out == null) {
-            throw new IllegalArgumentException("Output MessageConsumer cannot be null");
-        }
-        this.out = out;
+        this.out = Objects.requireNonNull(out, "Output MessageConsumer cannot be null");
     }
 
     /**
@@ -126,23 +125,25 @@ public class SimpleTranslator implements MessageConsumer {
             throw new IllegalArgumentException("Input text cannot be null");
         }
 
-        LOGGER.fine("Translating message: \"" + text + "\"");
+        LOGGER.log(Level.FINE, "Translating message: \"{0}\"", sanitizeForLog(text));
 
         Matcher matcher = WORD_BOUNDARY_PATTERN.matcher(text);
         StringBuffer translatedBuffer = new StringBuffer();
 
         while (matcher.find()) {
-            String matchedWord = matcher.group(1).toLowerCase();
+            String matchedWordOriginal = matcher.group(1);
+            String matchedWord = matchedWordOriginal.toLowerCase(Locale.ROOT);
             String replacement = TRANSLATIONS.get(matchedWord);
             if (replacement != null) {
                 matcher.appendReplacement(translatedBuffer, Matcher.quoteReplacement(replacement));
-                LOGGER.finer("Replaced \"" + matcher.group(1) + "\" with \"" + replacement + "\"");
+                LOGGER.log(Level.FINER, "Replaced \"{0}\" with \"{1}\"",
+                        new Object[]{sanitizeForLog(matchedWordOriginal), sanitizeForLog(replacement)});
             }
         }
         matcher.appendTail(translatedBuffer);
 
         String translatedText = translatedBuffer.toString();
-        LOGGER.fine("Translated message: \"" + translatedText + "\"");
+        LOGGER.log(Level.FINE, "Translated message: \"{0}\"", sanitizeForLog(translatedText));
 
         // Forward the translated text to the output consumer
         out.onMessage(translatedText);
@@ -158,5 +159,12 @@ public class SimpleTranslator implements MessageConsumer {
      */
     public void addTranslation(String english, String french) {
         throw new UnsupportedOperationException("Dynamic translation addition is not supported");
+    }
+
+    private static String sanitizeForLog(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.replace('\r', '_').replace('\n', '_');
     }
 }

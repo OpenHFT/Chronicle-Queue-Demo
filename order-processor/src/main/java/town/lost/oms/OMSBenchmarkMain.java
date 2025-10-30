@@ -120,7 +120,8 @@ public class OMSBenchmarkMain {
                         reader.readOne();
 
                 } catch (Throwable t) {
-                    t.printStackTrace();
+                    Jvm.warn().on(OMSBenchmarkMain.class, "Benchmark tailer stopped: " + t.getMessage());
+                    Thread.currentThread().interrupt();
                 }
             }, "last");
             last.start();
@@ -156,7 +157,6 @@ public class OMSBenchmarkMain {
     }
 
     private static class MyJLBHTask implements JLBHTask {
-        private JLBH jlbh;
         private NewOrderSingle nos;
         private OMSIn in;
 
@@ -175,7 +175,7 @@ public class OMSBenchmarkMain {
 
         @Override
         public void init(JLBH jlbh) {
-            this.jlbh = jlbh;
+            // No state required; sampling is handled by the OMSOut callback above.
         }
 
         @Override

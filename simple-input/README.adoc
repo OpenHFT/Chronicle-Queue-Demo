@@ -47,7 +47,8 @@ A new window will appear next to the `InputMain` one, simply listing the content
 
 image::runout.png[]
 
-*Side Note:* On the side bar, under `Chronicle-Queue-Sample`, there is `queue`.
+=== Side Note
+On the side bar, under `Chronicle-Queue-Sample`, there is `queue`.
 This is where the content you have entered is kept, and the file is named by the date that is was made.
 If this is deleted, then so is the content you entered into `InputMain.java`.
 

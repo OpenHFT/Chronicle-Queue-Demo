@@ -9,24 +9,25 @@ image::../docs/images/hello-world-fig1.png[An event-driven system adds an exclam
 
 == Overview
 
-In this demo, we assume an *event-driven* architecture with:
+In this demo, we assume an _event-driven_ architecture with:
 
-* An **input gateway** that reads incoming lines from the console (or another source).
-* An **output gateway** that writes lines to the console (or logs them).
-* A **microservice** in between that applies any required business logic (e.g., adding an exclamation mark).
+* An *input gateway* that reads incoming lines from the console (or another source).
+* An *output gateway* that writes lines to the console (or logs them).
+* A *microservice* in between that applies any required business logic (e.g., adding an exclamation mark).
 
 The figure above gives a high-level sketch of how these components connect.
 This design can be extended to larger, more complex systems with multiple inputs and outputs.
 
 == 1. Implementation Walkthrough
 
-All implementations in this module rely on the same input and output gateways. Below, we describe each example in detail.
+All implementations in this module rely on the same input and output gateways.
+Below, we describe each example in detail.
 
 === 1.1 Input and Output Gateways
 
 The gateways used here are built on the link:../hello-world/src/main/java/event/driven/program/api/Says.java[Says] interface.
-- **Input Gateway (`SaysInput`)** reads lines from `System.in` and calls `says.say(line)` for each line.
-- **Output Gateway (`SaysOutput`)** receives text via `say(String words)` and prints it to `System.out`.
+* *Input Gateway (`SaysInput`)* reads lines from `System.in` and calls `says.say(line)` for each line.
+* *Output Gateway (`SaysOutput`)* receives text via `say(String words)` and prints it to `System.out`.
 
 [source,java]
 ----
@@ -52,7 +53,8 @@ public class SaysOutput implements Says {
 
 === 1.2 Relaying Input Events to Output
 
-The simplest approach wires the input gateway directly to the output gateway: each incoming line is immediately relayed to the console. This is implemented in `RecordInputToConsoleMain`.
+The simplest approach wires the input gateway directly to the output gateway: each incoming line is immediately relayed to the console.
+This is implemented in `RecordInputToConsoleMain`.
 
 [source,java]
 ----
@@ -96,9 +98,9 @@ public class RecordInputAsYamlMain {
 ----
 
 .Run RecordInputAsYamlMain
-1. Right-click on `RecordInputAsYamlMain` in your IDE.
-2. Modify run configuration if needed.
-3. Provide an argument for the input file name (e.g., `says.yaml`), though optional if you only want console logs.
+. Right-click on `RecordInputAsYamlMain` in your IDE.
+. Modify run configuration if needed.
+. Provide an argument for the input file name (e.g., `says.yaml`), though optional if you only want console logs.
 
 Example console output:
 [source,text]
@@ -116,7 +118,8 @@ say: Three             // logged as YAML
 
 === 1.4 Replaying Logged Outputs from a YAML File
 
-We can replay the recorded YAML lines with `ReplayOutputMain`. This reads a YAML file (e.g., `says.yaml`) and invokes the `SaysOutput` gateway to print each event.
+We can replay the recorded YAML lines with `ReplayOutputMain`.
+This reads a YAML file (e.g., `says.yaml`) and invokes the `SaysOutput` gateway to print each event.
 
 [source,java]
 ----
@@ -256,11 +259,11 @@ mvn install exec:java@DirectWithExclamationMark
 
 == Summary
 
-The *hello-world* example illustrates a simple event-driven pipeline:
+The _hello-world_ example illustrates a simple event-driven pipeline:
 
-- **Read** lines (input gateway).
-- **Process** them if needed (e.g., add punctuation).
-- **Output** them (console or YAML).
+* *Read* lines (input gateway).
+* *Process* them if needed (e.g., add punctuation).
+* *Output* them (console or YAML).
 
 Experiment with each main class:
 
@@ -269,4 +272,5 @@ RecordInputAsYamlMain :: logs input as YAML.
 ReplayOutputMain :: replays a YAML file.
 DirectWithExclamationMain :: adds an exclamation mark.
 
-This small example demonstrates how Chronicle Queue–based code can handle real-time data flow in a concise, modular way. Once comfortable with these basics, you can explore more advanced modules and features within the repository.
+This small example demonstrates how Chronicle Queue–based code can handle real-time data flow in a concise, modular way.
+Once comfortable with these basics, you can explore more advanced modules and features within the repository.

@@ -19,8 +19,11 @@ import run.chronicle.account.dto.Transfer;
 import run.chronicle.account.util.LogsAccountManagerOut;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import static net.openhft.chronicle.core.time.SystemTimeProvider.CLOCK;
@@ -52,16 +55,17 @@ public class AccountManagerBenchmarkMain {
         // Create a new ExecutorService with a custom thread factory named 'test'.
         // This ExecutorService is used for running the client/gateway/service in the current process
         ExecutorService es = Executors.newCachedThreadPool(new AffinityThreadFactory("test"));
+        List<Future<?>> submittedTasks = new ArrayList<>();
 
         // Initialise a new instance of AccountManagerServiceMain. This is the main service for managing accounts.
         AccountManagerServiceMain service = null;
 
         // Check if the host part of the URL is empty. If it is, that means we are running the service locally.
-        if (net.openhft.chronicle.wire.channel.ChronicleContext.urlFor(URL).getHost().isEmpty()) {
+        if (ChronicleContext.urlFor(URL).getHost().isEmpty()) {
             service = new AccountManagerServiceMain();
             // Submit the service to run in the ExecutorService.
             // The 'wrap' method is used to ensure any Throwable are logged instead of added to the discarded Future silently
-            es.submit(wrap(service));
+            submittedTasks.add(es.submit(wrap(service)));
         } else {
             // If the URL is not empty, inform the user to start the Gateway and Service in another process.
             Jvm.startup().on(AccountManagerBenchmarkMain.class,
@@ -71,8 +75,8 @@ public class AccountManagerBenchmarkMain {
         // Use a ChronicleContext to connect to the service.
         // ChronicleContext is a part of the Chronicle network library
         // which provides high performance, low latency networking capabilities.
-        try (ChronicleContext context = net.openhft.chronicle.wire.channel.ChronicleContext.newContext(URL)) {
-            net.openhft.chronicle.wire.channel.ChronicleChannel channel = context.newChannelSupplier(
+        try (ChronicleContext context = ChronicleContext.newContext(URL)) {
+            net.openhft.chronicle.wire.channel.ChronicleChannel channel = context.newChannelSupplier( //NOPMD - UnnecessaryFullyQualifiedName avoids import deprecation warning
                     new PipeHandler().publish("account-in").subscribe("account-out")).get();
 
             // Log the connection details.
@@ -95,7 +99,7 @@ public class AccountManagerBenchmarkMain {
                     .jlbhTask(new MyJLBHTask(accountManagerIn)));
 
             // Submit a new task to the executor service. This task reads from the channel and records benchmarks.
-            es.submit(wrap(() -> {
+            Future<?> readerFuture = es.submit(wrap(() -> {
                 MethodReader reader = channel.methodReader(new LogsAccountManagerOut() {
                     @Override
                     public void onTransfer(OnTransfer onTransfer) {
@@ -110,11 +114,13 @@ public class AccountManagerBenchmarkMain {
                     reader.readOne();
                 }
             }));
+            submittedTasks.add(readerFuture);
 
             // Start the benchmark.
             jlbh.start();
 
             // Cleanup: Close the service and shutdown the ExecutorService.
+            submittedTasks.forEach(f -> f.cancel(true));
             Closeable.closeQuietly(service);
             Jvm.pause(100);
             es.shutdownNow();
@@ -153,7 +159,6 @@ public class AccountManagerBenchmarkMain {
 
     private static class MyJLBHTask implements JLBHTask {
         private final AccountManagerIn input;
-        private JLBH jlbh;
         private Transfer transfer = new Transfer();
 
         public MyJLBHTask(AccountManagerIn input) {
@@ -162,7 +167,6 @@ public class AccountManagerBenchmarkMain {
 
         @Override
         public void init(JLBH jlbh) {
-            this.jlbh = jlbh;
         }
 
         @Override

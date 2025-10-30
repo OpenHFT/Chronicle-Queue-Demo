@@ -3,122 +3,127 @@
 :toclevels: 3
 :sectnums:
 
-This document specifies the functional requirements for the *hello-world* module in the Chronicle Queue Demo project. It is designed to help new developers understand the basic goals, structure, and usage of the "Hello World" style program that demonstrates how Chronicle Queue can process simple text input and output.
+This document specifies the functional requirements for the _hello-world_ module in the Chronicle Queue Demo project.
+It is designed to help new developers understand the basic goals, structure, and usage of the "Hello World" style program that demonstrates how Chronicle Queue can process simple text input and output.
 
-== 1. Introduction
+== Introduction
 
-=== 1.1 Purpose
-The *hello-world* module illustrates a simple, event-driven workflow using Chronicle Queue:
+=== Purpose
+The _hello-world_ module illustrates a simple, event-driven workflow using Chronicle Queue:
 * Reading lines of text (e.g., user input).
 * Processing or transforming that text (e.g., adding punctuation).
 * Outputting the transformed text (e.g., printing to the console).
 
 By exploring this module, beginners can learn:
-* How to handle **input** in a Chronicle Queue–based microservice.
-* How to **process** or modify the text (e.g., by adding an exclamation point).
-* How to **output** data back to a console or store it in a queue for later use.
+* How to handle *input* in a Chronicle Queue–based microservice.
+* How to *process* or modify the text (e.g., by adding an exclamation point).
+* How to *output* data back to a console or store it in a queue for later use.
 
-=== 1.2 Scope
-This document only covers the *hello-world* module’s functionality and basic usage steps. It does not address other modules or advanced Chronicle Queue topics like high-throughput event routing, specialized data models, or advanced performance testing.
+=== Scope
+This document only covers the _hello-world_ module’s functionality and basic usage steps.
+It does not address other modules or advanced Chronicle Queue topics like high-throughput event routing, specialized data models, or advanced performance testing.
 
-== 2. Functional Overview
+== Functional Overview
 
-=== 2.1 Key Components
-The *hello-world* module comprises several main classes. Each class demonstrates a slightly different workflow, but all follow the same general pattern of reading input, optionally transforming it, and printing or logging the result.
+=== Key Components
+The _hello-world_ module comprises several main classes.
+Each class demonstrates a slightly different workflow, but all follow the same general pattern of reading input, optionally transforming it, and printing or logging the result.
 
-1. **RecordInputToConsoleMain**  
-   - Reads lines from standard input (the keyboard or a piped file).
-   - Immediately prints each line back to the console.
+. *RecordInputToConsoleMain*
+* Reads lines from standard input (the keyboard or a piped file).
+* Immediately prints each line back to the console.
 
-2. **RecordInputAsYamlMain**  
-   - Reads lines from standard input.
-   - Logs or prints each line in YAML format to standard output (useful for structured logging or replay).
+. *RecordInputAsYamlMain*
+* Reads lines from standard input.
+* Logs or prints each line in YAML format to standard output (useful for structured logging or replay).
 
-3. **ReplayOutputMain**  
-   - Reads previously saved YAML lines from a file (or queue).
-   - “Replays” them by printing to standard output.  
-   - Ideal for verifying or demonstrating how recorded input can be replayed later.
+. *ReplayOutputMain*
+* Reads previously saved YAML lines from a file (or queue).
+* “Replays” them by printing to standard output.
+* Ideal for verifying or demonstrating how recorded input can be replayed later.
 
-4. **DirectWithExclamationMain**  
-   - Reads lines from standard input.
-   - Appends an exclamation mark (`!`) to each line.
-   - Prints the modified line to the console.
+. *DirectWithExclamationMain*
+* Reads lines from standard input.
+* Appends an exclamation mark (`!`) to each line.
+* Prints the modified line to the console.
 
-=== 2.2 Data Flow Overview
+=== Data Flow Overview
 
 [source]
 ----
 Input (Console)  --->  [Hello-World Microservice]  --->  Output (Console/YAML/File)
 ----
-1. The user (or a script) **enters text** in the console.
-2. The microservice **captures** that text and can optionally modify it.
-3. The microservice **outputs** the original or modified text back to the console or logs it in YAML.
+. The user (or a script) *enters text* in the console.
+. The microservice *captures* that text and can optionally modify it.
+. The microservice *outputs* the original or modified text back to the console or logs it in YAML.
 
-== 3. Functional Requirements
+== Functional Requirements
 
-=== 3.1 Basic Operations
-. **FR-1**: The system **must** read user input from the console or a text file (one line at a time).  
-. **FR-2**: The system **must** allow for simple text processing or transformation (e.g., adding punctuation).  
-. **FR-3**: The system **must** output or log each processed line to either the console or a YAML stream.
+=== Basic Operations
+. *FR-1*: The system *must* read user input from the console or a text file (one line at a time).
+. *FR-2*: The system *must* allow for simple text processing or transformation (e.g., adding punctuation).
+. *FR-3*: The system *must* output or log each processed line to either the console or a YAML stream.
 
-=== 3.2 Input Handling
-. **FR-4**: On startup, the program **must** prompt the user to type a line.  
-. **FR-5**: The program **must** recognize an empty line as an instruction to stop reading further input and terminate.
+=== Input Handling
+. *FR-4*: On startup, the program *must* prompt the user to type a line.
+. *FR-5*: The program *must* recognize an empty line as an instruction to stop reading further input and terminate.
 
-=== 3.3 Processing Requirements
-. **FR-6**: (In direct “echo” mode) The system **must** reprint the exact line without changes.  
-. **FR-7**: (In exclamation mode) The system **must** append a “!” to the user’s text before printing.  
-. **FR-8**: (In YAML mode) The system **must** record or display the user input in valid YAML format, enabling replay or inspection.
+=== Processing Requirements
+. *FR-6*: (In direct “echo” mode) The system *must* reprint the exact line without changes.
+. *FR-7*: (In exclamation mode) The system *must* append a “!” to the user’s text before printing.
+. *FR-8*: (In YAML mode) The system *must* record or display the user input in valid YAML format, enabling replay or inspection.
 
-=== 3.4 Output and Logging
-. **FR-9**: The system **must** show each processed line on the console or standard output.  
-. **FR-10**: (Optional) The system **may** write lines to a log file or a Chronicle Queue for further inspection or replay.
+=== Output and Logging
+. *FR-9*: The system *must* show each processed line on the console or standard output.
+. *FR-10*: (Optional) The system *may* write lines to a log file or a Chronicle Queue for further inspection or replay.
 
-=== 3.5 Replay Functionality
-. **FR-11**: The system **may** read lines from a pre-recorded YAML file.  
-. **FR-12**: For each read line, the system **must** print it to the console, simulating “replaying” past inputs.
+=== Replay Functionality
+. *FR-11*: The system *may* read lines from a pre-recorded YAML file.
+. *FR-12*: For each read line, the system *must* print it to the console, simulating “replaying” past inputs.
 
-== 4. Non-Functional Requirements
+== Non-Functional Requirements
 
-=== 4.1 User Experience
-* The software **should** provide a simple, beginner-friendly environment.
-* The console output **should** contain short messages guiding the user (e.g., `"Type something"` or `"Press Enter on a blank line to exit"`).
+=== User Experience
+* The software *should* provide a simple, beginner-friendly environment.
+* The console output *should* contain short messages guiding the user (e.g., `"Type something"` or `"Press Enter on a blank line to exit"`).
 
-=== 4.2 Performance
-* This demonstration is for **educational** purposes; it does **not** require high-volume or low-latency optimizations.
-* Performance is **not** a primary focus, but typical run times for reading and printing a few lines should be near-instant on standard hardware.
+=== Performance
+* This demonstration is for *educational* purposes; it does *not* require high-volume or low-latency optimizations.
+* Performance is *not* a primary focus, but typical run times for reading and printing a few lines should be near-instant on standard hardware.
 
-=== 4.3 Dependencies and Environment
-* Requires **Java 8** (or later) and **Maven** to build.
+=== Dependencies and Environment
+* Requires *Java 8* (or later) and *Maven* to build.
 * No special hardware or OS constraints. Windows, Linux, and macOS are all supported.
 
-== 5. User Interactions
+== User Interactions
 
-1. The user starts one of the main classes (e.g., `RecordInputToConsoleMain`).
-2. The program displays a message: “Type something” or “Input> ”.
-3. The user types a line of text and presses Enter.
-4. The program processes (or logs) that text and prints the result.
-5. The user may type more lines; each is processed in the same manner.
-6. If the user presses Enter on an empty line, the program exits gracefully.
+. The user starts one of the main classes (e.g., `RecordInputToConsoleMain`).
+. The program displays a message: “Type something” or “Input> ”.
+. The user types a line of text and presses Enter.
+. The program processes (or logs) that text and prints the result.
+. The user may type more lines; each is processed in the same manner.
+. If the user presses Enter on an empty line, the program exits gracefully.
 
-== 6. Testing and Validation
+== Testing and Validation
 
-=== 6.1 Manual Testing
+=== Manual Testing
 Because the hello-world module is interactive, testers can:
-1. Launch one of the main classes (e.g., `DirectWithExclamationMain`).
-2. Type sample lines to see whether exclamation marks are appended.
-3. Verify the console output matches expectations.
+. Launch one of the main classes (e.g., `DirectWithExclamationMain`).
+. Type sample lines to see whether exclamation marks are appended.
+. Verify the console output matches expectations.
 
-=== 6.2 Automated Testing
+=== Automated Testing
 While primarily a demonstration, you can still create simple unit tests for:
 * Console I/O (mocking input streams).
 * Validation of exclamation appending logic or YAML formatting logic.
 
-=== 6.3 Potential Edge Cases
+=== Potential Edge Cases
 * Empty input lines (should exit).
 * Very long lines (should still be echoed or appended).
 * Special characters and punctuation.
 
-== 7. Conclusion
+== Conclusion
 
-The *hello-world* example program serves as a gentle introduction to Chronicle Queue’s capabilities. By satisfying the above requirements—reading user input, optionally transforming or logging it, and replaying stored data—this module helps beginners understand the foundational concepts of event-driven applications. Further exploration can include queue-based message passing, advanced transformations, and integration with other modules in the Chronicle Queue Demo project.
+The _hello-world_ example program serves as a gentle introduction to Chronicle Queue’s capabilities.
+By satisfying the above requirements—reading user input, optionally transforming or logging it, and replaying stored data—this module helps beginners understand the foundational concepts of event-driven applications.
+Further exploration can include queue-based message passing, advanced transformations, and integration with other modules in the Chronicle Queue Demo project.

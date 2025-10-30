@@ -1,6 +1,7 @@
 = Test Scenarios for Account Management Service
 
-This directory contains three YAML files that define and verify specific test scenarios for an Account Management Service (AMS). The goal is to ensure that the AMS behaves as expected when processing various account creation, transfer, and checkpoint commands.
+This directory contains three YAML files that define and verify specific test scenarios for an Account Management Service (AMS).
+The goal is to ensure that the AMS behaves as expected when processing various account creation, transfer, and checkpoint commands.
 
 == Files Overview
 
@@ -22,22 +23,23 @@ All initial accounts and balances are established here, ensuring that subsequent
 
 The `in.yaml` file contains a series of input scenarios that exercise both successful and failing operations:
 
-1. **Valid EUR-to-EUR Transfer (Alice -> Charlie)**:
+. *Valid EUR-to-EUR Transfer (Alice -> Charlie)*:
 Tests a successful transfer, confirming that balances are updated and `onTransfer` events are generated as expected.
 
-2. **Currency Mismatch Transfer (Alice -> Bob)**:
+. *Currency Mismatch Transfer (Alice -> Bob)*:
 Attempts a EUR-to-USD transfer and expects a `transferFailed` event due to currency mismatch.
 
-3. **Invalid Create Account (Derek with -20 EUR)**:
+. *Invalid Create Account (Derek with -20 EUR)*:
 Attempts to create an account with a negative balance and expects a `createAccountFailed` event.
 
-4. **Non-Existent Account Transfer**:
+. *Non-Existent Account Transfer*:
 Tries to transfer funds from an account that doesn't exist, expecting a `transferFailed` event with a "from account doesn't exist" reason.
 
-5. **Insufficient Funds Transfer (Alice -> Charlie)**:
-After a successful transfer, Alice has reduced funds. A large transfer request should fail with `transferFailed` due to insufficient funds.
+. *Insufficient Funds Transfer (Alice -> Charlie)*:
+After a successful transfer, Alice has reduced funds.
+A large transfer request should fail with `transferFailed` due to insufficient funds.
 
-6. **Checkpoint Request**:
+. *Checkpoint Request*:
 Requests a checkpoint, verifying `startCheckpoint`, `onCreateAccount` for each known account, and `endCheckpoint` events to confirm correct state serialization.
 
 Each scenario is accompanied by comments explaining the rationale, expected outcomes, and relevant details for easy reference.
@@ -46,27 +48,29 @@ Each scenario is accompanied by comments explaining the rationale, expected outc
 
 The `out.yaml` file defines the expected output events for each scenario in `in.yaml`:
 
-* **onTransfer** events for successful transfers.
-* **transferFailed** and **createAccountFailed** events for invalid operations.
-* **jvmError** entries if invalid input triggers a validation exception.
-* **startCheckpoint**, `onCreateAccount` (for each known account), and `endCheckpoint` events for the checkpoint scenario.
+* *onTransfer* events for successful transfers.
+* *transferFailed* and *createAccountFailed* events for invalid operations.
+* *jvmError* entries if invalid input triggers a validation exception.
+* *startCheckpoint*, `onCreateAccount` (for each known account), and `endCheckpoint` events for the checkpoint scenario.
 
 Comments within `out.yaml` map each output event back to the corresponding input scenario, making it clear which events should be produced in response to each command.
 
 == General Guidelines
 
-1. **Clarity and Context**:
+. *Clarity and Context*:
 The comments in `_setup.yaml`, `in.yaml`, and `out.yaml` provide context and reasoning for each scenario, making the tests more understandable and maintainable.
 
-2. **Time Management**:
+. *Time Management*:
 Although fixed timestamps are used here, in production and performance tests, consider using `SystemTimeProvider.CLOCK.currentTimeNanos()` for nanosecond-precision wall clock times.
 
-3. **Validation Checks**:
+. *Validation Checks*:
 Scenarios include invalid operations to ensure `createAccountFailed` and `transferFailed` events are emitted correctly when requirements are not met.
 
-4. **Coverage and Maintenance**:
-The test set covers successful and failed account creations, valid and invalid transfers, currency mismatches, insufficient funds scenarios, and checkpointing. This broad coverage ensures confidence in the AMS's correctness and resilience.
+. *Coverage and Maintenance*:
+The test set covers successful and failed account creations, valid and invalid transfers, currency mismatches, insufficient funds scenarios, and checkpointing.
+This broad coverage ensures confidence in the AMS's correctness and resilience.
 
 == Conclusion
 
-These YAML-based test inputs and expected outputs form a comprehensive testing framework for the Account Management Service. By examining the scenarios in `_setup.yaml`, `in.yaml`, and `out.yaml`, developers and testers can quickly understand the expected behavior of the system and ensure that the AMS meets all specified requirements.
+These YAML-based test inputs and expected outputs form a comprehensive testing framework for the Account Management Service.
+By examining the scenarios in `_setup.yaml`, `in.yaml`, and `out.yaml`, developers and testers can quickly understand the expected behavior of the system and ensure that the AMS meets all specified requirements.

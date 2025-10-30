@@ -1,9 +1,10 @@
 package net.openhft.chronicle.queue.simple.translator;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueue;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
-
-import java.util.Scanner;
 
 /**
  * A Main class that takes user input from the console and writes it to a queue ("queue-en").
@@ -23,7 +24,7 @@ public class InputMain {
         MessageConsumer messageConsumer = queue_en.createAppender().methodWriter(MessageConsumer.class);
 
         // Create a Scanner to read input from the console
-        Scanner read = new Scanner(System.in);
+        Scanner read = new Scanner(System.in, StandardCharsets.UTF_8.name());
 
         // Continuously read input from the console and write it to the queue
         while (true) {
