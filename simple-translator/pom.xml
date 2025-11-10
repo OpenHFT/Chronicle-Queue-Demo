@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+
+-->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -13,6 +18,11 @@
 
     <artifactId>simple-translator</artifactId>
     <name>OpenHFT/${project.parent.artifactId}/${project.artifactId}</name>
+
+    <properties>
+        <jacoco.line.coverage>0.6</jacoco.line.coverage>
+        <jacoco.branch.coverage>0.4</jacoco.branch.coverage>
+    </properties>
 
     <dependencies>
         <dependency>

@@ -1,3 +1,7 @@
+//
+// Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+//
+
 /**
  * Provides interfaces and classes for routing messages in and out using a Chronicle-based infrastructure.
  *

@@ -1,3 +1,7 @@
+//
+// Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+//
+
 /**
  * This package contains classes and interfaces related to an event-driven programming model.
  * Event-driven programming is a paradigm in which the flow of the program is determined by events,

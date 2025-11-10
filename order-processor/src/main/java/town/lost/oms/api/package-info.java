@@ -1,3 +1,7 @@
+//
+// Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+//
+
 /**
  * Provides the API interfaces for interactions with the Order Management System (OMS) in the 'town.lost.oms' project.
  *

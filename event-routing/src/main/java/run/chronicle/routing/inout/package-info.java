@@ -1,3 +1,7 @@
+//
+// Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+//
+
 /**
  * This package, run.chronicle.routing.inout, includes classes related to handling, routing, and processing 
  * messages from multiple sources and routing them to multiple destinations.
