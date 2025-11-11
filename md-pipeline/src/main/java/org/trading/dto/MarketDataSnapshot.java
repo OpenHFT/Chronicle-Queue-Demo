@@ -1,7 +1,6 @@
 /*
  * Copyright 2016-2025 chronicle.software
  */
-
 package org.trading.dto;
 
 import net.openhft.chronicle.wire.SelfDescribingMarshallable;

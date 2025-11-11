@@ -1,7 +1,6 @@
 /*
  * Copyright 2016-2025 chronicle.software
  */
-
 package town.lost.oms.dto;
 
 import net.openhft.chronicle.bytes.BytesIn;

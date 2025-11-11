@@ -1,7 +1,6 @@
 /*
  * Copyright 2016-2025 chronicle.software
  */
-
 package town.lost.oms;
 
 import net.openhft.affinity.AffinityLock;

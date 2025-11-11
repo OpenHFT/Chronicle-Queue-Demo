@@ -1,7 +1,6 @@
 /*
  * Copyright 2016-2025 chronicle.software
  */
-
 package town.lost.oms.dto;
 /**
  * Enumeration for the types of orders in a trading system.
