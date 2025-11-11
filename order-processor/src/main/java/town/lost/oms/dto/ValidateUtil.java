@@ -1,9 +1,5 @@
-//
-// Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
-//
-
 /*
- * Copyright 2016-2025 chronicle.software
+ * Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
  */
 package town.lost.oms.dto;
 

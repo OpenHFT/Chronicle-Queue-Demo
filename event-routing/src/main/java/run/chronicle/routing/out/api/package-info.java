@@ -1,7 +1,6 @@
-//
-// Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
-//
-
+/*
+ * Copyright 2013-2025 chronicle.software; SPDX-License-Identifier: Apache-2.0
+ */
 /**
  * This package, run.chronicle.routing.out.api, contains interfaces and classes that facilitate
  * the routing and processing of messages in the output part of the system.
