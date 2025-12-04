@@ -1,8 +1,0 @@
-# This operation represents a transfer 10 EUR from Alice to Bob.
-# missing reference: Dog food
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: reference must be set"
-...
-# This operation represents a transfer 20 EUR from Bob to Cate.
-# missing reference: Coffee
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: reference must be set"
-...

@@ -1,7 +1,0 @@
-# This operation creates 10 accounts.
-# override balance: 100 to balance: -1
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: balance must be positive or zero"
-...
-# This operation creates 10 transfers between the accounts.
-jvmError: "net.openhft.chronicle.core.io.InvalidMarshallableException: sendingTime must be set"
-...

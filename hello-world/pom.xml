@@ -14,6 +14,15 @@
     <artifactId>hello-world</artifactId>
     <name>OpenHFT/${project.parent.artifactId}/${project.artifactId}</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>run.chronicle</groupId>
+            <artifactId>simple-yaml-tester</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>

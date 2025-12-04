@@ -19,6 +19,12 @@
             <groupId>net.openhft</groupId>
             <artifactId>jlbh</artifactId>
         </dependency>
+        <dependency>
+            <groupId>run.chronicle</groupId>
+            <artifactId>simple-yaml-tester</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
