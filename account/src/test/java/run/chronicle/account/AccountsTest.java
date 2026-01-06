@@ -19,18 +19,18 @@ import com.hubspot.jinjava.Jinjava;
 import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
 import net.openhft.chronicle.wire.converter.ShortText;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import run.chronicle.account.api.AccountManagerOut;
 import run.chronicle.account.impl.AccountManagerImpl;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * The {@code AccountsTest} class uses JUnit's Parameterized runner to execute a suite
@@ -52,7 +52,6 @@ import static org.junit.Assert.assertEquals;
  * </ul>
  */
 @SuppressWarnings("deprecation")
-@RunWith(Parameterized.class)
 public class AccountsTest {
 
     /**
@@ -78,28 +77,6 @@ public class AccountsTest {
     static final long VAULT = ShortText.INSTANCE.parse("vault");
 
     /**
-     * The test name and YamlTester instance for each parameterized test run.
-     * <ul>
-     *   <li>{@code name} is the scenario name (often derived from the directory name).</li>
-     *   <li>{@code tester} is the utility that loads YAML input, runs the {@link AccountManagerImpl},
-     *   and compares the actual output against the expected output specified in the YAML files.</li>
-     * </ul>
-     */
-    final String name;
-    final net.openhft.chronicle.wire.utils.YamlTester tester;
-
-    /**
-     * Constructs a single test parameter instance with a given scenario name and YamlTester.
-     *
-     * @param name   A descriptive name for the test scenario.
-     * @param tester The YamlTester that will execute and verify the test scenario.
-     */
-    public AccountsTest(String name, net.openhft.chronicle.wire.utils.YamlTester tester) {
-        this.name = name;
-        this.tester = tester;
-    }
-
-    /**
      * Provides a list of test parameters for the Parameterized runner.
      * <p>
      * Uses {@link net.openhft.chronicle.wire.utils.YamlTesterParametersBuilder} to:
@@ -111,8 +88,7 @@ public class AccountsTest {
      *
      * @return A list of arrays, each containing a scenario name and a YamlTester instance.
      */
-    @Parameterized.Parameters(name = "{0}")
-    public static List<Object[]> parameters() {
+    public static Stream<Arguments> parameters() {
         // Returns a list of test parameters to run the tests with.
         // Each test will be run with an instance of AccountManagerImpl,
         // and will be subjected to various agitations to ensure robustness.
@@ -127,15 +103,23 @@ public class AccountsTest {
                 .exceptionHandlerFunction(out -> (log, msg, thrown) -> out.jvmError(thrown == null ? msg : (msg + " " + thrown)))
                 .exceptionHandlerFunctionAndLog(true)
                 // Render any templates found in the test YAML using Jinjava.
-                .inputFunction(s -> s.contains("{{") || s.contains("{#") ? new Jinjava().render(s, Collections.emptyMap()) : s)
-                .get();
+                .inputFunction(s -> {
+                    if (!(s.contains("{{") || s.contains("{#") || s.contains("{ #"))) {
+                        return s;
+                    }
+                    String normalised = s.replaceAll("\\{[ \\t]*#", "{#");
+                    return new Jinjava().render(normalised, Collections.emptyMap());
+                })
+                .get()
+                .stream()
+                .map(params -> Arguments.of((String) params[0], (net.openhft.chronicle.wire.utils.YamlTester) params[1]));
     }
 
     /**
      * Reset the system time provider after each test to avoid affecting subsequent tests.
      * Ensures that tests are isolated and no global state "leaks" between them.
      */
-    @After
+    @AfterEach
     public void tearDown() {
         SystemTimeProvider.CLOCK = SystemTimeProvider.INSTANCE;
     }
@@ -149,14 +133,15 @@ public class AccountsTest {
      *
      * <p>Assertions ensure that the scenario behaves as defined in the YAML specification.
      */
-    @Test
-    public void runTester() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("parameters")
+    public void runTester(String name, net.openhft.chronicle.wire.utils.YamlTester tester) {
         // Set the system clock to a fixed starting time (2023-01-21T11:00:00) and increment by 1 second each event.
         // This gives consistent timestamps for the events, aligning with the requirements.
         SystemTimeProvider.CLOCK = new SetTimeProvider("2023-01-21T11:00:00").autoIncrement(1, TimeUnit.SECONDS);
 
         // Validate that the actual output matches the expected output defined in the scenario's YAML files.
         // This ensures the AccountManagerImpl logic aligns with the system requirements and handles all specified conditions.
-        assertEquals(tester.expected(), tester.actual());
+        assertEquals(tester.expected(), tester.actual(), () -> "AccountManager YAML scenario=" + name);
     }
 }

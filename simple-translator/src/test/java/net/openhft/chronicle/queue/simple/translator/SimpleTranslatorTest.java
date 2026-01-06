@@ -1,8 +1,8 @@
 package net.openhft.chronicle.queue.simple.translator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test class for {@link SimpleTranslator}.
@@ -30,7 +30,8 @@ public class SimpleTranslatorTest {
         assertEquals("salut pomme," +
                         "salut now," +
                         "banane,",
-                sb.toString());
+                sb.toString(),
+                "translate multiple messages");
     }
 
     @Test
@@ -41,27 +42,24 @@ public class SimpleTranslatorTest {
         // Create a SimpleTranslator with a MessageConsumer that appends translated messages to sb
         SimpleTranslator trans = new SimpleTranslator(sb::append);
 
-        // Translate and check some messages using the doTest helper method
-        performTranslationTest(trans, sb, "hello apple", "salut pomme");
-        performTranslationTest(trans, sb, "bye now", "salut now");
+        assertEquals("salut pomme", translate(trans, sb, "hello apple"), "translate 'hello apple'");
+        assertEquals("salut now", translate(trans, sb, "bye now"), "translate 'bye now'");
     }
 
     /**
-     * Helper method that tests the translation of a single message.
+     * Helper method that translates a single message and returns the output.
      *
      * @param trans the SimpleTranslator to use
      * @param sb the StringBuilder to collect the translation
-     * @param in the input message
-     * @param out the expected translation
+     * @param input the input message
+     * @return the translated text
      */
-    private void performTranslationTest(SimpleTranslator trans, StringBuilder sb, String in, String out) {
+    private static String translate(SimpleTranslator trans, StringBuilder sb, String input) {
         // Reset sb to an empty state
         sb.setLength(0);
 
         // Translate the input message
-        trans.onMessage(in);
-
-        // Check that the translation matches the expected translation
-        assertEquals(out, sb.toString());
+        trans.onMessage(input);
+        return sb.toString();
     }
 }

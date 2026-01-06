@@ -3,22 +3,20 @@
  */
 package org.trading;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("deprecation")
 public class StrategyTest {
-    public static void runTest(String path) {
-        // Runs the test using the YamlTester against the StrategyImpl class, passing the path to the YAML file
-        net.openhft.chronicle.wire.utils.YamlTester yt = net.openhft.chronicle.wire.utils.YamlTester.runTest(StrategyImpl.class, path);
-        // Asserts that the expected state defined in the YAML file matches the actual state obtained from running the test
-        assertEquals(yt.expected(), yt.actual());
+    private static net.openhft.chronicle.wire.utils.YamlTester runYamlTest(String path) {
+        return net.openhft.chronicle.wire.utils.YamlTester.runTest(StrategyImpl.class, path);
     }
 
     @Test
     public void strategy() {
-        // Running the test case defined in the "strategy" YAML file
-        runTest("strategy");
+        String path = "strategy";
+        net.openhft.chronicle.wire.utils.YamlTester yt = runYamlTest(path);
+        assertEquals(yt.expected(), yt.actual(), () -> "StrategyImpl YAML path=" + path);
     }
 }

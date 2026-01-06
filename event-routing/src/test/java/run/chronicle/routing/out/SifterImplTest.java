@@ -1,8 +1,8 @@
 package run.chronicle.routing.out;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // SifterImplTest is a test class for testing the SifterImpl class.
 @SuppressWarnings("deprecation")
@@ -16,6 +16,6 @@ public class SifterImplTest {
 
         // Asserts that the expected result is equal to the actual result.
         // The `replace` method replaces any occurrences of "---\n---" in the actual result with "---".
-        assertEquals(yt.expected(), yt.actual().replace("---\n---", "---"));
+        assertEquals(yt.expected(), yt.actual().replace("---\n---", "---"), "SifterImpl YAML roundtrip");
     }
 }

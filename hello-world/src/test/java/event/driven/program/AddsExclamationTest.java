@@ -1,8 +1,8 @@
 package event.driven.program;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("deprecation")
 public class AddsExclamationTest {
@@ -13,6 +13,6 @@ public class AddsExclamationTest {
         net.openhft.chronicle.wire.utils.YamlTester yt = net.openhft.chronicle.wire.utils.YamlTester.runTest(AddsExclamation.class, "says");
 
         // Assert that the expected value matches the actual value returned by the 'say' method
-        assertEquals(yt.expected(), yt.actual());
+        assertEquals(yt.expected(), yt.actual(), "AddsExclamation YAML roundtrip");
     }
 }

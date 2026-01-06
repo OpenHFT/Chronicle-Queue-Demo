@@ -2,9 +2,9 @@ package run.chronicle.account.dto;
 
 import net.openhft.chronicle.wire.converter.ShortText;
 import net.openhft.chronicle.wire.converter.NanoTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Unit tests for the {@link CreateAccount} class.
@@ -54,30 +54,41 @@ public class CreateAccountTest {
                 "  balance: 1.0,\n" +
                 "  overdraft: 3.0\n" +
                 "}\n";
-        assertEquals("The toString() output of CreateAccount should match the expected YAML-like format.",
-                expected, createAccount.toString());
+        assertEquals(
+                expected,
+                createAccount.toString(),
+                "The toString() output of CreateAccount should match the expected YAML-like format."
+        );
 
         // Verify the parsed sendingTime matches what was set.
         long expectedTime = NanoTime.INSTANCE.parse("2001-02-03T04:05:06.007008009");
-        assertEquals("The sendingTime field should match the expected nanosecond timestamp.",
-                expectedTime, createAccount.sendingTime());
+        assertEquals(
+                expectedTime,
+                createAccount.sendingTime(),
+                "The sendingTime field should match the expected nanosecond timestamp."
+        );
 
         // Verify the name field is correctly set.
-        assertEquals("The name field should match the initialised value.",
-                "name", createAccount.name());
+        assertEquals("name", createAccount.name(), "The name field should match the initialised value.");
 
         // Additional checks to ensure all fields are as expected.
-        assertEquals("The sender field should match the initialised value.",
-                "sender", ShortText.INSTANCE.asString(createAccount.sender()));
-        assertEquals("The target field should match the initialised value.",
-                "target", ShortText.INSTANCE.asString(createAccount.target()));
-        assertEquals("The account number should match the initialised value.",
-                2L, createAccount.account());
-        assertEquals("The currency field should match the initialised value.",
-                "CURR", ShortText.INSTANCE.asString(createAccount.currency()));
-        assertEquals("The balance should match the initialised value.",
-                1.0, createAccount.balance(), 0.0);
-        assertEquals("The overdraft should match the initialised value.",
-                3.0, createAccount.overdraft(), 0.0);
+        assertEquals(
+                "sender",
+                ShortText.INSTANCE.asString(createAccount.sender()),
+                "The sender field should match the initialised value."
+        );
+        assertEquals(
+                "target",
+                ShortText.INSTANCE.asString(createAccount.target()),
+                "The target field should match the initialised value."
+        );
+        assertEquals(2L, createAccount.account(), "The account number should match the initialised value.");
+        assertEquals(
+                "CURR",
+                ShortText.INSTANCE.asString(createAccount.currency()),
+                "The currency field should match the initialised value."
+        );
+        assertEquals(1.0, createAccount.balance(), 0.0, "The balance should match the initialised value.");
+        assertEquals(3.0, createAccount.overdraft(), 0.0, "The overdraft should match the initialised value.");
     }
 }

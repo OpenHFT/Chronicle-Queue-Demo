@@ -4,9 +4,11 @@ import net.openhft.chronicle.core.io.InvalidMarshallableException;
 import net.openhft.chronicle.wire.Marshallable;
 import net.openhft.chronicle.wire.converter.ShortText;
 import net.openhft.chronicle.wire.converter.NanoTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static run.chronicle.account.dto.TransferTest.getTransfer;
 
 /**
@@ -54,7 +56,7 @@ public class OnTransferTest {
                 .sendingTime(NanoTime.INSTANCE.parse("2001/02/03T04:05:06.777888999"))
                 .transfer(getTransfer());
 
-        assertEquals("The toString() output should match the expected YAML.", EXPECTED, event.toString());
+        assertEquals(EXPECTED, event.toString(), "OnTransfer.toString YAML");
     }
 
     /**
@@ -66,25 +68,23 @@ public class OnTransferTest {
         OnTransfer event = Marshallable.fromString(EXPECTED);
 
         // Verify that the event does not use a self-describing message format.
-        assertFalse("usesSelfDescribingMessage() should return false for OnTransfer events.",
-                event.usesSelfDescribingMessage());
+        assertFalse(
+                event.usesSelfDescribingMessage(),
+                "usesSelfDescribingMessage() should return false for OnTransfer events."
+        );
 
         // Verify that the transfer object matches the expected reference Transfer.
-        assertEquals("The embedded Transfer object should match the expected instance.",
-                getTransfer(), event.transfer());
+        assertEquals(getTransfer(), event.transfer(), "transfer");
 
         // Check sender and target fields
         String senderStr = ShortText.INSTANCE.asString(event.sender());
         String targetStr = ShortText.INSTANCE.asString(event.target());
-        assertEquals("The sender field should match 'target' as defined in the YAML.",
-                "target", senderStr);
-        assertEquals("The target field should match 'sender' as defined in the YAML.",
-                "sender", targetStr);
+        assertEquals("target", senderStr, "sender");
+        assertEquals("sender", targetStr, "target");
 
         // Check sendingTime field
         long expectedTime = NanoTime.INSTANCE.parse("2001-02-03T04:05:06.777888999");
-        assertEquals("The sendingTime field should match the given timestamp.",
-                expectedTime, event.sendingTime());
+        assertEquals(expectedTime, event.sendingTime(), "sendingTime");
     }
 
     /**
@@ -92,7 +92,7 @@ public class OnTransferTest {
      * transfer field results in an {@link InvalidMarshallableException}. This ensures that
      * validation logic is properly enforced.
      */
-    @Test(expected = InvalidMarshallableException.class)
+    @Test
     public void missingTransfer() {
         String yamlWithoutTransfer = "" +
                 "!run.chronicle.account.dto.OnTransfer {\n" +
@@ -100,9 +100,10 @@ public class OnTransferTest {
                 "  target: sender,\n" +
                 "  sendingTime: 2001-02-03T04:05:06.777888999,\n" +
                 "}\n";
-        OnTransfer event = Marshallable.fromString(yamlWithoutTransfer);
-
-        // If no exception is thrown, the test fails.
-        fail("Expected InvalidMarshallableException due to missing 'transfer' field, but got: " + event);
+        assertThrows(
+                InvalidMarshallableException.class,
+                () -> Marshallable.fromString(yamlWithoutTransfer),
+                "missing transfer should fail"
+        );
     }
 }

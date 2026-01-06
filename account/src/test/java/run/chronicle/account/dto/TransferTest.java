@@ -3,10 +3,10 @@ package run.chronicle.account.dto;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.wire.converter.ShortText;
 import net.openhft.chronicle.wire.converter.NanoTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Unit tests for the {@link Transfer} DTO.
@@ -62,22 +62,38 @@ public class TransferTest {
                 "}\n";
 
         // Check that the string representation matches the expected format.
-        assertEquals("The toString() output should match the expected YAML representation.",
-                expectedToString, transfer.toString());
+        assertEquals(
+                expectedToString,
+                transfer.toString(),
+                "The toString() output should match the expected YAML representation."
+        );
 
         // Verify that usesSelfDescribingMessage() returns false as expected.
-        assertFalse("usesSelfDescribingMessage() should return false for Transfer events.",
-                transfer.usesSelfDescribingMessage());
+        assertFalse(
+                transfer.usesSelfDescribingMessage(),
+                "usesSelfDescribingMessage() should return false for Transfer events."
+        );
 
         // Additional field verifications to ensure the object is correctly set up.
-        assertEquals("sender", ShortText.INSTANCE.asString(transfer.sender()));
-        assertEquals("target", ShortText.INSTANCE.asString(transfer.target()));
-        assertEquals(NanoTime.INSTANCE.parse("2001/02/03T04:05:06.007008009"), transfer.sendingTime());
-        assertEquals("Expected account 'from' to match initialised value.", 12345, transfer.from());
-        assertEquals("Expected account 'to' to match initialised value.", 67890, transfer.to());
-        assertEquals("Expected currency to be 'CURR' after parsing.", "CURR", ShortText.INSTANCE.asString(transfer.currency()));
-        assertEquals("Expected amount to be 1.0.", 1.0, transfer.amount(), 0.0);
-        assertEquals("Expected reference field to match 'reference' bytes.",
-                "reference", transfer.reference().toString());
+        assertEquals("sender", ShortText.INSTANCE.asString(transfer.sender()), "sender");
+        assertEquals("target", ShortText.INSTANCE.asString(transfer.target()), "target");
+        assertEquals(
+                NanoTime.INSTANCE.parse("2001/02/03T04:05:06.007008009"),
+                transfer.sendingTime(),
+                "sendingTime"
+        );
+        assertEquals(12345, transfer.from(), "Expected account 'from' to match initialised value.");
+        assertEquals(67890, transfer.to(), "Expected account 'to' to match initialised value.");
+        assertEquals(
+                "CURR",
+                ShortText.INSTANCE.asString(transfer.currency()),
+                "Expected currency to be 'CURR' after parsing."
+        );
+        assertEquals(1.0, transfer.amount(), 0.0, "Expected amount to be 1.0.");
+        assertEquals(
+                "reference",
+                transfer.reference().toString(),
+                "Expected reference field to match 'reference' bytes."
+        );
     }
 }

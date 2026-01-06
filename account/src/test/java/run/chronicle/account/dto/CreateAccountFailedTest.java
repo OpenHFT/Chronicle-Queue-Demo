@@ -3,10 +3,10 @@ package run.chronicle.account.dto;
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 import net.openhft.chronicle.wire.Marshallable;
 import net.openhft.chronicle.wire.converter.ShortText;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static run.chronicle.account.dto.CreateAccountTest.getCreateAccount;
 
 /**
@@ -50,14 +50,10 @@ public class CreateAccountFailedTest {
         CreateAccountFailed event = Marshallable.fromString(yaml);
 
         // Verify fields are set as expected
-        assertEquals("Sender should match the provided ShortText 'sender'.",
-                "sender", ShortText.INSTANCE.asString(event.sender()));
-        assertEquals("Target should match the provided ShortText 'target'.",
-                "target", ShortText.INSTANCE.asString(event.target()));
-        assertEquals("Reason should match the provided reason string.",
-                "reasons", event.reason());
-        assertEquals("The embedded createAccount object should match the expected CreateAccount.",
-                getCreateAccount(), event.createAccount());
+        assertEquals("sender", ShortText.INSTANCE.asString(event.sender()), "sender");
+        assertEquals("target", ShortText.INSTANCE.asString(event.target()), "target");
+        assertEquals("reasons", event.reason(), "reason");
+        assertEquals(getCreateAccount(), event.createAccount(), "createAccount");
     }
 
     /**
@@ -66,7 +62,7 @@ public class CreateAccountFailedTest {
      * <p>
      * The createAccount field is mandatory, so if it's missing, the validation should fail.
      */
-    @Test(expected = InvalidMarshallableException.class)
+    @Test
     public void missingCreateAccount() {
         String yaml = "" +
                 "!run.chronicle.account.dto.CreateAccountFailed {\n" +
@@ -74,10 +70,11 @@ public class CreateAccountFailedTest {
                 "  target: target,\n" +
                 "  sendingTime: 2001/02/03T04:05:06.007008009,\n" +
                 "}";
-        CreateAccountFailed event = Marshallable.fromString(yaml);
-
-        // If we reach this line, the test failed to throw the expected exception.
-        fail("Expected InvalidMarshallableException due to missing createAccount field. Event: " + event);
+        assertThrows(
+                InvalidMarshallableException.class,
+                () -> Marshallable.fromString(yaml),
+                "missing createAccount should fail"
+        );
     }
 
     /**
@@ -86,7 +83,7 @@ public class CreateAccountFailedTest {
      * <p>
      * The reason field is mandatory, so if it's missing, the validation should fail.
      */
-    @Test(expected = InvalidMarshallableException.class)
+    @Test
     public void missingReason() {
         // YAML missing 'reason' field
         String yaml = "" +
@@ -104,10 +101,10 @@ public class CreateAccountFailedTest {
                 "    balance: 1.0\n" +
                 "  }\n" +
                 "}";
-
-        CreateAccountFailed event = Marshallable.fromString(yaml);
-
-        // If we reach this line, the test failed to throw the expected exception.
-        fail("Expected InvalidMarshallableException due to missing reason field. Event: " + event);
+        assertThrows(
+                InvalidMarshallableException.class,
+                () -> Marshallable.fromString(yaml),
+                "missing reason should fail"
+        );
     }
 }

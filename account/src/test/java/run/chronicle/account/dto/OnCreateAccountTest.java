@@ -3,10 +3,10 @@ package run.chronicle.account.dto;
 import net.openhft.chronicle.core.io.InvalidMarshallableException;
 import net.openhft.chronicle.wire.Marshallable;
 import net.openhft.chronicle.wire.converter.ShortText;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static run.chronicle.account.dto.CreateAccountTest.getCreateAccount;
 
 /**
@@ -46,21 +46,17 @@ public class OnCreateAccountTest {
         OnCreateAccount event = Marshallable.fromString(yaml);
 
         // Check sender field
-        assertEquals("The sender field should match the 'sender' ShortText value.",
-                "sender", ShortText.INSTANCE.asString(event.sender()));
+        assertEquals("sender", ShortText.INSTANCE.asString(event.sender()), "sender");
 
         // Check target field
-        assertEquals("The target field should match the 'target' ShortText value.",
-                "target", ShortText.INSTANCE.asString(event.target()));
+        assertEquals("target", ShortText.INSTANCE.asString(event.target()), "target");
 
         // Check sendingTime field
         long expectedTime = net.openhft.chronicle.wire.converter.NanoTime.INSTANCE.parse("2001/02/03T04:05:06.007008009");
-        assertEquals("The sendingTime field should match the provided timestamp.",
-                expectedTime, event.sendingTime());
+        assertEquals(expectedTime, event.sendingTime(), "sendingTime");
 
         // Check the embedded CreateAccount object
-        assertEquals("The embedded createAccount object should match the expected reference instance.",
-                getCreateAccount(), event.createAccount());
+        assertEquals(getCreateAccount(), event.createAccount(), "createAccount");
     }
 
     /**
@@ -68,7 +64,7 @@ public class OnCreateAccountTest {
      * createAccount field results in an {@link InvalidMarshallableException}. This
      * confirms that validation logic is working as intended.
      */
-    @Test(expected = InvalidMarshallableException.class)
+    @Test
     public void missingCreateAccount() {
         String yaml = "" +
                 "!run.chronicle.account.dto.OnCreateAccount {\n" +
@@ -76,10 +72,10 @@ public class OnCreateAccountTest {
                 "  target: target,\n" +
                 "  sendingTime: 2001/02/03T04:05:06.007008009\n" +
                 "}";
-
-        OnCreateAccount event = Marshallable.fromString(yaml);
-
-        // If we reach here, no exception was thrown, which means the test failed.
-        Assert.fail("Expected InvalidMarshallableException due to missing createAccount field, but got: " + event);
+        assertThrows(
+                InvalidMarshallableException.class,
+                () -> Marshallable.fromString(yaml),
+                "missing createAccount should fail"
+        );
     }
 }

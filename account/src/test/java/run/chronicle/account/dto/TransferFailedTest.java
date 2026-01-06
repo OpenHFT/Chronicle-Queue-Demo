@@ -4,10 +4,10 @@ import net.openhft.chronicle.core.io.InvalidMarshallableException;
 import net.openhft.chronicle.wire.Marshallable;
 import net.openhft.chronicle.wire.converter.ShortText;
 import net.openhft.chronicle.wire.converter.NanoTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for the {@link TransferFailed} DTO.
@@ -55,8 +55,7 @@ public class TransferFailedTest {
                 .reason("reasons")
                 .transfer(TransferTest.getTransfer());
 
-        assertEquals("The toString() output of TransferFailed should match the expected YAML.",
-                EXPECTED, tf.toString());
+        assertEquals(EXPECTED, tf.toString(), "TransferFailed.toString YAML");
     }
 
     /**
@@ -68,12 +67,10 @@ public class TransferFailedTest {
         TransferFailed tf = Marshallable.fromString(EXPECTED);
 
         // Verify that the transfer object matches the expected instance.
-        assertEquals("The embedded Transfer object should match the expected reference.",
-                TransferTest.getTransfer(), tf.transfer());
+        assertEquals(TransferTest.getTransfer(), tf.transfer(), "transfer");
 
         // Verify that the reason field matches the expected value.
-        assertEquals("The reason field should match the 'reasons' string.",
-                "reasons", tf.reason());
+        assertEquals("reasons", tf.reason(), "reason");
     }
 
     /**
@@ -83,7 +80,7 @@ public class TransferFailedTest {
      * Here, the 'transfer' field is missing. According to the DTO's requirements,
      * this should cause validation to fail.
      */
-    @Test(expected = InvalidMarshallableException.class)
+    @Test
     public void missingFieldInTransferFailed() {
         String yamlMissingTransfer = "" +
                 "!run.chronicle.account.dto.TransferFailed {\n" +
@@ -92,11 +89,11 @@ public class TransferFailedTest {
                 "  sendingTime: 2001-02-03T04:05:06.777888999,\n" +
                 "  reason: None\n" +
                 "}\n";
-
-        TransferFailed tf = Marshallable.fromString(yamlMissingTransfer);
-
-        // If no exception is thrown, fail the test.
-        fail("Expected InvalidMarshallableException due to missing 'transfer' field, but got: " + tf);
+        assertThrows(
+                InvalidMarshallableException.class,
+                () -> Marshallable.fromString(yamlMissingTransfer),
+                "missing transfer should fail"
+        );
     }
 
     /**
@@ -105,7 +102,7 @@ public class TransferFailedTest {
      * <p>
      * Here, the 'reason' field is missing. This should cause validation to fail.
      */
-    @Test(expected = InvalidMarshallableException.class)
+    @Test
     public void missingReasonFieldInTransferFailed() {
         String yamlMissingReason = "" +
                 "!run.chronicle.account.dto.TransferFailed {\n" +
@@ -123,10 +120,10 @@ public class TransferFailedTest {
                 "    reference: reference\n" +
                 "  }\n" +
                 "}\n";
-
-        TransferFailed tf = Marshallable.fromString(yamlMissingReason);
-
-        // If no exception is thrown, fail the test.
-        fail("Expected InvalidMarshallableException due to missing 'reason' field, but got: " + tf);
+        assertThrows(
+                InvalidMarshallableException.class,
+                () -> Marshallable.fromString(yamlMissingReason),
+                "missing reason should fail"
+        );
     }
 }

@@ -52,10 +52,12 @@ class SimpleTranslator2Test {
     @Test
     @DisplayName("Handle null input")
     void handleNullInput() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            translator.onMessage(null);
-        });
-        assertEquals("Input text cannot be null", exception.getMessage());
+        Exception exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> translator.onMessage(null),
+                "null input should fail"
+        );
+        assertEquals("Input text cannot be null", exception.getMessage(), "exception message");
     }
 
     @Test

@@ -260,8 +260,6 @@ createAccountFailed: {
   reason: account already exists
 }
 ...
-jvmError: "java.lang.UnsupportedOperationException: TEXT ---..."
-...
 # This operation creates an account for Charlie with account number 101045.
 ---
 createAccountFailed: {

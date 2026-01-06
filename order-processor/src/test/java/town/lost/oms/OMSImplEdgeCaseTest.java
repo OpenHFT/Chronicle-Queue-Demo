@@ -3,14 +3,15 @@ package town.lost.oms;
 import net.openhft.chronicle.core.time.SetTimeProvider;
 import net.openhft.chronicle.core.time.SystemTimeProvider;
 import net.openhft.chronicle.core.time.TimeProvider;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import town.lost.oms.api.OMSOut;
 import town.lost.oms.dto.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -25,9 +26,9 @@ public class OMSImplEdgeCaseTest {
     private OMSOut mockOut;
     private OMSImpl oms;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        // Prepare a mock OMSOut so we can verify OMSImpl’s behavior.
+        // Prepare a mock OMSOut so we can verify OMSImpl's behaviour.
         mockOut = mock(OMSOut.class);
 
         // Create an instance of OMSImpl using the mock OMSOut.
@@ -38,7 +39,7 @@ public class OMSImplEdgeCaseTest {
         SystemTimeProvider.CLOCK = fixedTimeProvider;
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         // Reset the system time provider to the default.
         SystemTimeProvider.CLOCK = SystemTimeProvider.INSTANCE;
@@ -68,7 +69,7 @@ public class OMSImplEdgeCaseTest {
         oms.newOrderSingle(nos);
 
         // Assert: we expect an ExecutionReport to be generated anyway,
-        // since OMSImpl doesn’t strictly do its own validation by default.
+        // since OMSImpl doesn't strictly do its own validation by default.
         // But if you want to simulate a "reject" scenario, you'd adapt the code
         // in OMSImpl or do something like this:
         ArgumentCaptor<ExecutionReport> erCaptor = ArgumentCaptor.forClass(ExecutionReport.class);
@@ -76,16 +77,16 @@ public class OMSImplEdgeCaseTest {
         verifyNoMoreInteractions(mockOut);
 
         ExecutionReport er = erCaptor.getValue();
-        assertEquals("NEGQTY", er.clOrdID());
-        assertEquals(3003L, er.symbol());
+        assertEquals("NEGQTY", er.clOrdID(), "clOrdID");
+        assertEquals(3003L, er.symbol(), "symbol");
         // Leaves/cumQty are set to 0 by default in OMSImpl
-        assertEquals(0.0, er.leavesQty(), 0.0001);
-        assertEquals(0.0, er.cumQty(), 0.0001);
+        assertEquals(0.0, er.leavesQty(), 0.0001, "leavesQty");
+        assertEquals(0.0, er.cumQty(), 0.0001, "cumQty");
         // etc., check any relevant fields
     }
 
     /**
-     * Test behavior if the price is zero or less, which is typically invalid.
+     * Test behaviour if the price is zero or less, which is typically invalid.
      * In a real production environment, you'd likely expect an OrderCancelReject.
      */
     @Test
@@ -110,13 +111,13 @@ public class OMSImplEdgeCaseTest {
         verifyNoMoreInteractions(mockOut);
 
         ExecutionReport er = erCaptor.getValue();
-        assertEquals("ZEROPRICE", er.clOrdID());
-        assertEquals(0.0, er.price(), 0.0001);
+        assertEquals("ZEROPRICE", er.clOrdID(), "clOrdID");
+        assertEquals(0.0, er.price(), 0.0001, "price");
     }
 
     /**
-     * Test behavior if the mandatory 'side' field is null.
-     * Currently, OMSImpl does not do explicit checks—this test
+     * Test behaviour if the mandatory 'side' field is null.
+     * Currently, OMSImpl does not do explicit checks - this test
      * reveals that no rejection occurs unless you code it in.
      */
     @Test
@@ -164,8 +165,8 @@ public class OMSImplEdgeCaseTest {
         verifyNoMoreInteractions(mockOut);
 
         OrderCancelReject ocr = ocrCaptor.getValue();
-        assertEquals("NON_EXISTENT", ocr.clOrdID());
-        assertEquals("No such order", ocr.reason());
+        assertEquals("NON_EXISTENT", ocr.clOrdID(), "clOrdID");
+        assertEquals("No such order", ocr.reason(), "reason");
     }
 
     /**
@@ -189,8 +190,8 @@ public class OMSImplEdgeCaseTest {
         verifyNoMoreInteractions(mockOut);
 
         OrderCancelReject ocr = ocrCaptor.getValue();
-        assertEquals("", ocr.clOrdID());
-        assertEquals("No orders to cancel", ocr.reason());
+        assertEquals("", ocr.clOrdID(), "clOrdID");
+        assertEquals("No orders to cancel", ocr.reason(), "reason");
     }
 
     /**
@@ -216,13 +217,11 @@ public class OMSImplEdgeCaseTest {
                 .sendingTime(10)
                 .transactTime(11);
 
-        // Try-catch block to demonstrate how we'd detect an exception inside the test
-        try {
-            oms.newOrderSingle(nos);
-        } catch (RuntimeException e) {
-            // We can verify jvmError was called, if OMSImpl had that logic directly.
-            // Or handle it here if we want. For now, just confirm the message.
-            assertEquals("Simulated Crash", e.getMessage());
-        }
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> oms.newOrderSingle(nos),
+                "newOrderSingle should propagate executionReport failure"
+        );
+        assertEquals("Simulated Crash", exception.getMessage(), "exception message");
     }
 }

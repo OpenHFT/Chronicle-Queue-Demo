@@ -2,14 +2,14 @@ package run.chronicle.account.util;
 
 import net.openhft.chronicle.core.Jvm;
 import net.openhft.chronicle.core.onoes.ExceptionKey;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import run.chronicle.account.dto.*;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Unit tests for {@link LogsAccountManagerOut}, verifying that all events logged by this mock implementation
@@ -20,7 +20,7 @@ public class LogsAccountManagerOutTest {
     /**
      * Resets the Jvm exception handlers after each test to prevent side effects between tests.
      */
-    @After
+    @AfterEach
     public void reset() {
         Jvm.resetExceptionHandlers();
     }
@@ -97,7 +97,10 @@ public class LogsAccountManagerOutTest {
                 "', throwable=}";
 
         // Assert that the collected log matches the expected output exactly.
-        assertEquals("The recorded exception logs should match the expected logging output.",
-                expected, collectedLog);
+        assertEquals(
+                expected,
+                collectedLog,
+                "The recorded exception logs should match the expected logging output."
+        );
     }
 }
