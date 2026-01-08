@@ -54,3 +54,4 @@ local.properties
 ### Queue files
 *.cq4t
 *.cq4
+logs/
