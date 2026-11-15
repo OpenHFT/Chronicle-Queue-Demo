@@ -53,7 +53,7 @@ This is a tutorial demonstrating the usage of Chronicle Queue with simple demo p
 
 image::images/Two-hop-latency.png[]
 
-You can find the source code for the order processor example https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/order-processor[here].
+You can find the source code for the order processor example https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/HEAD/order-processor[here].
 
 == Downloading and Running Sample Programs
 
@@ -84,6 +84,6 @@ If you close the project, you can reopen it by going to `File -> Open`. You'll f
 
 image::images/directory.png[]
 
-Now you're ready to run the example programs! You can start with https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/simple-input[Simple Input].
+Now you're ready to run the example programs! You can start with https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/HEAD/simple-input[Simple Input].
 
-The second example is https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/master/simple-translator[Simple Translator].
+The second example is https://github.com/OpenHFT/Chronicle-Queue-Demo/tree/HEAD/simple-translator[Simple Translator].
