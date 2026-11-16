@@ -193,7 +193,7 @@ Three!           // output
 
 == 2. Testing the Microservice
 
-The link:https://github.com/OpenHFT/Chronicle-Wire/blob/ea/src/main/java/net/openhft/chronicle/wire/TextMethodTester.java[TextMethodTester] allows you to define input (`in.yaml`) and expected output (`out.yaml`) for your microservice, then compare them automatically.
+The link:https://github.com/ChronicleEnterprise/Chronicle-Services-Enterprise/blob/HEAD/wire-yaml-tester/src/main/java/net/openhft/chronicle/wire/TextMethodTester.java[TextMethodTester] allows you to define input (`in.yaml`) and expected output (`out.yaml`) for your microservice, then compare them automatically.
 
 For example:
 
